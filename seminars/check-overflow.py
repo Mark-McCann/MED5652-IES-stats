@@ -16,11 +16,25 @@ Usage, from inside seminars/:
     python3 check-overflow.py                 # every week*.qmd found
     python3 check-overflow.py week09-comparison
 
-Slides reading over 720px overflow the slide box outright. Slides over 655px
-are inside the box but sitting in the band the menu/chalkboard icons and the
-slide number occupy, which reads as cramped in the room even though nothing
-is clipped. Both get a screenshot written to .overflow-check/<deck>/ so the
-flagged slide can be looked at rather than guessed at.
+Slides reading over 720px overflow the slide box outright. Slides that reach
+into the band the menu/chalkboard icons, the navigation arrows and the slide
+number occupy are inside the box but crowd those icons, which can read as
+cramped in the room even though nothing is clipped. Both get a screenshot
+written to .overflow-check/<deck>/ so the flagged slide can be looked at
+rather than guessed at.
+
+Everything is measured in a 1920x1080 window, the resolution the room's
+projector actually runs at, not 1280x720. revealjs scales the 1280x720 slide
+to fit with a 4% margin (a 972px-high slide box in a 1080px window, scale
+1.35), and the navigation icons are fixed-size DOM elements that do not
+scale. At 1080p they sit in the letterbox margin below the slide box, at
+roughly 728px in slide coordinates, so in the room they cannot collide with
+slide content at all until the content has already overflowed. The band's top
+edge is measured live from the rendered icons (converted into slide
+coordinates) instead of being a hard-coded pixel figure, so this stays true
+if the icons or the window ever change. Recalibrated 2026-09-24: the old
+fixed 655px band, tuned at 1280x720, flagged slides with only a couple of
+short bullets as crowded, and `.smaller` was added to them for no reason.
 
 How it measures, and what it assumes
 ------------------------------------
@@ -68,7 +82,14 @@ CHROME = os.path.expanduser(
 )
 
 SLIDE_HEIGHT = 720   # the deck's own height, from _quarto.yml
-NAV_BAND = 655       # top of the band the fixed nav icons and slide number sit in
+WINDOW = "1920,1080"  # 16:9 1080p, the projector's resolution
+NAV_BAND_FALLBACK = 690  # used only if no nav icon can be measured
+# The fixed navigation furniture (arrows, slide number, menu and chalkboard
+# buttons). The logo sits top-right and is not part of the bottom band.
+NAV_SELECTORS = [
+    ".reveal .controls", ".reveal .slide-number", ".reveal .slide-menu-button",
+    ".reveal .slide-chalkboard-buttons", ".reveal .chalkboard-button",
+]
 PORT = 8794
 
 # Injected into the served HTML, before </body>. Walks the deck one slide at a
@@ -88,6 +109,22 @@ INJECT = """
     var slidesEl = document.querySelector('.reveal .slides');
     var total = Reveal.getTotalSlides();
     var out = [];
+    var srAll = slidesEl.getBoundingClientRect();
+    var scaleAll = srAll.height / SLIDE_HEIGHT;
+    var navSel = NAV_SELECTORS;
+    var navTop = null;
+    var navWhat = '';
+    navSel.forEach(function (sel) {
+      document.querySelectorAll(sel).forEach(function (el) {
+        var r = el.getBoundingClientRect();
+        if (r.width <= 0 || r.height <= 0) return;
+        var cs = window.getComputedStyle(el);
+        if (cs.display === 'none' || cs.visibility === 'hidden') return;
+        if (r.top < window.innerHeight / 2) return;
+        var t = (r.top - srAll.top) / scaleAll;
+        if (navTop === null || t < navTop) { navTop = t; navWhat = sel; }
+      });
+    });
     for (var i = 0; i < total; i++) {
       Reveal.slide(i);
       await sleep(120);
@@ -114,13 +151,16 @@ INJECT = """
     }
     var pre = document.createElement('pre');
     pre.id = 'overflow-report';
-    pre.textContent = JSON.stringify(out);
+    pre.textContent = JSON.stringify({
+      nav: navTop === null ? null : Math.round(navTop), navWhat: navWhat, slides: out
+    });
     document.body.appendChild(pre);
   }
   run();
 })();
 </script>
-""".replace("SLIDE_HEIGHT", str(SLIDE_HEIGHT))
+""".replace("SLIDE_HEIGHT", str(SLIDE_HEIGHT)).replace(
+    "NAV_SELECTORS", json.dumps(NAV_SELECTORS))
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):
@@ -160,7 +200,7 @@ def measure(deck, port):
     url = "http://127.0.0.1:%d/%s.html?fragments=false&transition=none" % (port, deck)
     res = subprocess.run(
         [CHROME, "--headless", "--disable-gpu", "--no-sandbox",
-         "--window-size=1280,720", "--virtual-time-budget=180000",
+         "--window-size=" + WINDOW, "--virtual-time-budget=180000",
          "--run-all-compositor-stages-before-draw", "--dump-dom", url],
         capture_output=True, text=True, timeout=600,
     )
@@ -177,7 +217,7 @@ def screenshot(deck, index, port, out_dir):
     out = os.path.join(out_dir, "s%02d.png" % index)
     subprocess.run(
         [CHROME, "--headless", "--disable-gpu", "--no-sandbox",
-         "--window-size=1280,720", "--screenshot=" + out,
+         "--window-size=" + WINDOW, "--screenshot=" + out,
          "http://127.0.0.1:%d/%s.html?fragments=false&transition=none#/%d"
          % (port, deck, index)],
         capture_output=True, timeout=120,
@@ -201,13 +241,17 @@ def check(deck, port, shots):
     thread = threading.Thread(target=srv.serve_forever, daemon=True)
     thread.start()
     try:
-        slides = measure(deck, port)
+        report = measure(deck, port)
+        slides = report["slides"]
+        nav_band = report["nav"] if report["nav"] is not None else NAV_BAND_FALLBACK
+        print("  nav band starts at %dpx (%s), window %s"
+              % (nav_band, report["navWhat"] or "not measured", WINDOW))
         flagged = []
         for row in slides:
             note = ""
             if row["bottom"] > SLIDE_HEIGHT:
                 note = "  <-- OVERFLOWS"
-            elif row["bottom"] > NAV_BAND:
+            elif row["bottom"] > nav_band:
                 note = "  <-- crowds the nav band"
             if note:
                 flagged.append(row)

@@ -4,9 +4,9 @@
 ![](images/cover.png){fig-alt='MED5652 IES Stats Manual: Introduction to Epidemiology and Statistics' width='58%' fig-align='center'}
 :::
 
-This is a companion ebook for the statistical labs of the course MED5652 Introduction to Epidemiology and Statistics for MPH students in the University of Glasgow. The principles and theories of statistics are taught in the seminars. This ebook, and the lab sessions, are to apply that knowledge in epidemiology and statistics to real data using R.
+This is a companion ebook for the statistical labs of the course MED5652 Introduction to Epidemiology and Statistics for MPH students in the University of Glasgow. The principles and theories of statistics are taught in the seminars. This ebook, and the lab sessions, will apply this knowledge to real-world data using R.
 
-The first two preparatory sessions help us ease into the analysis environment. R is primarily a programming language, so it has a steeper learning curve than software like SPSS: we communicate with the computer using text commands instead of a mouse. It pays that curve back, though. R is versatile enough to find a software implementation for almost any statistical method we might need, and it's a skill employers actively look for. This ebook is set up for complete beginners regardless, with no prior data analysis or programming experience expected. From Chapter 3 on, every chapter picks up from the theories taught in the seminars, but it doesn't replace the seminar's content. Think of the seminar as where an idea is introduced, and the lab as where we actually do it, in R, on real data.
+The first two preparatory sessions will help us become familiar with the R analysis environment. R is primarily a programming language, so it has a steeper learning curve than other software such as SPSS: we communicate with the computer using text commands instead of a mouse. R is versatile enough to find a software implementation for almost any statistical method we might need, and it's a skill employers actively look for. This ebook is set up for complete beginners regardless, with no prior data analysis or programming experience expected. From Chapter 3 on, every chapter picks up from the theories taught in the seminars, but it doesn't replace the seminar's content. In the seminar, an idea is introduced; in the lab, we put it into practice, in R, on real data.
 
 ## Course map
 
@@ -18,9 +18,9 @@ The table below is the whole course in one place: what each week covers, where t
 |---|---|---|---|
 | 4 | R and R Studio | None | [Chapter 1](chapters/04-prep1.qmd) |
 | 5 | Data and data handling | None | [Chapter 2](chapters/05-prep2.qmd) |
-| 7 | Describing and visualising data | [Slides](https://fredho-42.github.io/MED5652-IES-stats/seminars/week07-descriptive.html) | [Chapter 3](chapters/07-descriptive.qmd) |
-| 8 | Estimation, precision, and sample size | [Slides](https://fredho-42.github.io/MED5652-IES-stats/seminars/week08-estimation.html) | [Chapter 4](chapters/08-estimation.qmd) |
-| 9 | Hypothesis tests and measures of association | [Slides](https://fredho-42.github.io/MED5652-IES-stats/seminars/week09-comparison.html) | [Chapter 5](chapters/09-comparison.qmd) |
+| 7 | Describing and visualising data | [[Slides](seminars/week07-descriptive.html)]{.content-hidden when-format="pdf"}[[Slides](https://fredho-42.github.io/MED5652-IES-stats/seminars/week07-descriptive.html)]{.content-visible when-format="pdf"} | [Chapter 3](chapters/07-descriptive.qmd) |
+| 8 | Estimation, precision, and sample size | [[Slides](seminars/week08-estimation.html)]{.content-hidden when-format="pdf"}[[Slides](https://fredho-42.github.io/MED5652-IES-stats/seminars/week08-estimation.html)]{.content-visible when-format="pdf"} | [Chapter 4](chapters/08-estimation.qmd) |
+| 9 | Hypothesis tests and measures of association | [[Slides](seminars/week09-comparison.html)]{.content-hidden when-format="pdf"}[[Slides](https://fredho-42.github.io/MED5652-IES-stats/seminars/week09-comparison.html)]{.content-visible when-format="pdf"} | [Chapter 5](chapters/09-comparison.qmd) |
 | 10 | Correlation and simple linear regression | To follow | [Chapter 6](chapters/10-regression.qmd) |
 | 11 | Multiple linear and logistic regression | To follow | [Chapter 7](chapters/11-adjustment.qmd) |
 
@@ -39,7 +39,7 @@ This ebook is built primarily to get us through ILO 3. Along the way, it also to
 
 The ebook is in two parts: two preparatory chapters worked through before seminars on statistics begin, then five weekly chapters, one per statistics week, each following that week's seminar.
 
-All weeks are interconnected, so please attend all classes. Missing one class would mean you lose the foundation of the next, with a knock-on effect on your overall learning. If you really can't attend a class, please make sure you read and work through the relevant chapter in this ebook before the next class.
+All weeks are interconnected, so please attend all classes. Missing one class would mean you lose the foundation of the next, with a knock-on effect on your overall learning. If you can't attend a class, please make sure you read and work through the relevant chapter in this ebook before the next class.
 
 An appendix at the end of the ebook, the Glossary, collects every package, function, operator, and statistical term used across all seven chapters, grouped by package, with the chapter each one first appears in.
 

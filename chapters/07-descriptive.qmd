@@ -71,7 +71,7 @@ source(here('R', 'gtsummary-knitprint.R'))
 
 Running that in your own console prints more than it does on this page. The `library()` calls announce themselves, and each `read_csv()` prints the column specification message Chapter 2 unpacked. This book hides both from here on, as both have been explained.
 
-`glimpse()`, from `dplyr`, shows every column, its type, and its first few values. It's useful for checking what actually came in, rather than what we expected to come in.
+`glimpse()`, from `dplyr`, shows every column, its type, and its first few values. It's useful for checking what came in, rather than what we expected to come in.
 
 ```{r}
 #| label: glimpse-raw
@@ -147,7 +147,7 @@ Right now the reference level only decides the order categories appear in a tabl
 
 ## Manipulating a dataset: the `dplyr` verbs
 
-A public health question is almost never about everyone in a dataset at once. Four verbs from `dplyr` cover most of what we need to get from the raw dataset down to the subgroup, the columns, and the order a question actually asks about.
+A public health question is almost never about everyone in a dataset at once. Four verbs from `dplyr` cover most of what we need to get from the raw dataset down to the subgroup, the columns, and the order a question asks about.
 
 `select()` keeps only the named columns:
 
@@ -418,7 +418,7 @@ Every chapter in this book ends with one of these. The course's assessment is a 
 
 Using the Table 1 from Exercise 5, write a short paragraph of a maximum of 150 words. Describe how participant characteristics differ, or don't, across the three depression classification groups. State which characteristics look similar across groups and which look different, and avoid overstating a difference the table doesn't support.
 
-Start by stating how many participants the table is actually based on, and how many were excluded because they had no depression classification recorded. The number is in the message printed above the table.
+Start by stating how many participants the table is based on, and how many were excluded because they had no depression classification recorded. The number is in the message printed above the table.
 
 ::: {.callout-note collapse='true'}
 ## Solutions

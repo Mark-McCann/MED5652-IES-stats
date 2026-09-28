@@ -53,7 +53,7 @@ This appendix is a reference: packages, functions, R syntax, and statistical ter
 | `summary()` | Prints a quick five-number-plus-mean summary of a variable, or an overview of a data frame. | Chapter 2 |
 | `median()` | Calculates the median. | Chapter 3 |
 | `sd()` | Calculates the standard deviation. | Chapter 3 |
-| `IQR()` | Calculates the interquartile range (3rd quartile - 1st quartile). | Chapter 3 |
+| `IQR()` | Calculates the interquartile range (the 3rd quartile minus the 1st quartile). | Chapter 3 |
 | `quantile()` | Reports the value at a stated percentile. | Chapter 3 |
 | `table()` | Cross-tabulates one or more categorical variables into counts. | Chapter 3 |
 | `prop.table()` | Converts a table of counts into proportions. `margin = 1` divides by row totals, `margin = 2` by column totals. | Chapter 3 |
@@ -199,7 +199,7 @@ This appendix is a reference: packages, functions, R syntax, and statistical ter
 |---|---|---|
 | Population | The entire group of individuals or items we want to draw conclusions about. | Chapter 4 |
 | Population distribution | How a specific measurement or characteristic is spread out across the entire population. | Chapter 4 |
-| Sample | A subset of individuals drawn from the population, which we actually observe and measure. | Chapter 4 |
+| Sample | A subset of individuals drawn from the population, which we observe and measure. | Chapter 4 |
 | Point estimate | A single number calculated from a sample (e.g. a sample mean or proportion), used as our best guess for the unknown population value. | Chapter 4 |
 | Sampling distribution | The theoretical distribution of point estimates we would get if we took infinite independent samples of the exact same size from the population. | Chapter 4 |
 | Standard error (SE) | The standard deviation of the sampling distribution. It measures the precision of our point estimate, smaller SE means more precise, and does not describe the variability of individuals in the population, which is what the standard deviation is for. | Chapter 4 |
@@ -236,7 +236,7 @@ This appendix is a reference: packages, functions, R syntax, and statistical ter
 | Coefficient | The general name for intercept and slope. | Chapter 6 |
 | Residual | The vertical distance between an observed value and the model's fitted line. | Chapter 6 |
 | Linearity, constant variance, normally distributed residuals | The three assumptions a fitted line's trustworthiness rests on, checked with diagnostic plots. | Chapter 6 |
-| Extrapolation | Using a model to predict outside the range of data it was actually fitted on. | Chapter 6 |
+| Extrapolation | Using a model to predict outside the range of data it was fitted on. | Chapter 6 |
 | Multivariable | Several predictors, one outcome. Some writers say 'multiple regression' for the same thing. 'Multivariate regression' is a different, formal term for several outcomes modelled together, not used in this course. | Summary |
 | Crude, adjusted | An association estimated on its own (crude), against one estimated alongside other variables that might confound it (adjusted). | Chapter 7 |
 
@@ -253,5 +253,5 @@ This appendix is a reference: packages, functions, R syntax, and statistical ter
 
 ## Where to look things up
 
-`?` followed by a function name, typed into the console, opens that function's help page, covered properly in Chapter 1. It's usually faster than searching online, and it's always correct for the version of R actually installed. RStudio also keeps a set of cheat sheets under **Help → Cheatsheets**, one per major package.
+`?` followed by a function name, typed into the console, opens that function's help page, covered properly in Chapter 1. It's usually faster than searching online, and it's always correct for the version of R installed. RStudio also keeps a set of cheat sheets under **Help → Cheatsheets**, one per major package.
 

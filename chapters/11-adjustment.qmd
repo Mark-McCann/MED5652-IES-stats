@@ -1,6 +1,6 @@
 # Multiple linear and logistic regression (Week 11) {#sec-11-adjustment}
 
-A confounder is a variable that lies behind an association and distorts it, and Chapter 6's single-predictor model has no way to hold one still. Baseline cardiovascular disease in our data is a real example of the problem, not just a definition of it: it's measured at the same visit as the exposure, so nothing in the data says whether it sits upstream of sedentary behaviour or downstream of it. Whether it belongs in the model as a confounder to adjust for, or should stay out because it's actually a mediator, is a judgement the study design can't make for us, and this chapter fits the model both ways and reports both.
+A confounder is a variable that lies behind an association and distorts it, and Chapter 6's single-predictor model has no way to hold one still. Baseline cardiovascular disease in our data is measured at the same visit as the exposure, so it's a real instance of the problem: nothing in the data says whether it sits upstream of sedentary behaviour or downstream of it. Whether it belongs in the model as a confounder to adjust for, or should stay out because it's a mediator, is a judgement the study design can't make for us, and this chapter fits the model both ways and reports both.
 
 Getting there means extending linear regression to hold several predictors at once, so an adjusted coefficient can sit next to the crude one and the gap between them read as an estimate of confounding bias. The same extension handles an outcome that isn't continuous at all: whether someone died within ten years of their baseline visit becomes the input to a logistic regression, with odds ratios read straight off its exponentiated coefficients.
 
@@ -90,7 +90,7 @@ Two new tools here: `case_when()`, from `dplyr`, checks a series of conditions i
 Two things to work out as you write it, which matter more than the syntax:
 
 1. The rule for the second group needs no mention of `dth` at all. Why not? Think about who is in that group.
-2. Once you have the counts, be ready to say why the third group can't simply be added to the `0`s and called survivors.
+2. Once you have the counts, be ready to say why the third group can't be added to the `0`s and called survivors.
 
 Have a go before opening the answer. Everything after this section runs on the column you're about to build, so build it yourself instead of reading someone else's version of it.
 :::
@@ -240,7 +240,7 @@ m_dead_adj <- glm(dead_10yr ~ sed + age + gender + edu,
 summary(m_dead_adj)
 ```
 
-We keep this adjustment set deliberately small. `dead_complete` holds `r format(nrow(dead_complete), big.mark = ',')` participants, of whom `r format(sum(dead_complete$dead_10yr), big.mark = ',')` died within ten years. That's fewer events than the `r format(sum(nhanes$dead_10yr, na.rm = TRUE), big.mark = ',')` we counted at the start of the chapter, because requiring a recorded value for every predictor drops participants of its own. Those `r format(sum(dead_complete$dead_10yr), big.mark = ',')` events are what the model actually has to work with, and there isn't room to add many more predictors before it runs short of events per predictor.
+We keep this adjustment set deliberately small. `dead_complete` holds `r format(nrow(dead_complete), big.mark = ',')` participants, of whom `r format(sum(dead_complete$dead_10yr), big.mark = ',')` died within ten years. That's fewer events than the `r format(sum(nhanes$dead_10yr, na.rm = TRUE), big.mark = ',')` we counted at the start of the chapter, because requiring a recorded value for every predictor drops participants of its own. Those `r format(sum(dead_complete$dead_10yr), big.mark = ',')` events are what the model has to work with, and there isn't room to add many more predictors before it runs short of events per predictor.
 
 ## Odds ratios: exponentiating the coefficients
 
@@ -311,7 +311,7 @@ tbl_merge(list(tbl_crude, tbl_adj),
   tab_spanner = c('Crude', 'Adjusted'))
 ```
 
-`include = 1` keeps only the `sed` row, the estimate we're interested in, and drops the adjustment variables' own rows. That's fine here: the Table 2 fallacy above is exactly why we weren't going to interpret those rows anyway. The table still needs a caption or footnote naming which variables were adjusted for, since that information doesn't disappear just because the rows do.
+`include = 1` keeps only the `sed` row, the estimate we're interested in, and drops the adjustment variables' own rows. That's fine here: the Table 2 fallacy above is why we weren't going to interpret those rows anyway. The table still needs a caption or footnote naming which variables were adjusted for, since that information doesn't disappear just because the rows do.
 
 ## The sensitivity analysis: is `blm.cvd` a confounder or a mediator?
 
@@ -356,7 +356,7 @@ The odds ratio for `sed` moves only a little between the two models: `r dp3(or_w
 
 Write two short paragraphs, as they would appear in a results section.
 
-In the first, report the adjusted association between sedentary time and cholesterol from this chapter's linear model, and the adjusted odds ratio for sedentary time and ten-year mortality from the logistic model, each with its 95% CI and p-value. Add one sentence on what this analysis cannot establish: an observational adjustment reduces confounding by the variables actually included, but it cannot rule out confounding by variables that were never measured.
+In the first, report the adjusted association between sedentary time and cholesterol from this chapter's linear model, and the adjusted odds ratio for sedentary time and ten-year mortality from the logistic model, each with its 95% CI and p-value. Add one sentence on what this analysis cannot establish: an observational adjustment reduces confounding by the variables included, but it cannot rule out confounding by variables that were never measured.
 
 In the second, separate paragraph, report both odds ratios for `sed` from the sensitivity analysis, with and without `blm.cvd`, and state plainly what each model assumes about baseline CVD's role and why the data available here cannot decide between those assumptions.
 
@@ -390,7 +390,7 @@ adj_mpa <- tidy(m_mpa_w_adj, conf.int = TRUE) |> filter(term == 'mpa_w')
 
 Crude, the slope on `mpa_w` is about `r dp5(crude_mpa$estimate)` mmol/L per hour/day (95% CI: `r dp5(crude_mpa$conf.low)` to `r dp5(crude_mpa$conf.high)` mmol/L per hour/day, p = `r round(crude_mpa$p.value, 3)`). The CI sits almost symmetrically either side of zero, so on its own this says very little: these data are consistent with no association between moderate activity at work and cholesterol, and they don't rule one out either.
 
-Adjusted for age, gender, and education, the slope changes sign and becomes clearly non-zero, at about `r dp5(adj_mpa$estimate)` mmol/L per hour/day (95% CI: `r dp5(adj_mpa$conf.low)` to `r dp5(adj_mpa$conf.high)` mmol/L per hour/day, p = `r round(adj_mpa$p.value, 3)`). Once those three are held constant, more moderate activity at work is associated with slightly *higher* cholesterol in this sample. That's a reminder that adjustment can change a result's direction, not just its size, and that a crude estimate near zero can hide an association rather than rule one out. Both models are fitted on `mpa_w_complete`, the same participants, so the difference between them is the adjustment and nothing else.
+Adjusted for age, gender, and education, the slope changes sign and becomes non-zero, at about `r dp5(adj_mpa$estimate)` mmol/L per hour/day (95% CI: `r dp5(adj_mpa$conf.low)` to `r dp5(adj_mpa$conf.high)` mmol/L per hour/day, p = `r round(adj_mpa$p.value, 3)`). Once those three are held constant, more moderate activity at work is associated with slightly *higher* cholesterol in this sample. That's a reminder that adjustment can change a result's direction as well as its size, and that a crude estimate near zero can hide an association instead of ruling one out. Both models are fitted on `mpa_w_complete`, the same participants, so the difference between them is the adjustment and nothing else.
 
 ```{r}
 #| label: sol-ex1-levels

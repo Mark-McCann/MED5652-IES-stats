@@ -185,7 +185,7 @@ summary(m_gender)
 confint(m_gender)
 ```
 
-With a continuous predictor like `age`, the `(Intercept)` was an abstract number, cholesterol at age zero, nobody's actual cholesterol. With a two-category predictor it's concrete: `gender`'s first level is `'Male'`, so `(Intercept)`, 4.8859 mmol/L, is simply mean cholesterol in men. This is the reference level again, the same idea Chapter 3 introduced and Chapter 5's `relevel()` work used a second time: whichever category is listed first becomes the one everything else in the model is compared against, and here that comparison is the whole model.
+With a continuous predictor like `age`, the `(Intercept)` was an abstract number, cholesterol at age zero, nobody's actual cholesterol. With a two-category predictor it's concrete: `gender`'s first level is `'Male'`, so `(Intercept)`, 4.8859 mmol/L, is mean cholesterol in men. This is the reference level again, the same idea Chapter 3 introduced and Chapter 5's `relevel()` work used a second time: whichever category is listed first becomes the one everything else in the model is compared against, and here that comparison is the whole model.
 
 The slope, on `genderFemale`, is the difference between the two group means: 0.1685 mmol/L, women minus men, with its own standard error, t-value, and p-value, and a 95% CI of 0.1470 to 0.1901 mmol/L. Chapter 5 reported the same comparison as 0.17 mmol/L higher in women (95% CI: 0.15 to 0.19 mmol/L), but only after reversing the signs on what `t.test()` printed, because `t.test()` reports Male minus Female by default. `lm()` reports the comparison the other way round, reference category first, so the sign comes out already the way we want to read it: the same underlying result, with no sign-flipping needed here.
 
@@ -286,7 +286,7 @@ predict(m_age, newdata = data.frame(age = c(45, 150)), interval = 'confidence')
 
 `interval = 'confidence'` adds a CI around each prediction. This CI describes the precision of the predicted **mean** value, not the precision for an **individual**. The precision around an individual prediction is called a **prediction interval**, a different quantity from a CI, not an abbreviated form of it. It's always wider than the CI around the mean, since predicting one person's value is less certain than predicting the average across many. A prediction interval can be requested by stating `interval = 'prediction'` instead.
 
-The first row, age 45, sits comfortably inside the range of ages actually observed in this sample (18 to 85), so this prediction is supported by data the model was fitted on. The second row, age 150, is not. Nobody in this dataset, or in any verified human population, is 150 years old. The model has no information about what happens at that age, and fitting a straight line through the data we do have says nothing reliable about what lies far outside it. The predicted value it returns looks like an ordinary number, which is exactly what makes extrapolation dangerous: a plausible-looking output doesn't mean the input that produced it was reasonable. Always check a prediction's input against the range the model was actually fitted on before trusting its output.
+The first row, age 45, sits comfortably inside the range of ages observed in this sample (18 to 85), so this prediction is supported by data the model was fitted on. The second row, age 150, is not. Nobody in this dataset, or in any verified human population, is 150 years old. The model has no information about what happens at that age, and fitting a straight line through the data we do have says nothing reliable about what lies far outside it. The predicted value it returns looks like an ordinary number, which is exactly what makes extrapolation dangerous: a plausible-looking output doesn't mean the input that produced it was reasonable. Always check a prediction's input against the range the model was fitted on before trusting its output.
 
 ## Worked example: cholesterol by sedentary time
 
@@ -346,7 +346,7 @@ In an academic report this becomes: sedentary time was not associated with total
 
 **Exercise 2** (ILO 4). For the model fitted in Exercise 1, produce a residuals-vs-fitted plot and a QQ plot. Write one sentence describing what each plot shows, and one sentence commenting on anything the plots reveal about the shape of `vpa_r` itself.
 
-**Exercise 3** (ILO 5). Using the model fitted in Exercise 1, predict total cholesterol at `vpa_r` = 1 hour/day and at `vpa_r` = 24 hours/day. Write one sentence stating which of the two predictions can be trusted, and one sentence explaining why the other cannot, referring to the range of `vpa_r` actually observed in the data.
+**Exercise 3** (ILO 5). Using the model fitted in Exercise 1, predict total cholesterol at `vpa_r` = 1 hour/day and at `vpa_r` = 24 hours/day. Write one sentence stating which of the two predictions can be trusted, and one sentence explaining why the other cannot, referring to the range of `vpa_r` observed in the data.
 
 **Exercise 4** (ILOs 2, 3). State the null and alternative hypotheses, then reproduce Chapter 5's worked example, sedentary time (`sed`) by gender, with `lm()` instead of `t.test()`. Compare the CI `lm()` gives you to the one Chapter 5 reported. Write one sentence on what you find, and a second sentence explaining it, using `var.equal = TRUE` to check your explanation.
 
@@ -455,7 +455,7 @@ summary(m_smoking_relevel)
 confint(m_smoking_relevel)
 ```
 
-`levels()` on the original factor shows `'Never'` first, so that's the reference the first model used: mean cholesterol is about 4.97 mmol/L in never-smokers, 0.022 mmol/L higher in previous smokers (95% CI -0.005 to 0.048 mmol/L, p = 0.114), and 0.028 mmol/L higher in current smokers (95% CI 0.000 to 0.056 mmol/L, p = 0.051), neither significant at the conventional 5% level. Releveled to `'Current'`, both rows change: the intercept becomes current smokers' own mean, and the two remaining rows compare `'Never'` and `'Previous'` against `'Current'` instead. `Multiple R-squared` and `Residual standard error` are identical in both printouts, 0.0001279 and 1.091. Which category anchors the comparison changed; what the model actually fits, and predicts for any given participant, didn't.
+`levels()` on the original factor shows `'Never'` first, so that's the reference the first model used: mean cholesterol is about 4.97 mmol/L in never-smokers, 0.022 mmol/L higher in previous smokers (95% CI -0.005 to 0.048 mmol/L, p = 0.114), and 0.028 mmol/L higher in current smokers (95% CI 0.000 to 0.056 mmol/L, p = 0.051), neither significant at the conventional 5% level. Releveled to `'Current'`, both rows change: the intercept becomes current smokers' own mean, and the two remaining rows compare `'Never'` and `'Previous'` against `'Current'` instead. `Multiple R-squared` and `Residual standard error` are identical in both printouts, 0.0001279 and 1.091. Which category anchors the comparison changed; what the model fits, and predicts for any given participant, didn't.
 
 **Writing exercise (sample answer)**
 
