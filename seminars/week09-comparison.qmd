@@ -107,11 +107,22 @@ chisq_cav <- chisq.test(tab_cav, correct = FALSE)
 chisq_cav_expected <- chisq_cav$expected
 cav_props <- tab_cav[, 2] / rowSums(tab_cav)
 
-# strep_tb: gender by improved, Chapter 5's Exercise 5 (the straddling Try it row)
-gender_f_ref <- relevel(strep_tb$gender, ref = 'F')
-tab_gender <- table(gender_f_ref, strep_tb$improved)
-rr_gender <- riskratio(tab_gender)
-or_gender <- oddsratio(tab_gender, method = 'wald')
+# strep_tb: gender by improved (the straddling Try it row). Same prop.test()
+# call as the arm comparison above; levels(strep_tb$gender) is F, M, so
+# prop.test reports F minus M and the sign is flipped to men minus women.
+strep_gender_summary <- strep_tb |>
+  group_by(gender) |>
+  summarise(n_gender = n(), n_improved = sum(improved), prop_improved = n_improved / n_gender)
+pt_gender <- prop.test(x = strep_gender_summary$n_improved, n = strep_gender_summary$n_gender)
+gender_diff <- strep_gender_summary$prop_improved[2] - strep_gender_summary$prop_improved[1]
+gender_ci <- -rev(pt_gender$conf.int)
+gender_p <- pt_gender$p.value
+
+# The streptomycin 2x2 table, labelled for a slide face
+tab_arm_df <- tab_arm |>
+  as.data.frame.matrix() |>
+  rename(`Not improved` = `FALSE`, Improved = `TRUE`) |>
+  tibble::rownames_to_column('Arm')
 
 # Multiplicity curve (Block 3 asset). Schematic, drawn once, no data needed:
 # the probability of at least one false positive across k independent tests
@@ -120,45 +131,35 @@ mult_curve <- tibble(k = 1:30, p_any = 1 - 0.95^k)
 mult_mark <- mult_curve |> filter(k == 20)
 ```
 
-## What you have learnt so far {.smaller}
+## What you have learnt so far
 
-- **Stats, Week 8.** The interval for the difference in improvement between the `strep_tb` arms, `r round(pt_arm$conf.int[1], 3)` to `r round(pt_arm$conf.int[2], 3)`, excluded zero, and the room already read that as a real difference. A test is the formal version of that reading
-- **Stats, Week 7.** Variable type decided which summary and which plot were valid. It now decides which test is valid, which is the whole of Block 2
-- **Epi, Week 2.** RR and OR off a 2x2 table, computed as point estimates. This week attaches the interval and the p-value, and states the one thing that changes: the null value is 1, not 0
-- **Epi, Week 3.** `strep_tb` is an RCT of the kind Week 3 described, so the comparison tested here is one where randomisation has already dealt with confounding
-- **Epi, Week 5.** Bradford Hill's strength of association is a different idea from statistical significance. The `chol` by gender result, `r round(chol_diff, 2)` mmol/L higher in women (95% CI `r round(chol_ci[1], 2)` to `r round(chol_ci[2], 2)`, p < 0.001) from nearly 39,000 people, is the example that separates them
+- **Stats, Week 8.** The 95% CI for the difference in improvement between the `strep_tb` arms, `r round(pt_arm$conf.int[1], 3)` to `r round(pt_arm$conf.int[2], 3)`, excluded zero. We read that as a real difference, but haven't formalised it yet
+- **Stats, Week 7.** Variable type decided which summary and which plot were valid
+- **Epi, Week 2.** RR and OR off a 2x2 table, computed as point estimates, but without 95% CIs
+- **Epi, Week 5.** Bradford Hill's strength of association. Can it be defined statistically?
 
-## By the end of this session, you will be able to {.smaller}
+## By the end of this session, you will be able to
 
 1. Formulate null and alternative hypotheses for a research question
 2. Explain what a p-value is and is not, and define Type I and Type II error and the problem multiple testing creates
 3. Describe the relationship between a confidence interval and a hypothesis test
-4. Select an appropriate test given the outcome type and the study design (one-sample, paired, or independent)
-5. Interpret and report the output of a t-test and a chi-squared test to journal standard
-6. Attach a confidence interval and a p-value to a risk ratio or odds ratio, and interpret whether the interval excludes the null value of 1
-7. Define Type I and Type II error and explain the problem created by multiple testing
-8. Determine when a non-parametric alternative should be considered
+4. Select, interpret, and report an appropriate test given the outcome type and the study design (one-sample, paired, or independent)
 
 ## Block 1: the logic of testing {background-image="assets/skyline.jpg" background-size="cover" .divider}
 
-## The interval already told you
+## What the 95% CI already told you
 
-- Last week's interval for the difference in improvement between the trial arms excluded zero, and the room already believed something real was going on
-- Nobody needed a p-value to reach that conclusion[]{.gap}
-- So what does a test add, and why does every paper you will read report one?
+- Last week's 95% CI for the difference in improvement led us to conclude it was a real difference
+- We have yet to formalise why[]{.gap}
+- So what does a hypothesis test do?
 
-## The null and the alternative {.smaller}
+## The null and the alternative
 
 - The **null hypothesis** (H0) is the specific claim being tested, usually of no difference
 - The **alternative hypothesis** (H1) is what's left if the null is implausible[]{.gap}
-- Both are statements about the **population**, never about the one sample we happen to have measured
-- A two-sided alternative just says 'different', with no direction stated in advance; every test this session uses this form
-
-## Hypotheses for a real question
-
-- **Null hypothesis.** Mean total cholesterol is the same in men and women in the population
-- **Alternative hypothesis.** Mean total cholesterol differs between men and women in the population
-- This is the question Block 1 works all the way through to a finished test
+  - We only use the two-sided alternative, i.e., there is a difference
+  - A one-sided alternative (e.g., X > Y) also exists but is rarely used and is not covered here
+- Both are hypotheses about the **population**, never about the sample we measured
 
 ## The courtroom analogy
 
@@ -166,130 +167,138 @@ mult_mark <- mult_curve |> filter(k == 20)
 - Failing to convict is not the same as proving innocence[]{.gap}
 - A test works the same way: failing to reject the null is not the same as proving it true
 
-## A test statistic is evidence
+## A test statistic as evidence
 
-- A **test statistic** measures how far the data sit from what the null hypothesis predicts, in standard errors
-- Last week's standard error returns here, doing a second job
+- A court needs evidence, and so does a hypothesis test
+- A **test statistic** is the evidence. It measures how far the data sit from what the null hypothesis predicts
+- The most classical test statistic is the z-score: the difference in means divided by its standard error
+  - How many standard errors the difference sits from zero
 - A bigger distance from the null is stronger evidence against it
 
-## From statistic to p-value
+## From test statistic to p-value
 
-- R converts that distance into a **p-value**
-- A p-value is how often data this extreme would arise, if the null hypothesis were actually true[]{.gap}
-- Small distance, large p-value: the data are unsurprising under the null
-- Large distance, small p-value: the data would be unusual under the null
+- In a courtroom, judges are the mechanism that keeps verdicts consistent even when the evidence presented is not
+- In hypothesis tests, test statistics (evidence) vary, but they can be converted into the standardised **p-values** (the 'judges')
+- Formally, a p-value quantifies how likely data this extreme would arise, if the null hypothesis were true
+  - Large p-value: the data are unsurprising under the null
+  - Small p-value: the data would be unusual under the null
 
-## What a p-value is
+## What a p-value is and is not
 
-- The probability of seeing a test statistic at least this extreme, **if the null hypothesis were true**
-- Say the condition out loud every time; it is not optional
-- A conditional probability, about the data, not about the hypothesis
+- A p-value is:
+  - **Based on the null hypothesis**, the probability of seeing the data at least this extreme[]{.gap}
+- What a p-value is not:
+  - The probability that the null hypothesis is true
+  - A measure of effect size
 
-## What a p-value is not
+## Hypotheses for a real question
 
-- Not the probability that the null hypothesis is true
-- Not a measure of effect size
-- 'Not significant' is not 'no effect'
+- **Null hypothesis.** Mean sedentary time is the same in men and women in the population
+- **Alternative hypothesis.** Mean sedentary time differs between men and women in the population[]{.gap}
+- This is the question we examine to learn the logic of a hypothesis test in Block 1
 
-## This week's methodological anchor {.smaller}
+## Sedentary time by gender
 
-:::: {.columns}
+```{r}
+#| label: sed-gender-table
+#| echo: false
+tibble(
+  Quantity = 'Sedentary time, women minus men, hours/day',
+  Estimate = round(sed_diff, 2),
+  `95% CI` = paste0(round(sed_ci[1], 2), ' to ', round(sed_ci[2], 2)),
+  p = format(round(sed_p, 3), nsmall = 3)
+) |>
+  gt()
+```
 
-::: {.column width="45%"}
-- Altman and Bland (1995), *BMJ*: 'Absence of evidence is not evidence of absence'
-- A non-significant result rules out neither a real effect nor an unimportant one; only the CI says which is plausible
-- [PubMed](https://pubmed.ncbi.nlm.nih.gov/7647644/)
-:::
-
-::: {.column width="55%"}
-- Failing to reject the null is not the same as showing there is nothing there
-- A wide CI compatible with both a large effect and no effect is exactly this case, and it is not the same finding as a narrow CI sitting close to the null
-- The ASA's own statement on p-values (Wasserstein and Lazar, 2016, *The American Statistician*) makes the same point institutionally: a p-value was never designed to measure the size or importance of an effect, only how compatible the data are with the null
-:::
-
-::::
+- Women reported slightly more sedentary time than men, about `r round(sed_diff, 2)` hours/day (95% CI `r round(sed_ci[1], 2)` to `r round(sed_ci[2], 2)` hours/day, p = `r format(round(sed_p, 3), nsmall = 3)`)
+- p is below 0.05, so we reject H0[]{.gap}
+- But it is small: about 15 minutes a day, on a scale of many hours a day
 
 ## Compatibility, not a verdict
 
+- In a courtroom, mostly people are interested in the yes/no verdict
+- In a hypothesis test, we try to steer away from the binary verdict[]{.gap}
 - A p-value indicates how compatible the data are with a hypothesis
-- It is a continuous measure of compatibility, not a binary verdict[]{.gap}
-- The courtroom analogy shouldn't be pushed as far as a jury's yes or no
+- It is a continuous measure of compatibility, not a binary verdict
+  - 0.05 is a convention, not a law of nature
+  - A p-value of 0.049 is not meaningfully different evidence from 0.051
+  - Report exact p-values, not just 'p < 0.05'
 
-## Thresholds, and their discontents
+## This week's methodological anchor {.smaller}
 
-- 0.05 is a convention, not a law of nature
-- It has no special status: a p-value of 0.049 is not meaningfully different evidence from 0.051
-- Report exact p-values, not just 'p < 0.05'
+- [Altman and Bland (1995)](https://pubmed.ncbi.nlm.nih.gov/7647644/), *BMJ*: 'Absence of evidence is not evidence of absence'
+- A non-significant result rules out neither a real effect nor an unimportant one; only the CI says which is plausible
+- Failing to reject the null is not the same as showing there is nothing there
+  - RR 3.0 (95% CI 0.8 to 11.3): wide, compatible with a large effect
+  - RR 1.1 (95% CI 0.9 to 1.3): narrow, rules out anything large
+- The ASA's own statement on p-values (Wasserstein and Lazar, 2016, *The American Statistician*) reaffirms this:
+  - A p-value was never designed to measure the size or importance of an effect, only how compatible the data are with the null
 
-## Type I and Type II error {.smaller}
+## Errors associated with tests {.smaller}
 
-- **Type I error**: rejecting the null hypothesis when it's actually true, a false positive. Its rate is the significance level itself
-- **Type II error**: failing to reject the null hypothesis when it's actually false, a false negative[]{.gap}
-- Neither error can be driven to zero at the same time as the other, for a fixed sample size: tightening one loosens the other
+- Data are random, so a hypothesis test can go wrong, but unlike in the legal system, we can quantify how likely that is[]{.gap}
+- **Type I error**: rejecting the null hypothesis when it's true, a false positive
+  - The Type I error rate is the significance level itself, usually fixed at 0.05
+  - This is why we compare a p-value with 0.05, or check whether a 95% CI excludes the null value
+- **Type II error**: failing to reject the null hypothesis when it's false, a false negative
+  - One minus the Type II error rate is the *statistical power*[]{.gap}
+- Neither error can be driven to zero at the same time
+  - For a fixed sample size, tightening one loosens the other
 
-## The interval and the test say the same thing
+## 95% CI and tests
 
 - A 95% CI excluding the null value corresponds to p < 0.05 on the same data
-- Two presentations of one piece of evidence, not two separate findings
+  - Two presentations of the same evidence
+  - The 95% CI carries the size of the effect and its precision
+  - The p-value carries neither[]{.gap}
+- This is why the reporting standard, coming up shortly, leads with the estimate
 
-## Why the interval is more informative {.smaller}
-
-- The interval carries the size of the effect and its precision
-- The p-value carries neither[]{.gap}
-- This is why the reporting standard, coming up next, leads with the estimate
-
-## Try it: does this interval imply a significant test? {.smaller}
+## Try it: does this 95% CI imply a significant test?
 
 ```{r}
 #| label: tryit1-table
 #| echo: false
 tibble(
   Quantity = c(
-    'Improved, streptomycin minus control',
-    'Improvement OR, men vs women',
+    'Improved, streptomycin minus control (difference in proportions)',
+    'Improved, men minus women (difference in proportions)',
     'Sedentary time, women minus men, hours/day'
   ),
-  Estimate = c(round(arm_diff, 3), round(or_gender$measure[2, 1], 2), round(sed_diff, 2)),
+  Estimate = c(round(arm_diff, 3), round(gender_diff, 3), round(sed_diff, 2)),
   `95% CI` = c(
     paste0(round(pt_arm$conf.int[1], 3), ' to ', round(pt_arm$conf.int[2], 3)),
-    paste0(round(or_gender$measure[2, 2], 2), ' to ', round(or_gender$measure[2, 3], 2)),
+    paste0(round(gender_ci[1], 3), ' to ', round(gender_ci[2], 3)),
     paste0(round(sed_ci[1], 2), ' to ', round(sed_ci[2], 2))
-  ),
-  `Null value` = c('0', '1', '0')
+  )
 ) |>
   gt()
 ```
 
+- Each row is a difference, so the null value is 0
 - For each row, would the test on the same data come out below 0.05? How do you know?
-- Three to five minutes
+- Three minutes
 
-## Try it: the answer {.smaller}
+## Try it: the answer
 
 - **Streptomycin minus control**: clear of the null value of 0. p < 0.05
-- **Improvement OR, men vs women**: straddles the null value of 1. p > 0.05
-- **Sedentary time, women minus men**: its lower limit sits almost exactly on the null value of 0. p is about 0.05[]{.gap}
-- The third row is the case that shows the correspondence is exact, not approximate: the interval and the test are one piece of evidence in two presentations, and the interval is the one that also tells you the size
+- **Men minus women, improved**: straddles the null value of 0. p > 0.05 (p = `r format(round(gender_p, 2), nsmall = 2)`)
+- **Sedentary time, women minus men**: its lower limit sits just clear of the null value of 0. p is only just below 0.05 (we saw p = `r format(round(sed_p, 3), nsmall = 3)`)[]{.gap}
+- The 95% CI and the test are one piece of evidence in two presentations, and the 95% CI is the one that also tells us the size
 
 ## The reporting standard
 
-- Effect size, 95% CI, and p-value, together, every time a result is given
-- This is the rule the rest of this session, and the rest of the course, writes results against
+- We should not rely only on a p-value to quantify differences
+- Whenever possible, report effect size, 95% CI, and p-value
+- This is what we expect you to do throughout your MPH
 
-## The independent-samples t-test {.smaller}
+## The independent-samples t-test
 
+- This is the test behind the sedentary time result
 - Compares two entirely separate groups, with no link between a value in one group and a value in the other
-- Assumptions: independence between groups, a roughly normal sampling distribution (or a large enough sample for the CLT to apply), and comparable spread between the groups
-- `t.test()` compares two independent groups directly, given a formula and the data
+- Assumptions: independence between groups, and a roughly normal sampling distribution (or a large enough sample for the CLT to apply)
 
-## Reading its output
-
-- A t-statistic: how far the observed difference sits from zero, in standard errors
-- Degrees of freedom
-- A p-value
-- A 95% CI for the difference between the two group means
-- In the order R prints them, top to bottom
-
-## Cholesterol by gender
+## Example 1: Cholesterol by gender {.smaller}
 
 ```{r}
 #| label: chol-gender-table
@@ -303,6 +312,16 @@ tibble(
   gt()
 ```
 
+:::: {.columns}
+
+::: {.column width="50%"}
+- H0: Mean total cholesterol is the same in men and women in the population
+- H1: Mean total cholesterol differs between men and women in the population[]{.gap}
+- Mean total cholesterol was about `r round(chol_diff, 2)` mmol/L higher in women than in men (95% CI `r round(chol_ci[1], 2)` to `r round(chol_ci[2], 2)` mmol/L, p < 0.001)
+- Check the direction before reading the CI: the software names which group was subtracted from which
+:::
+
+::: {.column width="50%"}
 ```{r}
 #| label: chol-gender-box
 #| echo: false
@@ -312,10 +331,11 @@ ggplot(nhanes |> filter(!is.na(gender)), aes(x = gender, y = chol)) +
   geom_boxplot() +
   labs(x = 'Gender', y = 'Total cholesterol (mmol/L)')
 ```
+:::
 
-- Check the direction before reading the CI: the software names which group was subtracted from which
+::::
 
-## The same test, on age
+## Example 2: Age by gender
 
 ```{r}
 #| label: age-gender-table
@@ -329,15 +349,18 @@ tibble(
   gt()
 ```
 
+- H0: Mean age is the same in men and women in the population
+- H1: Mean age differs between men and women in the population[]{.gap}
+- Men in this sample were on average about `r round(age_diff, 1)` years older than women (95% CI `r round(age_ci[1], 1)` to `r round(age_ci[2], 1)` years, p < 0.001)
 - From Chapter 5's Exercise 3
 
-## Significant and meaningless {.smaller}
+## Significant, but does it matter?
 
 - Both results above are significant at p < 0.001
-- With n near 39,000, a difference of no clinical interest is overwhelmingly significant[]{.gap}
-- Cholesterol: a real, clinically worth-noting gap
+- With such large samples, a difference of no clinical interest is overwhelmingly significant[]{.gap}
+- Cholesterol: `r round(chol_diff, 2)` mmol/L, real and worth noting alongside the 5.2 mmol/L benchmark ahead
 - Age: `r round(age_diff, 1)` years on a population averaging around 47. Statistically real, practically negligible
-- This is why the reporting standard leads with the effect size, not the p-value
+- This is why we should look at both effect sizes and p-values
 
 ## Try it: write the sentence
 
@@ -345,13 +368,16 @@ tibble(
 #| label: tryit-sentence-table
 #| echo: false
 tibble(
-  Quantity = c('Cholesterol, women minus men, mmol/L', 'Age, men minus women, years'),
-  Estimate = c(round(chol_diff, 2), round(age_diff, 1)),
-  `95% CI` = c(
-    paste0(round(chol_ci[1], 2), ' to ', round(chol_ci[2], 2)),
-    paste0(round(age_ci[1], 1), ' to ', round(age_ci[2], 1))
+  Quantity = c(
+    'Improved, streptomycin minus control (difference in proportions)',
+    'Improved, men minus women (difference in proportions)'
   ),
-  p = c('< 0.001', '< 0.001')
+  Estimate = c(round(arm_diff, 2), round(gender_diff, 2)),
+  `95% CI` = c(
+    paste0(round(pt_arm$conf.int[1], 2), ' to ', round(pt_arm$conf.int[2], 2)),
+    paste0(round(gender_ci[1], 2), ' to ', round(gender_ci[2], 2))
+  ),
+  p = c('< 0.001', format(round(gender_p, 2), nsmall = 2))
 ) |>
   gt()
 ```
@@ -359,57 +385,95 @@ tibble(
 - Write the sentence that describes and interprets each result
 - Three to five minutes
 
-## Try it: the answer {.smaller}
+## Try it: the answer
 
-- Mean total cholesterol was about `r round(chol_diff, 2)` mmol/L higher in women than in men (95% CI: `r round(chol_ci[1], 2)` to `r round(chol_ci[2], 2)` mmol/L, p < 0.001)
-- Men in this sample were on average about `r round(age_diff, 1)` years older than women (95% CI: `r round(age_ci[1], 1)` to `r round(age_ci[2], 1)` years, p < 0.001)[]{.gap}
-- Both sentences give the effect size with its units, the CI, and the p-value together. These are the sentences to keep
+- The proportion improved was about `r round(arm_diff, 2)` higher with streptomycin than with control (95% CI `r round(pt_arm$conf.int[1], 2)` to `r round(pt_arm$conf.int[2], 2)`, p < 0.001)
+- The proportion improved was about `r round(gender_diff, 2)` higher in men than in women (95% CI `r round(gender_ci[1], 2)` to `r round(gender_ci[2], 2)`, p = `r format(round(gender_p, 2), nsmall = 2)`). The 95% CI includes the null value of 0, so there is no good evidence of a difference by gender[]{.gap}
+- Not the same as evidence of no difference. Each sentence gives the effect size, the 95% CI, and the p-value together, and these are the sentences to keep
 
 ## Block 2: choosing the right test {background-image="assets/skyline.jpg" background-size="cover" .divider}
 
-## Four studies, four outcome types
+## Limits of the independent-samples t-test
 
-- Four short study descriptions, coming up in this block's Try it
-- Block 1 ended with a t-test that fitted its own question. None of these four is that question[]{.gap}
-- The logic of testing is identical in all of them. The test is not
+- So far we compared a continuous variable (e.g., age, cholesterol, sedentary time) between two groups. What if our data are different?[]{.gap}
+- There are tests for different scenarios
+- The logic of testing is identical, but each test copes with different data
 
-## What decides the test {.smaller}
+## What decides the test
 
-- The outcome type and the study design, Week 7's variable types doing a second job
-- A continuous outcome, two independent groups: the t-test Block 1 just worked
-- A continuous outcome against a fixed benchmark, one sample: the one-sample case, next
-- The same outcome measured twice on one person: paired t-test
-- Counts in a table: chi-squared
+| Outcome | Comparison / predictor | Test |
+|:--------------|:-----------------------------------|:------------------------|
+| Continuous | Binary, i.e., two independent groups | Independent-samples t-test |
+| Continuous | A fixed benchmark | One-sample t-test |
+| Continuous | Two related measurements (same person) | Paired t-test |
+| Categorical | Categorical | Chi-squared test |
 
-## The one-sample t-test {.smaller}
+- The outcome type and the study design decide the test
+
+## The one-sample t-test
 
 - Tests a single sample's mean against a fixed reference value, not against another group's mean
-- Same logic as the independent-samples test, one fewer moving part[]{.gap}
-- The one-sample non-parametric alternative: `wilcox.test()`'s one-sample form tests the **median** instead of the mean, when normality is in doubt
-  - A smaller sample (typically under 30), or a more pronounced skew, is when that alternative earns its place
+- Same logic as the independent-samples test, one fewer moving part
 
-## Cholesterol against a clinical benchmark {.smaller}
+## Cholesterol against a clinical benchmark
 
 ```{r}
 #| label: chol-benchmark-table
 #| echo: false
 tibble(
   Quantity = 'Total cholesterol against 5.2 mmol/L benchmark',
-  Estimate = paste0(round(chol_bench_effect, 2), ' mmol/L below'),
+  Estimate = paste0(round(-chol_bench_effect, 2), ' mmol/L below'),
   `95% CI` = paste0(round(-chol_bench_ci[2], 2), ' to ', round(-chol_bench_ci[1], 2), ' mmol/L below'),
   p = '< 0.001'
 ) |>
   gt()
 ```
 
+- H0: Mean cholesterol is at 5.2 mmol/L in the population
+- H1: Mean cholesterol is different from 5.2 mmol/L in the population[]{.gap}
+- Mean total cholesterol was about `r round(-chol_bench_effect, 2)` mmol/L below the benchmark (95% CI `r round(-chol_bench_ci[2], 2)` to `r round(-chol_bench_ci[1], 2)` mmol/L below, p < 0.001)
 - 5.2 mmol/L is the American guideline's 'desirable' figure; UK guidance uses 5.0 mmol/L instead
-- `t.test()` prints a CI for the mean itself, `r round(tt_chol_bench$conf.int[1], 2)` to `r round(tt_chol_bench$conf.int[2], 2)` mmol/L, not the quantity the test is about. Subtracting the benchmark from both ends turns it into the effect size above, the same move the independent-samples slide made with its own CI
 
-## When both come from the same person {.smaller}
+## One-sample t-test: assumption check {.smaller}
 
-- The **paired t-test**, and why relatedness changes the analysis
-- Pairing removes between-person variation, so the test reduces to a one-sample test on the within-person differences[]{.gap}
-- Exactly the case the one-sample slide just introduced
+:::: {.columns}
+
+::: {.column width="42%"}
+- The sampling distribution of the mean should be roughly normal, not `chol` itself
+- `chol` is mildly right-skewed, but n is near 39,000
+- The CLT applies, so the assumption holds comfortably
+- 10 values above 12 mmol/L are not shown
+:::
+
+::: {.column width="58%"}
+```{r}
+#| label: chol-hist
+#| echo: false
+#| fig-width: 6
+#| fig-height: 3.4
+ggplot(nhanes, aes(x = chol)) +
+  geom_histogram(binwidth = 0.25) +
+  coord_cartesian(xlim = c(0, 12)) +
+  labs(x = 'Total cholesterol (mmol/L)', y = 'Count')
+```
+:::
+
+::::
+
+## One-sample t-test: the alternative
+
+- The one-sample Wilcoxon signed-rank test tests the **median** instead of the mean
+- It earns its place when the sample is small (typically under 30) or the skew is pronounced[]{.gap}
+- Here: median `r round(chol_median, 2)` mmol/L (Q1 to Q3 `r round(chol_q1, 2)` to `r round(chol_q3, 2)` mmol/L), p < 0.001
+- Same conclusion as the t-test, as expected with a sample this large
+
+## The paired t-test
+
+- The independent-samples t-test assumes the two groups are unrelated observations
+- The paired t-test is for when the two groups are related[]{.gap}
+  - The same or a similar measurement in the same individuals
+  - Sibling or twin analysis
+  - Matched case-control studies
 
 ## Two domains within one person {.smaller}
 
@@ -425,90 +489,52 @@ tibble(
   gt()
 ```
 
-- `met_w` (activity at work) and `met_r` (activity outside work): two domains measured within a person, never before and after
-- Framing this as change over time plants a misconception that causes real trouble in a genuine longitudinal design later on
+- H0: The mean within-person difference (work minus outside-work activity) is zero in the population
+- H1: The mean within-person difference is not zero in the population[]{.gap}
+- Activity at work was about `r round(unname(tt_met_paired$estimate), 2)` MET-hours/day higher than activity outside work (95% CI `r round(tt_met_paired$conf.int[1], 2)` to `r round(tt_met_paired$conf.int[2], 2)` MET-hours/day, p < 0.001)
+- `met_w` (activity at work) and `met_r` (activity outside work): two domains measured within a person
 
-## The difference distribution is skewed, and zero-heavy
+## Paired t-test: assumption check {.smaller}
 
+:::: {.columns}
+
+::: {.column width="42%"}
+- The sampling distribution of the within-person difference should be roughly normal
+- The differences are skewed, with a spike at zero: many participants report no occupational activity at all
+- The sample is large, so the CLT still applies, but the skew is the cue to check the alternative
+:::
+
+::: {.column width="58%"}
 ```{r}
 #| label: met-diff-hist
 #| echo: false
 #| fig-width: 6
-#| fig-height: 3.2
+#| fig-height: 3.4
 ggplot(nhanes |> mutate(met_diff = met_w - met_r), aes(x = met_diff)) +
   geom_histogram(binwidth = 5) +
   labs(x = 'Work minus outside-work activity (MET-hours/day)', y = 'Count')
 ```
+:::
 
-- Many participants report no occupational activity at all, so the difference sits exactly at zero for them
-- The honest bridge to the non-parametric alternative, next
+::::
 
-## When the assumptions do not hold {.smaller}
+## Paired t-test: the alternative
 
-- Non-parametric alternatives, naming three: replace the mean or the average rank with the ranks of the raw values, so one extreme value can't dominate the result
-- **One-sample**: the signed-rank test already met against the clinical benchmark
-- **Paired**: Wilcoxon signed-rank, on the within-person differences
-- **Independent**: Mann-Whitney (rank-sum)[]{.gap}
-- With a sample this large, the t-test and the Wilcoxon test agree here despite the skew (both p < 0.001). That won't always be true
+- The Wilcoxon signed-rank test works on the ranks of the within-person differences, so one extreme value can't dominate the result
+- It earns its place when the sample is small or the differences are strongly skewed[]{.gap}
+- Here the t-test and the Wilcoxon test agree despite the skew (both p < 0.001)
+- With a smaller sample, or a more extreme distribution, they can disagree
 
-## Try it: which test? {.smaller}
+## The chi-squared test {.smaller}
 
-- **A.** Blood pressure reduction is compared between two independently randomised drug groups, roughly symmetric in each group
-- **B.** The same patients' resting heart rate is measured before starting an exercise programme, then again eight weeks later
-- **C.** Whether a patient has a chronic cough is recorded against their smoking status, and the question is whether the two are associated[]{.gap}
-- **D.** Recovery time in days is compared between two small groups of eight patients on different pain protocols, strongly right-skewed in both
-- For each: name the outcome type, and name the test
+- Everything tested so far has been a mean or a difference between means
+- The chi-squared test examines the association between two categorical variables, usually presented in a contingency table
+- The same logic applies:
+  - What the table is **expected** to look like if the two variables were unrelated (i.e., H0)
+  - How far the real table sits from that
+  - The chi-squared statistic is that distance, summed across every cell
 
-## Try it: the answer {.smaller}
-
-- **A.** Continuous, two independent groups, roughly symmetric: independent-samples t-test
-- **B.** Continuous, two measurements on the same person: paired t-test
-- **C.** Counts in a 2x2 table: chi-squared test[]{.gap}
-- **D.** Continuous, two independent groups, small and skewed: Mann-Whitney
-
-## Counts in a table: the chi-squared test {.smaller}
-
-- Everything tested so far has been a mean or a difference between means, and the logic ran through a standard error
-- A contingency table has no mean in it: the data are counts of people in categories[]{.gap}
-- What carries over is the shape of the argument, not the arithmetic: state what the table would look like if the null were true, measure how far the real table sits from that, ask how often a gap that size would arise by chance. Only the measure of distance changes
-
-## Observed against expected
-
-- The intuition: what the table would look like if the two variables were unrelated, against how far the real table actually sits from that
-- The chi-squared statistic is exactly that distance, summed across every cell
-
-## When chi-squared is not valid {.smaller}
-
-- The validity condition: every **expected** count should be reasonably large, conventionally at least 5
-- Chi-squared is an approximation, and the expected-count condition is precisely what that approximation needs in order to hold[]{.gap}
-- **Fisher's exact test** is the answer when it fails: the same association, tested exactly rather than by approximation
-
-## Two things the lab needs, named first
-
-- **Yates' continuity correction**, worked on the next slide
-- **Fisher's exact test**, already named above
-- So the lab introduces nothing the room has never heard of
-
-## The same table, two p-values {.smaller}
-
-```{r}
-#| label: yates-table
-#| echo: false
-tibble(
-  Default = c('Uncorrected (`correct = FALSE`)', "With Yates' correction (R's default)"),
-  `Chi-squared` = c(round(chisq_arm$statistic, 2), round(chisq_arm_yates$statistic, 2)),
-  p = c(
-    format(round(chisq_arm$p.value, 6), scientific = FALSE),
-    format(round(chisq_arm_yates$p.value, 7), scientific = FALSE)
-  )
-) |>
-  gt()
-```
-
-- Same data, same table, two different p-values, purely from one function default
-- Yates' correction shrinks the test statistic slightly, a conservative adjustment for approximating whole-number counts with a smooth curve. It earns its place when expected counts run low, typically down around 5 to 10; ours are comfortably above that
-
-## Streptomycin, tested
+## Streptomycin, tested {.smaller}
 
 ```{r}
 #| label: strep-chisq-table
@@ -522,18 +548,103 @@ tibble(
   gt()
 ```
 
-- All four expected counts are comfortably above 5, so the test is on solid ground
+:::: {.columns}
 
-## Risk ratio and odds ratio, with uncertainty
+::: {.column width="42%"}
+```{r}
+#| label: strep-2x2-tested
+#| echo: false
+gt(tab_arm_df)
+```
+:::
+
+::: {.column width="58%"}
+- H0: The proportion improved is the same with streptomycin and with control in the population
+- H1: The proportion improved differs between the two arms in the population[]{.gap}
+- Improvement was more common with streptomycin (`r strep_arm_summary$n_improved[1]` of `r strep_arm_summary$n_arm[1]`) than with control (`r strep_arm_summary$n_improved[2]` of `r strep_arm_summary$n_arm[2]`), p < 0.001
+- A p-value alone doesn't say by how much: the risk ratio and odds ratio, later in this block, put a size on it
+:::
+
+::::
+
+## Chi-squared test: assumption check
+
+- Every **expected** count should be reasonably large, conventionally at least 5
+- Chi-squared is an approximation, and the expected-count condition is required for the approximation to work[]{.gap}
+- For the streptomycin table, the smallest expected count is `r round(min(chisq_arm_expected), 1)`, comfortably above 5
+- So the test is on solid ground here
+
+## Yates' continuity correction {.smaller}
+
+- Same data, same table, two different p-values
+
+```{r}
+#| label: yates-table
+#| echo: false
+tibble(
+  Version = c('Uncorrected', "With Yates' correction"),
+  `Chi-squared` = c(round(chisq_arm$statistic, 2), round(chisq_arm_yates$statistic, 2)),
+  p = c(
+    format(round(chisq_arm$p.value, 6), scientific = FALSE),
+    format(round(chisq_arm_yates$p.value, 7), scientific = FALSE)
+  )
+) |>
+  gt()
+```
+
+:::: {.columns}
+
+::: {.column width="58%"}
+- **Rationale**
+  - Counts are whole numbers, but the chi-squared distribution is smooth
+  - With small expected counts, that approximation makes the p-value too small
+  - The correction subtracts 0.5 from each observed-expected gap before squaring
+  - The statistic shrinks slightly, so the p-value rises
+:::
+
+::: {.column width="42%"}
+- **Recommendation**
+  - Expected counts around 5 to 10: use the correction
+  - Expected counts below 5: use Fisher's exact test instead
+  - Comfortably above that, as here: leave it off, since it changes little
+:::
+
+::::
+
+## Chi-squared test: the alternative
+
+- **Fisher's exact test** is the answer when the expected-count condition fails
+- It tests the same association, exactly instead of by approximation[]{.gap}
+- Here: p = `r format(round(fisher_arm$p.value, 6), scientific = FALSE)`, the same conclusion as the chi-squared test
+- Typical in a small trial or with a rare outcome
+
+## Try it: which test? {.smaller}
+
+- **A.** Blood pressure reduction is compared between two independently randomised drug groups, roughly symmetric in each group
+- **B.** The same patients' resting heart rate is measured before starting an exercise programme, then again eight weeks later
+- **C.** Whether a patient has a chronic cough is recorded against smoking status in a survey of 2,000 adults
+- **D.** Recovery time in days is recorded for eight patients on each of two pain protocols in turn, and the within-patient differences are strongly right-skewed
+- **E.** Whether a rare side effect occurs is compared between two arms of a 24-patient pilot trial, and several expected counts in the 2x2 table are below 5[]{.gap}
+- For each: name the outcome type, the comparison, and the test
+
+## Try it: the answer {.smaller}
+
+| | Outcome | Comparison / predictor | Test |
+|:--|:-----------|:-----------------------------------------|:--------------------------|
+| **A** | Continuous | Two independent groups, roughly symmetric | Independent-samples t-test |
+| **B** | Continuous | Two measurements on the same person | Paired t-test |
+| **C** | Categorical | Categorical, large sample | Chi-squared test |
+| **D** | Continuous | Two measurements on the same person, small sample, strongly skewed differences | Wilcoxon signed-rank test |
+| **E** | Categorical | Categorical, expected counts below 5 | Fisher's exact test |
+
+## Risk ratio and odds ratio, with 95% CIs
 
 - Both quantities came from the epi half as point estimates
-- They are estimates like any other, so a CI goes round each one
-
-## The null value is 1, not 0 {.smaller}
-
-- The single most important difference from everything before it in this session
-- A ratio of 1 means no association[]{.gap}
-- A CI excluding 1 corresponds to a significant chi-squared test on the same table
+- They are estimates like any other, so a 95% CI goes round each one
+- **Null value is 1**
+  - The effect size is now a ratio, not a difference
+  - A ratio of 1 means no association[]{.gap}
+  - A CI excluding 1 corresponds to a significant chi-squared test
 
 ## Risk ratio and odds ratio for streptomycin
 
@@ -552,41 +663,59 @@ tibble(
   gt()
 ```
 
+- Improvement was about twice as likely with streptomycin as with control (RR `r round(rr_arm$measure[2, 1], 2)`, 95% CI `r round(rr_arm$measure[2, 2], 2)` to `r round(rr_arm$measure[2, 3], 2)`, p < 0.001)
+- Both 95% CIs exclude the null value of 1, matching the significant chi-squared test
+
 ## Try it: the 2x2, by hand
 
 ```{r}
 #| label: strep-2x2-table
 #| echo: false
-tab_arm |> as.data.frame.matrix() |> tibble::rownames_to_column('Arm') |> gt()
+gt(tab_arm_df)
 ```
 
 - From this table: the risk of improvement in each arm, then the risk ratio, then the odds ratio
 - Then: why does the odds ratio sit so much further from 1 than the risk ratio?
-- Five minutes, phones fine
+- Five minutes
 
-## Try it: the answer {.smaller}
+## Try it: the answer
 
 - Streptomycin risk: 38/55 = 0.69. Control risk: 17/52 = 0.33[]{.gap}
 - Risk ratio: 0.69 / 0.33 = `r round(rr_arm$measure[2, 1], 2)`
 - Odds ratio: (38 x 35) / (17 x 17) = `r round(or_arm$measure[2, 1], 2)`
 - The odds ratio exaggerates when the outcome is common, which is why it is not a risk ratio and should not be read as one
 
+## Back to the independent-samples t-test
+
+- **Assumption check**: the two groups should look similar in shape, as the boxplots for cholesterol by gender did
+  - Spread may differ between groups: `t.test()` doesn't assume equal variance by default
+- **Alternative**: the Mann-Whitney test (Wilcoxon rank-sum) compares the ranks of the two groups' values[]{.gap}
+  - It earns its place when the samples are small or strongly skewed
+
+## What decides the test, and what to check {.smaller}
+
+| Outcome | Comparison / predictor | Test | Assumption check | If it fails |
+|:-----------|:----------------------|:-------------------|:------------------------------|:----------------------|
+| Continuous | Binary, i.e., two independent groups | Independent-samples t-test | Similar spread and shape in each group; roughly normal sampling distribution | Mann-Whitney (Wilcoxon rank-sum) |
+| Continuous | A fixed benchmark | One-sample t-test | Roughly normal sampling distribution of the mean | One-sample Wilcoxon signed-rank |
+| Continuous | Two related measurements (same person) | Paired t-test | Roughly normal sampling distribution of the within-person difference | Wilcoxon signed-rank |
+| Categorical | Categorical | Chi-squared test | Every expected count at least 5 | Fisher's exact test |
+
 ## Block 3: error, power, and multiple testing {background-image="assets/skyline.jpg" background-size="cover" .divider}
 
-## Statistical power, and what it depends on {.smaller}
+## Statistical power, and what it depends on
 
-- **Power**: the probability of detecting an effect of a given size, if it is really there. One minus the Type II error rate this session opened with
+- **Power**: the probability of detecting an effect of a given size, if it exists. One minus the Type II error rate this session opened with
 - Rises with a larger effect, a bigger sample, or less variable data[]{.gap}
 - Falls under a stricter significance level
 
-## Why post-hoc power is a circular argument {.smaller}
+## Why post-hoc power is a circular argument
 
 - Power asks how likely a study is to detect an effect, **before it runs**
-- Once the data are in, the estimate and its CI already say what the study could resolve[]{.gap}
+- Once the data are in, the estimate and its 95% CI already say what the study could resolve[]{.gap}
 - Power computed from the observed effect is just a re-expression of the p-value
-- A wide CI is the honest way to report a study that was too small
 
-## Testing many things at once {.smaller}
+## Testing many things at once
 
 ```{r}
 #| label: multiplicity-curve
@@ -596,27 +725,23 @@ tab_arm |> as.data.frame.matrix() |> tibble::rownames_to_column('Arm') |> gt()
 ggplot(mult_curve, aes(x = k, y = p_any)) +
   geom_line() +
   geom_point(data = mult_mark, size = 2) +
-  geom_hline(yintercept = 0.5, linetype = 'dashed') +
+  geom_hline(yintercept = 0.05, linetype = 'dashed') +
   annotate('text', x = mult_mark$k, y = mult_mark$p_any + 0.05,
     label = paste0('20 tests: ', round(mult_mark$p_any, 2))) +
   labs(x = 'Number of independent tests', y = 'P(at least one false positive)') +
   coord_cartesian(ylim = c(0, 1))
 ```
 
-- Twenty independent tests at 0.05 each, and one comes up significant by construction
-- The error rate people think they are controlling is per test. The one that matters is per study
-
-## Try it: still trustworthy?
-
-- A paper runs 20 independent tests at 0.05 and highlights the one significant result
-- Is that finding still trustworthy at face value? Discuss
+- Twenty independent tests at 0.05 each: on average one comes up significant by chance alone
+- The error rate people think they are controlling is per test
+- With many tests in one study, some Type I errors are bound to occur
 
 ## Application: absence of evidence {background-image="assets/skyline.jpg" background-size="cover" .divider}
 
-## Four claims, four intervals {.smaller}
+## Four claims, four 95% CIs {.smaller}
 
 - Read each result and the paper's own conclusion, and discuss in pairs
-- Does the sentence say what the numbers actually support? Where it does not, what would you write instead?
+- Does the sentence say what the numbers support? Where it does not, what would you write instead?
 - Ten minutes
 
 ```{r}
@@ -656,22 +781,35 @@ tibble(
 
 ## Four claims, judged {.smaller}
 
+:::: {.columns}
+
+::: {.column width="50%"}
 - **ORBITA: too imprecise to support 'no benefit'**
   - The CI runs from a small negative effect to a 42-second gain, compatible with a real improvement
   - Easy to round down to 'stents don't work', the absence-of-evidence trap[]{.gap}
 - **Nissen and Wolski: borderline, not dismissible**
   - An OR of 1.64 (CI to 2.74) isn't a small risk if it's real
-  - 'Borderline significance' is honest; p just over 0.05 doesn't mean no risk[]{.gap}
+  - 'Borderline significance' is often not accepted now
+  - Interpret as non-significant increase but acknowledge imprecision
+:::
+
+::: {.column width="50%"}
 - **Sung et al.: too small to claim equivalence**
   - n = 100; the CI on the difference runs to almost 20 percentage points
   - 'Equally effective' needs a trial sized to rule out a gap that large[]{.gap}
 - **CRASH-2: sound**
-  - Huge sample, tight CI clear of the null, scoped to 'in this study', not overclaimed
+  - Huge sample, tight CI clear of the null, meaningful effect size
+:::
+
+::::
 
 ## Key points, and what the lab does {.smaller}
 
-- A p-value is how compatible the data are with the null, and nothing else: not the probability the null is true, not an effect size, never a licence to say 'no effect'
-- Report the estimate, its CI, and its p-value together
-- The outcome type and the design pick the test
-- For a ratio, the null value is 1[]{.gap}
-- The lab runs every one of these tests in R on `nhanes_mph` and `strep_tb`, reconciles today's hand-calculated RR and OR against `epitools`, and shows what Yates' correction does to a p-value
+- A p-value is how compatible the data are with the null, and nothing else:
+  - not the probability the null is true
+  - not an effect size
+  - not evidence that there is no effect
+- Report the estimate, its 95% CI, and its p-value together whenever possible
+- The outcome type and the design pick the test, and each test has an assumption to check and an alternative if it fails
+- Comparisons can be made by looking at either the difference (null = 0) or a ratio (null = 1)
+- The lab runs every one of these tests in R on `nhanes_mph` and `strep_tb`
