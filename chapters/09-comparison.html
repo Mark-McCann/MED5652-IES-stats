@@ -266,7 +266,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>A confidence interval, or CI, says how precise an estimate is. It doesn’t say whether the effect behind it is distinguishable from none at all: two groups’ cholesterol means could sit half a millimole apart with CIs that overlap, and whether that gap is a real difference or ordinary sampling noise is exactly the question Chapter 4 leaves open. A hypothesis test closes it, and gets reported alongside the CI rather than in place of it. Binary outcomes raise a version of the same question the descriptive statistics from Chapter 3 can’t answer on their own: is a health outcome more common in one group than another, and by how much? The risk ratio and the odds ratio from epidemiology measure that, and here we attach a CI and a p-value to each.</p>
-<p>Every test in this chapter runs on the same logic underneath: a null hypothesis, an alternative, a test statistic, and a p-value stating how surprising the observed data would be if the null were actually true. Which test applies depends on the shape of the data in front of us, one measurement per person or two, one group or several, continuous or count, and telling those apart correctly matters as much as running the test itself. Reported together, an effect size, its 95% CI, and a p-value make up the standard this book writes results in from here on.</p>
+<p>Every test in this chapter runs on the same logic underneath: a null hypothesis, an alternative, a test statistic, and a p-value stating how surprising the observed data would be if the null were true. Which test applies depends on the shape of the data in front of us, one measurement per person or two, one group or several, continuous or count, and telling those apart correctly matters as much as running the test itself. Reported together, an effect size, its 95% CI, and a p-value make up the standard this book writes results in from here on.</p>
 <section id="chapter-intended-learning-outcomes" class="level2" data-number="5.1">
 <h2 data-number="5.1" class="anchored" data-anchor-id="chapter-intended-learning-outcomes"><span class="header-section-number">5.1</span> Chapter intended learning outcomes</h2>
 <p>By the end of this chapter you will be able to:</p>
@@ -322,7 +322,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="the-logic-of-a-test" class="level2" data-number="5.3">
 <h2 data-number="5.3" class="anchored" data-anchor-id="the-logic-of-a-test"><span class="header-section-number">5.3</span> The logic of a test</h2>
 <p>A classical hypothesis test starts from two competing statements about the <strong>population</strong>. The <strong>null hypothesis</strong>, written H0, says there’s nothing going on: no difference between groups, or no association between variables. The exact wording depends on what is being tested, but it always describes the population, never the sample we happen to have measured. The <strong>alternative hypothesis</strong>, H1, says there is a difference. A one-sided alternative hypothesis, specifying the direction of the difference in advance, exists too, but is rarely used in practice; every test in this chapter uses the two-sided form. A test never proves the null hypothesis true. It only asks whether the pattern shown from the sample is surprising enough to reject the null hypothesis.</p>
-<p>A test turns the sample data into a single number, a <strong>test statistic</strong>, that measures how far the data sit from what the null hypothesis predicts under the sampling distribution. R then converts that statistic into a <strong>p-value</strong>: the probability of seeing that test statistic at least this extreme, if the null hypothesis were actually true. A p-value is not the probability that the null hypothesis is true, and it’s not the probability the result happened by chance. A small p-value, conventionally below 0.05, means the data would be unusual under the null hypothesis, so we reject it in favour of the alternative. A p-value alone says nothing about how large an effect is, only about how surprising it is.</p>
+<p>A test turns the sample data into a single number, a <strong>test statistic</strong>, that measures how far the data sit from what the null hypothesis predicts under the sampling distribution. R then converts that statistic into a <strong>p-value</strong>: the probability of seeing that test statistic at least this extreme, if the null hypothesis were true. A p-value is not the probability that the null hypothesis is true, and it’s not the probability the result happened by chance. A small p-value, conventionally below 0.05, means the data would be unusual under the null hypothesis, so we reject it in favour of the alternative. A p-value alone says nothing about how large an effect is, only about how surprising it is.</p>
 <p>A CI and a hypothesis test carry the same information, read two different ways. If a 95% CI for a difference excludes the null value, 0 for a difference, 1 for a risk ratio or odds ratio, the matching test rejects the null hypothesis at the 5% level, and vice versa. That’s why Chapter 4 could already show us a real effect using CIs alone, before this chapter ever named a null hypothesis. From here on, every test in this book states its null and alternative hypothesis in words before running the test, always as a statement about the population, never about the sample or the particular study, and every result is reported the way the seminar set out: an effect size, a CI, and a p-value, together.</p>
 </section>
 <section id="one-sample-t-test-total-cholesterol-against-a-clinical-benchmark" class="level2" data-number="5.4">
@@ -347,7 +347,7 @@ mean of x
  4.973316 </code></pre>
 </div>
 </div>
-<p>R prints a 95% CI for the mean itself, 4.96 to 4.98 mmol/L, not for the quantity the test is actually about, which is how far that mean sits from the 5.2 mmol/L benchmark. Subtracting 5.2 from both ends turns it into the effect size we want: mean total cholesterol in this sample is about 4.97 mmol/L, 0.23 mmol/L below the 5.2 mmol/L benchmark (95% CI: 0.22 to 0.24 mmol/L below, p &lt; 0.001). This is the same move the independent-samples section further on makes with its own CI: read what R printed, then work out what it means for the comparison actually being asked.</p>
+<p>R prints a 95% CI for the mean itself, 4.96 to 4.98 mmol/L, not for the quantity the test is about, which is how far that mean sits from the 5.2 mmol/L benchmark. Subtracting 5.2 from both ends turns it into the effect size we want: mean total cholesterol in this sample is about 4.97 mmol/L, 0.23 mmol/L below the 5.2 mmol/L benchmark (95% CI: 0.22 to 0.24 mmol/L below, p &lt; 0.001). This is the same move the independent-samples section further on makes with its own CI: read what R printed, then work out what it means for the comparison being asked.</p>
 <p>A one-sample t-test assumes the <strong>sampling distribution</strong> of the mean is roughly normally distributed, not that <code>chol</code> itself is. We never see a sampling distribution directly, since we only have the one sample, so the shape of the data is the evidence we have about it. The central limit theorem says the sampling distribution of the mean gets closer to normal as the sample grows, whatever shape the data themselves have, and the more skewed the data, the larger a sample that takes. Chapter 3’s histogram of <code>chol</code> showed a distribution with a mild right skew, not a perfectly symmetric bell shape, but with a sample this large, tens of thousands of participants, that skew is easily large enough for the theorem to apply. So the question a histogram answers here is not ‘is <code>chol</code> normal?’ but ‘is this sample large enough, given how skewed <code>chol</code> is?’, and for <code>chol</code> the answer is a comfortable yes. <code>wilcox.test()</code> is the non-parametric alternative, for a smaller sample (typically &lt;30) or a more pronounced skew where that reassurance is less safe.</p>
 <p><strong>Null hypothesis (<code>wilcox.test()</code>).</strong> The population median of <code>chol</code> is 5.2 mmol/L.</p>
 <p><strong>Alternative hypothesis.</strong> The population median is not 5.2 mmol/L.</p>
@@ -444,7 +444,7 @@ V = 169408552, p-value &lt; 2.2e-16
 alternative hypothesis: true location shift is not equal to 0</code></pre>
 </div>
 </div>
-<p>The conclusion doesn’t change here: both tests reject the null hypothesis convincingly, each with a p-value far below 0.001, and the paired t-test’s own effect size above, work activity running about 3.07 MET-hours/day higher, still stands as the effect-size figure to report alongside either p-value. With a sample this large, the t-test and the Wilcoxon test agree despite the skew. That won’t always be true. With a smaller sample, or a more extreme distribution, the two tests can disagree, and the non-parametric result is usually the one to trust when the normality assumption is in real doubt.</p>
+<p>The conclusion doesn’t change here: both tests reject the null hypothesis convincingly, each with a p-value far below 0.001, and the paired t-test’s own effect size above, work activity running about 3.07 MET-hours/day higher, is still the effect-size figure to report alongside either p-value. With a sample this large, the t-test and the Wilcoxon test agree despite the skew. That won’t always be true. With a smaller sample, or a more extreme distribution, the two tests can disagree, and the non-parametric result is usually the one to trust when the normality assumption is in real doubt.</p>
 </section>
 <section id="independent-samples-t-test-cholesterol-by-gender" class="level2" data-number="5.7">
 <h2 data-number="5.7" class="anchored" data-anchor-id="independent-samples-t-test-cholesterol-by-gender"><span class="header-section-number">5.7</span> Independent-samples t-test: cholesterol by gender</h2>
@@ -658,7 +658,7 @@ attr(,"method")
 </div>
 </div>
 <p>From the table above: 38 of 55 patients improved in the streptomycin arm (risk = 0.69), and 17 of 52 improved in the control arm (risk = 0.33). By hand, risk ratio = 0.69 / 0.33 = 2.11, and odds ratio = (38 × 35) / (17 × 17) = 4.60. Both match what <code>riskratio()</code> and <code>oddsratio()</code> just reported, with a CI attached to each: a risk ratio of 2.11 (95% CI: 1.38 to 3.24, p &lt; 0.001) and an odds ratio of 4.60 (95% CI: 2.04 to 10.39, p &lt; 0.001). Neither CI comes close to including 1, the null value for both a risk ratio and an odds ratio, consistent with the chi-squared test above.</p>
-<p><code>riskratio()</code> and <code>oddsratio()</code> each also report three p-values alongside the estimate: a mid-p exact test, Fisher’s exact test, and a chi-squared test. All three agree closely here. The chi-squared one is 0.000166, exactly the p-value <code>chisq.test(tab_arm, correct = FALSE)</code> gave us above, to every digit printed. That’s only because we switched the continuity correction off. Had we left the correction on, <code>chisq.test()</code> would have reported 0.0003548, the number Chapter 4’s <code>prop.test()</code> printed, while <code>epitools</code> reported 0.000166. There’d be no way to tell from the output that the two functions had simply made different default choices.</p>
+<p><code>riskratio()</code> and <code>oddsratio()</code> each also report three p-values alongside the estimate: a mid-p exact test, Fisher’s exact test, and a chi-squared test. All three agree closely here. The chi-squared one is 0.000166, exactly the p-value <code>chisq.test(tab_arm, correct = FALSE)</code> gave us above, to every digit printed. That’s only because we switched the continuity correction off. Had we left the correction on, <code>chisq.test()</code> would have reported 0.0003548, the number Chapter 4’s <code>prop.test()</code> printed, while <code>epitools</code> reported 0.000166. There’d be no way to tell from the output that the two functions had made different default choices.</p>
 </section>
 <section id="gtsummarytbl_summary-with-a-test-attached" class="level2" data-number="5.11">
 <h2 data-number="5.11" class="anchored" data-anchor-id="gtsummarytbl_summary-with-a-test-attached"><span class="header-section-number">5.11</span> <code>gtsummary::tbl_summary()</code> with a test attached</h2>
@@ -675,23 +675,23 @@ Table&nbsp;5.1
 </figcaption>
 <div aria-describedby="tbl-summary-addp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="hgqsjwclob" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#hgqsjwclob table {
+<div id="zvrytswdme" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#zvrytswdme table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#hgqsjwclob thead, #hgqsjwclob tbody, #hgqsjwclob tfoot, #hgqsjwclob tr, #hgqsjwclob td, #hgqsjwclob th {
+#zvrytswdme thead, #zvrytswdme tbody, #zvrytswdme tfoot, #zvrytswdme tr, #zvrytswdme td, #zvrytswdme th {
   border-style: none;
 }
 
-#hgqsjwclob p {
+#zvrytswdme p {
   margin: 0;
   padding: 0;
 }
 
-#hgqsjwclob .gt_table {
+#zvrytswdme .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -717,12 +717,12 @@ Table&nbsp;5.1
   border-left-color: #D3D3D3;
 }
 
-#hgqsjwclob .gt_caption {
+#zvrytswdme .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#hgqsjwclob .gt_title {
+#zvrytswdme .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -734,7 +734,7 @@ Table&nbsp;5.1
   border-bottom-width: 0;
 }
 
-#hgqsjwclob .gt_subtitle {
+#zvrytswdme .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -746,7 +746,7 @@ Table&nbsp;5.1
   border-top-width: 0;
 }
 
-#hgqsjwclob .gt_heading {
+#zvrytswdme .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -758,13 +758,13 @@ Table&nbsp;5.1
   border-right-color: #D3D3D3;
 }
 
-#hgqsjwclob .gt_bottom_border {
+#zvrytswdme .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#hgqsjwclob .gt_col_headings {
+#zvrytswdme .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -779,7 +779,7 @@ Table&nbsp;5.1
   border-right-color: #D3D3D3;
 }
 
-#hgqsjwclob .gt_col_heading {
+#zvrytswdme .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -799,7 +799,7 @@ Table&nbsp;5.1
   overflow-x: hidden;
 }
 
-#hgqsjwclob .gt_column_spanner_outer {
+#zvrytswdme .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -811,15 +811,15 @@ Table&nbsp;5.1
   padding-right: 4px;
 }
 
-#hgqsjwclob .gt_column_spanner_outer:first-child {
+#zvrytswdme .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#hgqsjwclob .gt_column_spanner_outer:last-child {
+#zvrytswdme .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#hgqsjwclob .gt_column_spanner {
+#zvrytswdme .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -831,11 +831,11 @@ Table&nbsp;5.1
   width: 100%;
 }
 
-#hgqsjwclob .gt_spanner_row {
+#zvrytswdme .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#hgqsjwclob .gt_group_heading {
+#zvrytswdme .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -861,7 +861,7 @@ Table&nbsp;5.1
   text-align: left;
 }
 
-#hgqsjwclob .gt_empty_group_heading {
+#zvrytswdme .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -876,15 +876,15 @@ Table&nbsp;5.1
   vertical-align: middle;
 }
 
-#hgqsjwclob .gt_from_md > :first-child {
+#zvrytswdme .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#hgqsjwclob .gt_from_md > :last-child {
+#zvrytswdme .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#hgqsjwclob .gt_row {
+#zvrytswdme .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -903,7 +903,7 @@ Table&nbsp;5.1
   overflow-x: hidden;
 }
 
-#hgqsjwclob .gt_stub {
+#zvrytswdme .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -916,7 +916,7 @@ Table&nbsp;5.1
   padding-right: 5px;
 }
 
-#hgqsjwclob .gt_stub_row_group {
+#zvrytswdme .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -930,15 +930,15 @@ Table&nbsp;5.1
   vertical-align: top;
 }
 
-#hgqsjwclob .gt_row_group_first td {
+#zvrytswdme .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#hgqsjwclob .gt_row_group_first th {
+#zvrytswdme .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#hgqsjwclob .gt_summary_row {
+#zvrytswdme .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -948,16 +948,16 @@ Table&nbsp;5.1
   padding-right: 5px;
 }
 
-#hgqsjwclob .gt_first_summary_row {
+#zvrytswdme .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#hgqsjwclob .gt_first_summary_row.thick {
+#zvrytswdme .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#hgqsjwclob .gt_last_summary_row {
+#zvrytswdme .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -967,7 +967,7 @@ Table&nbsp;5.1
   border-bottom-color: #D3D3D3;
 }
 
-#hgqsjwclob .gt_grand_summary_row {
+#zvrytswdme .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -977,7 +977,7 @@ Table&nbsp;5.1
   padding-right: 5px;
 }
 
-#hgqsjwclob .gt_first_grand_summary_row {
+#zvrytswdme .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -987,7 +987,7 @@ Table&nbsp;5.1
   border-top-color: #D3D3D3;
 }
 
-#hgqsjwclob .gt_last_grand_summary_row_top {
+#zvrytswdme .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -997,11 +997,11 @@ Table&nbsp;5.1
   border-bottom-color: #D3D3D3;
 }
 
-#hgqsjwclob .gt_striped {
+#zvrytswdme .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#hgqsjwclob .gt_table_body {
+#zvrytswdme .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1010,7 +1010,7 @@ Table&nbsp;5.1
   border-bottom-color: #D3D3D3;
 }
 
-#hgqsjwclob .gt_footnotes {
+#zvrytswdme .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1024,7 +1024,7 @@ Table&nbsp;5.1
   border-right-color: #D3D3D3;
 }
 
-#hgqsjwclob .gt_footnote {
+#zvrytswdme .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1033,7 +1033,7 @@ Table&nbsp;5.1
   padding-right: 5px;
 }
 
-#hgqsjwclob .gt_sourcenotes {
+#zvrytswdme .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1047,7 +1047,7 @@ Table&nbsp;5.1
   border-right-color: #D3D3D3;
 }
 
-#hgqsjwclob .gt_sourcenote {
+#zvrytswdme .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1055,72 +1055,72 @@ Table&nbsp;5.1
   padding-right: 5px;
 }
 
-#hgqsjwclob .gt_left {
+#zvrytswdme .gt_left {
   text-align: left;
 }
 
-#hgqsjwclob .gt_center {
+#zvrytswdme .gt_center {
   text-align: center;
 }
 
-#hgqsjwclob .gt_right {
+#zvrytswdme .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#hgqsjwclob .gt_font_normal {
+#zvrytswdme .gt_font_normal {
   font-weight: normal;
 }
 
-#hgqsjwclob .gt_font_bold {
+#zvrytswdme .gt_font_bold {
   font-weight: bold;
 }
 
-#hgqsjwclob .gt_font_italic {
+#zvrytswdme .gt_font_italic {
   font-style: italic;
 }
 
-#hgqsjwclob .gt_super {
+#zvrytswdme .gt_super {
   font-size: 65%;
 }
 
-#hgqsjwclob .gt_footnote_marks {
+#zvrytswdme .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#hgqsjwclob .gt_asterisk {
+#zvrytswdme .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#hgqsjwclob .gt_indent_1 {
+#zvrytswdme .gt_indent_1 {
   text-indent: 5px;
 }
 
-#hgqsjwclob .gt_indent_2 {
+#zvrytswdme .gt_indent_2 {
   text-indent: 10px;
 }
 
-#hgqsjwclob .gt_indent_3 {
+#zvrytswdme .gt_indent_3 {
   text-indent: 15px;
 }
 
-#hgqsjwclob .gt_indent_4 {
+#zvrytswdme .gt_indent_4 {
   text-indent: 20px;
 }
 
-#hgqsjwclob .gt_indent_5 {
+#zvrytswdme .gt_indent_5 {
   text-indent: 25px;
 }
 
-#hgqsjwclob .katex-display {
+#zvrytswdme .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#hgqsjwclob div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#zvrytswdme div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1269,7 +1269,7 @@ V = 216498063, p-value &lt; 2.2e-16
 alternative hypothesis: true location is not equal to 6</code></pre>
 </div>
 </div>
-<p>R’s CI, 6.45 to 6.68 hours/day, is for the mean itself; subtracting the 6-hour benchmark from both ends gives the effect size: mean sedentary time is about 6.56 hours/day, 0.56 hours/day above 6 hours/day (95% CI: 0.45 to 0.68 hours/day above, p &lt; 0.001). The Wilcoxon test is significant too (p &lt; 0.001), but it’s testing a different quantity, so its effect size is a median, not a mean: sample median 5 hours/day (IQR: 3 to 8 hours/day), <em>below</em> the 6-hour benchmark. The mean and the median disagree on which side of 6 hours ‘typical’ sedentary time falls. Sedentary time is right-skewed: a small number of participants report very high values, which pulls the mean up above the median, and above the benchmark, while the middle of the distribution, where most participants actually sit, remains below it. A typical participant, in the middle of the distribution, reports noticeably less sedentary time than the mean alone would suggest.</p>
+<p>R’s CI, 6.45 to 6.68 hours/day, is for the mean itself; subtracting the 6-hour benchmark from both ends gives the effect size: mean sedentary time is about 6.56 hours/day, 0.56 hours/day above 6 hours/day (95% CI: 0.45 to 0.68 hours/day above, p &lt; 0.001). The Wilcoxon test is significant too (p &lt; 0.001), but it’s testing a different quantity, so its effect size is a median, not a mean: sample median 5 hours/day (IQR: 3 to 8 hours/day), <em>below</em> the 6-hour benchmark. The mean and the median disagree on which side of 6 hours ‘typical’ sedentary time falls. Sedentary time is right-skewed: a small number of participants report very high values, which pulls the mean up above the median, and above the benchmark, while the middle of the distribution, where most participants sit, remains below it. A typical participant, in the middle of the distribution, reports noticeably less sedentary time than the mean alone would suggest.</p>
 <p><strong>Exercise 2</strong></p>
 <p><strong>Null hypothesis.</strong> In the population of participants in this more sedentary subgroup, the mean within-person difference between <code>met_w</code> and <code>met_r</code> is zero.</p>
 <p><strong>Alternative hypothesis.</strong> The mean within-person difference is not zero.</p>
@@ -1362,7 +1362,7 @@ X-squared = 3.6399, df = 1, p-value = 0.05641</code></pre>
 </div>
 </div>
 <p>All expected counts are comfortably above 5, the smallest being just under 22, so <code>correct = FALSE</code> is the right call here, for the same reason it was for the <code>arm</code> table.</p>
-<p>The chi-squared test gives a p-value of about 0.056. That’s above the conventional 0.05 threshold, but only just, and it would be a mistake to read much into which side of it the number landed on. The proportions behind it: 62% improved among patients without baseline cavitation, against 44% among those with it, an 18 percentage point gap the test can’t confirm at this sample size. The honest reading is the same either way: this is weak evidence of an association between baseline cavitation and improvement. The data don’t establish a relationship, but they don’t rule one out either. A trial of 107 patients simply cannot settle a question this size, and the result is best reported as inconclusive.</p>
+<p>The chi-squared test gives a p-value of about 0.056. That’s above the conventional 0.05 threshold, but only just, and it would be a mistake to read much into which side of it the number landed on. The proportions behind it: 62% improved among patients without baseline cavitation, against 44% among those with it, an 18 percentage point gap the test can’t confirm at this sample size. The honest reading is the same either way: this is weak evidence of an association between baseline cavitation and improvement. The data don’t establish a relationship, but they don’t rule one out either. A trial of 107 patients cannot settle a question this size, and the result is best reported as inconclusive.</p>
 <p><strong>Exercise 5</strong></p>
 <p><strong>Null hypothesis.</strong> In the population, the risk ratio is 1 and the odds ratio is 1: no association between gender and improvement.</p>
 <p><strong>Alternative hypothesis.</strong> The risk ratio, and the odds ratio, differ from 1. Both nulls sit at 1, not 0, since these are ratios instead of differences.</p>

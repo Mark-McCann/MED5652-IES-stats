@@ -141,55 +141,45 @@ Fred Ho
 </div>
 
 </section>
-<section id="what-you-have-learnt-so-far" class="slide level2 smaller">
+<section id="what-you-have-learnt-so-far" class="slide level2">
 <h2>What you have learnt so far</h2>
 <ul>
-<li class="fragment"><strong>Stats, Week 8.</strong> The interval for the difference in improvement between the <code>strep_tb</code> arms, 0.169 to 0.559, excluded zero, and the room already read that as a real difference. A test is the formal version of that reading</li>
-<li class="fragment"><strong>Stats, Week 7.</strong> Variable type decided which summary and which plot were valid. It now decides which test is valid, which is the whole of Block 2</li>
-<li class="fragment"><strong>Epi, Week 2.</strong> RR and OR off a 2x2 table, computed as point estimates. This week attaches the interval and the p-value, and states the one thing that changes: the null value is 1, not 0</li>
-<li class="fragment"><strong>Epi, Week 3.</strong> <code>strep_tb</code> is an RCT of the kind Week 3 described, so the comparison tested here is one where randomisation has already dealt with confounding</li>
-<li class="fragment"><strong>Epi, Week 5.</strong> Bradford Hill’s strength of association is a different idea from statistical significance. The <code>chol</code> by gender result, 0.17 mmol/L higher in women (95% CI 0.15 to 0.19, p &lt; 0.001) from nearly 39,000 people, is the example that separates them</li>
+<li class="fragment"><strong>Stats, Week 8.</strong> The 95% CI for the difference in improvement between the <code>strep_tb</code> arms, 0.169 to 0.559, excluded zero. We read that as a real difference, but haven’t formalised it yet</li>
+<li class="fragment"><strong>Stats, Week 7.</strong> Variable type decided which summary and which plot were valid</li>
+<li class="fragment"><strong>Epi, Week 2.</strong> RR and OR off a 2x2 table, computed as point estimates, but without 95% CIs</li>
+<li class="fragment"><strong>Epi, Week 5.</strong> Bradford Hill’s strength of association. Can it be defined statistically?</li>
 </ul>
 </section>
-<section id="by-the-end-of-this-session-you-will-be-able-to" class="slide level2 smaller">
+<section id="by-the-end-of-this-session-you-will-be-able-to" class="slide level2">
 <h2>By the end of this session, you will be able to</h2>
 <ol type="1">
 <li class="fragment">Formulate null and alternative hypotheses for a research question</li>
 <li class="fragment">Explain what a p-value is and is not, and define Type I and Type II error and the problem multiple testing creates</li>
 <li class="fragment">Describe the relationship between a confidence interval and a hypothesis test</li>
-<li class="fragment">Select an appropriate test given the outcome type and the study design (one-sample, paired, or independent)</li>
-<li class="fragment">Interpret and report the output of a t-test and a chi-squared test to journal standard</li>
-<li class="fragment">Attach a confidence interval and a p-value to a risk ratio or odds ratio, and interpret whether the interval excludes the null value of 1</li>
-<li class="fragment">Define Type I and Type II error and explain the problem created by multiple testing</li>
-<li class="fragment">Determine when a non-parametric alternative should be considered</li>
+<li class="fragment">Select, interpret, and report an appropriate test given the outcome type and the study design (one-sample, paired, or independent)</li>
 </ol>
 </section>
 <section id="block-1-the-logic-of-testing" class="slide level2 divider" data-background-image="assets/skyline.jpg" data-background-size="cover">
 <h2>Block 1: the logic of testing</h2>
 </section>
-<section id="the-interval-already-told-you" class="slide level2">
-<h2>The interval already told you</h2>
+<section id="what-the-95-ci-already-told-you" class="slide level2">
+<h2>What the 95% CI already told you</h2>
 <ul>
-<li class="fragment">Last week’s interval for the difference in improvement between the trial arms excluded zero, and the room already believed something real was going on</li>
-<li class="fragment">Nobody needed a p-value to reach that conclusion<span class="gap"></span></li>
-<li class="fragment">So what does a test add, and why does every paper you will read report one?</li>
+<li class="fragment">Last week’s 95% CI for the difference in improvement led us to conclude it was a real difference</li>
+<li class="fragment">We have yet to formalise why<span class="gap"></span></li>
+<li class="fragment">So what does a hypothesis test do?</li>
 </ul>
 </section>
-<section id="the-null-and-the-alternative" class="slide level2 smaller">
+<section id="the-null-and-the-alternative" class="slide level2">
 <h2>The null and the alternative</h2>
 <ul>
 <li class="fragment">The <strong>null hypothesis</strong> (H0) is the specific claim being tested, usually of no difference</li>
-<li class="fragment">The <strong>alternative hypothesis</strong> (H1) is what’s left if the null is implausible<span class="gap"></span></li>
-<li class="fragment">Both are statements about the <strong>population</strong>, never about the one sample we happen to have measured</li>
-<li class="fragment">A two-sided alternative just says ‘different’, with no direction stated in advance; every test this session uses this form</li>
-</ul>
-</section>
-<section id="hypotheses-for-a-real-question" class="slide level2">
-<h2>Hypotheses for a real question</h2>
+<li class="fragment">The <strong>alternative hypothesis</strong> (H1) is what’s left if the null is implausible<span class="gap"></span>
 <ul>
-<li class="fragment"><strong>Null hypothesis.</strong> Mean total cholesterol is the same in men and women in the population</li>
-<li class="fragment"><strong>Alternative hypothesis.</strong> Mean total cholesterol differs between men and women in the population</li>
-<li class="fragment">This is the question Block 1 works all the way through to a finished test</li>
+<li class="fragment">We only use the two-sided alternative, i.e., there is a difference</li>
+<li class="fragment">A one-sided alternative (e.g., X &gt; Y) also exists but is rarely used and is not covered here</li>
+</ul></li>
+<li class="fragment">Both are hypotheses about the <strong>population</strong>, never about the sample we measured</li>
 </ul>
 </section>
 <section id="the-courtroom-analogy" class="slide level2">
@@ -200,116 +190,73 @@ Fred Ho
 <li class="fragment">A test works the same way: failing to reject the null is not the same as proving it true</li>
 </ul>
 </section>
-<section id="a-test-statistic-is-evidence" class="slide level2">
-<h2>A test statistic is evidence</h2>
+<section id="a-test-statistic-as-evidence" class="slide level2">
+<h2>A test statistic as evidence</h2>
 <ul>
-<li class="fragment">A <strong>test statistic</strong> measures how far the data sit from what the null hypothesis predicts, in standard errors</li>
-<li class="fragment">Last week’s standard error returns here, doing a second job</li>
+<li class="fragment">A court needs evidence, and so does a hypothesis test</li>
+<li class="fragment">A <strong>test statistic</strong> is the evidence. It measures how far the data sit from what the null hypothesis predicts</li>
+<li class="fragment">The most classical test statistic is the z-score: the difference in means divided by its standard error
+<ul>
+<li class="fragment">How many standard errors the difference sits from zero</li>
+</ul></li>
 <li class="fragment">A bigger distance from the null is stronger evidence against it</li>
 </ul>
 </section>
-<section id="from-statistic-to-p-value" class="slide level2">
-<h2>From statistic to p-value</h2>
+<section id="from-test-statistic-to-p-value" class="slide level2">
+<h2>From test statistic to p-value</h2>
 <ul>
-<li class="fragment">R converts that distance into a <strong>p-value</strong></li>
-<li class="fragment">A p-value is how often data this extreme would arise, if the null hypothesis were actually true<span class="gap"></span></li>
-<li class="fragment">Small distance, large p-value: the data are unsurprising under the null</li>
-<li class="fragment">Large distance, small p-value: the data would be unusual under the null</li>
+<li class="fragment">In a courtroom, judges are the mechanism that keeps verdicts consistent even when the evidence presented is not</li>
+<li class="fragment">In hypothesis tests, test statistics (evidence) vary, but they can be converted into the standardised <strong>p-values</strong> (the ‘judges’)</li>
+<li class="fragment">Formally, a p-value quantifies how likely data this extreme would arise, if the null hypothesis were true
+<ul>
+<li class="fragment">Large p-value: the data are unsurprising under the null</li>
+<li class="fragment">Small p-value: the data would be unusual under the null</li>
+</ul></li>
 </ul>
 </section>
-<section id="what-a-p-value-is" class="slide level2">
-<h2>What a p-value is</h2>
+<section id="what-a-p-value-is-and-is-not" class="slide level2">
+<h2>What a p-value is and is not</h2>
 <ul>
-<li class="fragment">The probability of seeing a test statistic at least this extreme, <strong>if the null hypothesis were true</strong></li>
-<li class="fragment">Say the condition out loud every time; it is not optional</li>
-<li class="fragment">A conditional probability, about the data, not about the hypothesis</li>
+<li class="fragment">A p-value is:
+<ul>
+<li class="fragment"><strong>Based on the null hypothesis</strong>, the probability of seeing the data at least this extreme<span class="gap"></span></li>
+</ul></li>
+<li class="fragment">What a p-value is not:
+<ul>
+<li class="fragment">The probability that the null hypothesis is true</li>
+<li class="fragment">A measure of effect size</li>
+</ul></li>
 </ul>
 </section>
-<section id="what-a-p-value-is-not" class="slide level2">
-<h2>What a p-value is not</h2>
+<section id="hypotheses-for-a-real-question" class="slide level2">
+<h2>Hypotheses for a real question</h2>
 <ul>
-<li class="fragment">Not the probability that the null hypothesis is true</li>
-<li class="fragment">Not a measure of effect size</li>
-<li class="fragment">‘Not significant’ is not ‘no effect’</li>
+<li class="fragment"><strong>Null hypothesis.</strong> Mean sedentary time is the same in men and women in the population</li>
+<li class="fragment"><strong>Alternative hypothesis.</strong> Mean sedentary time differs between men and women in the population<span class="gap"></span></li>
+<li class="fragment">This is the question we examine to learn the logic of a hypothesis test in Block 1</li>
 </ul>
 </section>
-<section id="this-weeks-methodological-anchor" class="slide level2 smaller">
-<h2>This week’s methodological anchor</h2>
-<div class="columns">
-<div class="column" style="width:45%;">
-<ul>
-<li class="fragment">Altman and Bland (1995), <em>BMJ</em>: ‘Absence of evidence is not evidence of absence’</li>
-<li class="fragment">A non-significant result rules out neither a real effect nor an unimportant one; only the CI says which is plausible</li>
-<li class="fragment"><a href="https://pubmed.ncbi.nlm.nih.gov/7647644/">PubMed</a></li>
-</ul>
-</div><div class="column" style="width:55%;">
-<ul>
-<li class="fragment">Failing to reject the null is not the same as showing there is nothing there</li>
-<li class="fragment">A wide CI compatible with both a large effect and no effect is exactly this case, and it is not the same finding as a narrow CI sitting close to the null</li>
-<li class="fragment">The ASA’s own statement on p-values (Wasserstein and Lazar, 2016, <em>The American Statistician</em>) makes the same point institutionally: a p-value was never designed to measure the size or importance of an effect, only how compatible the data are with the null</li>
-</ul>
-</div></div>
-</section>
-<section id="compatibility-not-a-verdict" class="slide level2">
-<h2>Compatibility, not a verdict</h2>
-<ul>
-<li class="fragment">A p-value indicates how compatible the data are with a hypothesis</li>
-<li class="fragment">It is a continuous measure of compatibility, not a binary verdict<span class="gap"></span></li>
-<li class="fragment">The courtroom analogy shouldn’t be pushed as far as a jury’s yes or no</li>
-</ul>
-</section>
-<section id="thresholds-and-their-discontents" class="slide level2">
-<h2>Thresholds, and their discontents</h2>
-<ul>
-<li class="fragment">0.05 is a convention, not a law of nature</li>
-<li class="fragment">It has no special status: a p-value of 0.049 is not meaningfully different evidence from 0.051</li>
-<li class="fragment">Report exact p-values, not just ‘p &lt; 0.05’</li>
-</ul>
-</section>
-<section id="type-i-and-type-ii-error" class="slide level2 smaller">
-<h2>Type I and Type II error</h2>
-<ul>
-<li class="fragment"><strong>Type I error</strong>: rejecting the null hypothesis when it’s actually true, a false positive. Its rate is the significance level itself</li>
-<li class="fragment"><strong>Type II error</strong>: failing to reject the null hypothesis when it’s actually false, a false negative<span class="gap"></span></li>
-<li class="fragment">Neither error can be driven to zero at the same time as the other, for a fixed sample size: tightening one loosens the other</li>
-</ul>
-</section>
-<section id="the-interval-and-the-test-say-the-same-thing" class="slide level2">
-<h2>The interval and the test say the same thing</h2>
-<ul>
-<li class="fragment">A 95% CI excluding the null value corresponds to p &lt; 0.05 on the same data</li>
-<li class="fragment">Two presentations of one piece of evidence, not two separate findings</li>
-</ul>
-</section>
-<section id="why-the-interval-is-more-informative" class="slide level2 smaller">
-<h2>Why the interval is more informative</h2>
-<ul>
-<li class="fragment">The interval carries the size of the effect and its precision</li>
-<li class="fragment">The p-value carries neither<span class="gap"></span></li>
-<li class="fragment">This is why the reporting standard, coming up next, leads with the estimate</li>
-</ul>
-</section>
-<section id="try-it-does-this-interval-imply-a-significant-test" class="slide level2 smaller">
-<h2>Try it: does this interval imply a significant test?</h2>
+<section id="sedentary-time-by-gender" class="slide level2">
+<h2>Sedentary time by gender</h2>
 <div class="cell">
 <div class="cell-output-display">
-<div id="atdeouurbc" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#atdeouurbc table {
+<div id="izxsqdzatm" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#izxsqdzatm table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#atdeouurbc thead, #atdeouurbc tbody, #atdeouurbc tfoot, #atdeouurbc tr, #atdeouurbc td, #atdeouurbc th {
+#izxsqdzatm thead, #izxsqdzatm tbody, #izxsqdzatm tfoot, #izxsqdzatm tr, #izxsqdzatm td, #izxsqdzatm th {
   border-style: none;
 }
 
-#atdeouurbc p {
+#izxsqdzatm p {
   margin: 0;
   padding: 0;
 }
 
-#atdeouurbc .gt_table {
+#izxsqdzatm .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -335,12 +282,12 @@ Fred Ho
   border-left-color: #D3D3D3;
 }
 
-#atdeouurbc .gt_caption {
+#izxsqdzatm .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#atdeouurbc .gt_title {
+#izxsqdzatm .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -352,7 +299,7 @@ Fred Ho
   border-bottom-width: 0;
 }
 
-#atdeouurbc .gt_subtitle {
+#izxsqdzatm .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -364,7 +311,7 @@ Fred Ho
   border-top-width: 0;
 }
 
-#atdeouurbc .gt_heading {
+#izxsqdzatm .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -376,13 +323,13 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#atdeouurbc .gt_bottom_border {
+#izxsqdzatm .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#atdeouurbc .gt_col_headings {
+#izxsqdzatm .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -397,7 +344,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#atdeouurbc .gt_col_heading {
+#izxsqdzatm .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -417,7 +364,7 @@ Fred Ho
   overflow-x: hidden;
 }
 
-#atdeouurbc .gt_column_spanner_outer {
+#izxsqdzatm .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -429,15 +376,15 @@ Fred Ho
   padding-right: 4px;
 }
 
-#atdeouurbc .gt_column_spanner_outer:first-child {
+#izxsqdzatm .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#atdeouurbc .gt_column_spanner_outer:last-child {
+#izxsqdzatm .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#atdeouurbc .gt_column_spanner {
+#izxsqdzatm .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -449,11 +396,11 @@ Fred Ho
   width: 100%;
 }
 
-#atdeouurbc .gt_spanner_row {
+#izxsqdzatm .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#atdeouurbc .gt_group_heading {
+#izxsqdzatm .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -479,7 +426,7 @@ Fred Ho
   text-align: left;
 }
 
-#atdeouurbc .gt_empty_group_heading {
+#izxsqdzatm .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -494,15 +441,15 @@ Fred Ho
   vertical-align: middle;
 }
 
-#atdeouurbc .gt_from_md > :first-child {
+#izxsqdzatm .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#atdeouurbc .gt_from_md > :last-child {
+#izxsqdzatm .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#atdeouurbc .gt_row {
+#izxsqdzatm .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -521,7 +468,7 @@ Fred Ho
   overflow-x: hidden;
 }
 
-#atdeouurbc .gt_stub {
+#izxsqdzatm .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -534,7 +481,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#atdeouurbc .gt_stub_row_group {
+#izxsqdzatm .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -548,15 +495,15 @@ Fred Ho
   vertical-align: top;
 }
 
-#atdeouurbc .gt_row_group_first td {
+#izxsqdzatm .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#atdeouurbc .gt_row_group_first th {
+#izxsqdzatm .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#atdeouurbc .gt_summary_row {
+#izxsqdzatm .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -566,16 +513,16 @@ Fred Ho
   padding-right: 5px;
 }
 
-#atdeouurbc .gt_first_summary_row {
+#izxsqdzatm .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#atdeouurbc .gt_first_summary_row.thick {
+#izxsqdzatm .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#atdeouurbc .gt_last_summary_row {
+#izxsqdzatm .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -585,7 +532,7 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#atdeouurbc .gt_grand_summary_row {
+#izxsqdzatm .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -595,7 +542,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#atdeouurbc .gt_first_grand_summary_row {
+#izxsqdzatm .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -605,7 +552,7 @@ Fred Ho
   border-top-color: #D3D3D3;
 }
 
-#atdeouurbc .gt_last_grand_summary_row_top {
+#izxsqdzatm .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -615,11 +562,11 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#atdeouurbc .gt_striped {
+#izxsqdzatm .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#atdeouurbc .gt_table_body {
+#izxsqdzatm .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -628,7 +575,7 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#atdeouurbc .gt_footnotes {
+#izxsqdzatm .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -642,7 +589,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#atdeouurbc .gt_footnote {
+#izxsqdzatm .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -651,7 +598,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#atdeouurbc .gt_sourcenotes {
+#izxsqdzatm .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -665,7 +612,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#atdeouurbc .gt_sourcenote {
+#izxsqdzatm .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -673,72 +620,72 @@ Fred Ho
   padding-right: 5px;
 }
 
-#atdeouurbc .gt_left {
+#izxsqdzatm .gt_left {
   text-align: left;
 }
 
-#atdeouurbc .gt_center {
+#izxsqdzatm .gt_center {
   text-align: center;
 }
 
-#atdeouurbc .gt_right {
+#izxsqdzatm .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#atdeouurbc .gt_font_normal {
+#izxsqdzatm .gt_font_normal {
   font-weight: normal;
 }
 
-#atdeouurbc .gt_font_bold {
+#izxsqdzatm .gt_font_bold {
   font-weight: bold;
 }
 
-#atdeouurbc .gt_font_italic {
+#izxsqdzatm .gt_font_italic {
   font-style: italic;
 }
 
-#atdeouurbc .gt_super {
+#izxsqdzatm .gt_super {
   font-size: 65%;
 }
 
-#atdeouurbc .gt_footnote_marks {
+#izxsqdzatm .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#atdeouurbc .gt_asterisk {
+#izxsqdzatm .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#atdeouurbc .gt_indent_1 {
+#izxsqdzatm .gt_indent_1 {
   text-indent: 5px;
 }
 
-#atdeouurbc .gt_indent_2 {
+#izxsqdzatm .gt_indent_2 {
   text-indent: 10px;
 }
 
-#atdeouurbc .gt_indent_3 {
+#izxsqdzatm .gt_indent_3 {
   text-indent: 15px;
 }
 
-#atdeouurbc .gt_indent_4 {
+#izxsqdzatm .gt_indent_4 {
   text-indent: 20px;
 }
 
-#atdeouurbc .gt_indent_5 {
+#izxsqdzatm .gt_indent_5 {
   text-indent: 25px;
 }
 
-#atdeouurbc .katex-display {
+#izxsqdzatm .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#atdeouurbc div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#izxsqdzatm div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -749,27 +696,15 @@ Fred Ho
 <th id="Quantity" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Quantity</th>
 <th id="Estimate" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Estimate</th>
 <th id="a95%-CI" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">95% CI</th>
-<th id="Null-value" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Null value</th>
+<th id="p" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">p</th>
 </tr>
 </thead>
 <tbody class="gt_table_body">
 <tr class="odd">
-<td class="gt_row gt_left" headers="Quantity">Improved, streptomycin minus control</td>
-<td class="gt_row gt_right" headers="Estimate">0.364</td>
-<td class="gt_row gt_left" headers="95% CI">0.169 to 0.559</td>
-<td class="gt_row gt_right" headers="Null value">0</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="Quantity">Improvement OR, men vs women</td>
-<td class="gt_row gt_right" headers="Estimate">1.420</td>
-<td class="gt_row gt_left" headers="95% CI">0.66 to 3.06</td>
-<td class="gt_row gt_right" headers="Null value">1</td>
-</tr>
-<tr class="odd">
 <td class="gt_row gt_left" headers="Quantity">Sedentary time, women minus men, hours/day</td>
-<td class="gt_row gt_right" headers="Estimate">0.260</td>
+<td class="gt_row gt_right" headers="Estimate">0.26</td>
 <td class="gt_row gt_left" headers="95% CI">0.03 to 0.49</td>
-<td class="gt_row gt_right" headers="Null value">0</td>
+<td class="gt_row gt_right" headers="p">0.026</td>
 </tr>
 </tbody>
 </table>
@@ -778,65 +713,93 @@ Fred Ho
 </div>
 </div>
 <ul>
-<li class="fragment">For each row, would the test on the same data come out below 0.05? How do you know?</li>
-<li class="fragment">Three to five minutes</li>
+<li class="fragment">Women reported slightly more sedentary time than men, about 0.26 hours/day (95% CI 0.03 to 0.49 hours/day, p = 0.026)</li>
+<li class="fragment">p is below 0.05, so we reject H0<span class="gap"></span></li>
+<li class="fragment">But it is small: about 15 minutes a day, on a scale of many hours a day</li>
 </ul>
 </section>
-<section id="try-it-the-answer" class="slide level2 smaller">
-<h2>Try it: the answer</h2>
+<section id="compatibility-not-a-verdict" class="slide level2">
+<h2>Compatibility, not a verdict</h2>
 <ul>
-<li class="fragment"><strong>Streptomycin minus control</strong>: clear of the null value of 0. p &lt; 0.05</li>
-<li class="fragment"><strong>Improvement OR, men vs women</strong>: straddles the null value of 1. p &gt; 0.05</li>
-<li class="fragment"><strong>Sedentary time, women minus men</strong>: its lower limit sits almost exactly on the null value of 0. p is about 0.05<span class="gap"></span></li>
-<li class="fragment">The third row is the case that shows the correspondence is exact, not approximate: the interval and the test are one piece of evidence in two presentations, and the interval is the one that also tells you the size</li>
-</ul>
-</section>
-<section id="the-reporting-standard" class="slide level2">
-<h2>The reporting standard</h2>
+<li class="fragment">In a courtroom, mostly people are interested in the yes/no verdict</li>
+<li class="fragment">In a hypothesis test, we try to steer away from the binary verdict<span class="gap"></span></li>
+<li class="fragment">A p-value indicates how compatible the data are with a hypothesis</li>
+<li class="fragment">It is a continuous measure of compatibility, not a binary verdict
 <ul>
-<li class="fragment">Effect size, 95% CI, and p-value, together, every time a result is given</li>
-<li class="fragment">This is the rule the rest of this session, and the rest of the course, writes results against</li>
+<li class="fragment">0.05 is a convention, not a law of nature</li>
+<li class="fragment">A p-value of 0.049 is not meaningfully different evidence from 0.051</li>
+<li class="fragment">Report exact p-values, not just ‘p &lt; 0.05’</li>
+</ul></li>
 </ul>
 </section>
-<section id="the-independent-samples-t-test" class="slide level2 smaller">
-<h2>The independent-samples t-test</h2>
+<section id="this-weeks-methodological-anchor" class="slide level2 smaller">
+<h2>This week’s methodological anchor</h2>
 <ul>
-<li class="fragment">Compares two entirely separate groups, with no link between a value in one group and a value in the other</li>
-<li class="fragment">Assumptions: independence between groups, a roughly normal sampling distribution (or a large enough sample for the CLT to apply), and comparable spread between the groups</li>
-<li class="fragment"><code>t.test()</code> compares two independent groups directly, given a formula and the data</li>
-</ul>
-</section>
-<section id="reading-its-output" class="slide level2">
-<h2>Reading its output</h2>
+<li class="fragment"><a href="https://pubmed.ncbi.nlm.nih.gov/7647644/">Altman and Bland (1995)</a>, <em>BMJ</em>: ‘Absence of evidence is not evidence of absence’</li>
+<li class="fragment">A non-significant result rules out neither a real effect nor an unimportant one; only the CI says which is plausible</li>
+<li class="fragment">Failing to reject the null is not the same as showing there is nothing there
 <ul>
-<li class="fragment">A t-statistic: how far the observed difference sits from zero, in standard errors</li>
-<li class="fragment">Degrees of freedom</li>
-<li class="fragment">A p-value</li>
-<li class="fragment">A 95% CI for the difference between the two group means</li>
-<li class="fragment">In the order R prints them, top to bottom</li>
+<li class="fragment">RR 3.0 (95% CI 0.8 to 11.3): wide, compatible with a large effect</li>
+<li class="fragment">RR 1.1 (95% CI 0.9 to 1.3): narrow, rules out anything large</li>
+</ul></li>
+<li class="fragment">The ASA’s own statement on p-values (Wasserstein and Lazar, 2016, <em>The American Statistician</em>) reaffirms this:
+<ul>
+<li class="fragment">A p-value was never designed to measure the size or importance of an effect, only how compatible the data are with the null</li>
+</ul></li>
 </ul>
 </section>
-<section id="cholesterol-by-gender" class="slide level2">
-<h2>Cholesterol by gender</h2>
+<section id="errors-associated-with-tests" class="slide level2 smaller">
+<h2>Errors associated with tests</h2>
+<ul>
+<li class="fragment">Data are random, so a hypothesis test can go wrong, but unlike in the legal system, we can quantify how likely that is<span class="gap"></span></li>
+<li class="fragment"><strong>Type I error</strong>: rejecting the null hypothesis when it’s true, a false positive
+<ul>
+<li class="fragment">The Type I error rate is the significance level itself, usually fixed at 0.05</li>
+<li class="fragment">This is why we compare a p-value with 0.05, or check whether a 95% CI excludes the null value</li>
+</ul></li>
+<li class="fragment"><strong>Type II error</strong>: failing to reject the null hypothesis when it’s false, a false negative
+<ul>
+<li class="fragment">One minus the Type II error rate is the <em>statistical power</em><span class="gap"></span></li>
+</ul></li>
+<li class="fragment">Neither error can be driven to zero at the same time
+<ul>
+<li class="fragment">For a fixed sample size, tightening one loosens the other</li>
+</ul></li>
+</ul>
+</section>
+<section id="ci-and-tests" class="slide level2">
+<h2>95% CI and tests</h2>
+<ul>
+<li class="fragment">A 95% CI excluding the null value corresponds to p &lt; 0.05 on the same data
+<ul>
+<li class="fragment">Two presentations of the same evidence</li>
+<li class="fragment">The 95% CI carries the size of the effect and its precision</li>
+<li class="fragment">The p-value carries neither<span class="gap"></span></li>
+</ul></li>
+<li class="fragment">This is why the reporting standard, coming up shortly, leads with the estimate</li>
+</ul>
+</section>
+<section id="try-it-does-this-95-ci-imply-a-significant-test" class="slide level2">
+<h2>Try it: does this 95% CI imply a significant test?</h2>
 <div class="cell">
 <div class="cell-output-display">
-<div id="demsrbmhin" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#demsrbmhin table {
+<div id="wzwijerqfd" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#wzwijerqfd table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#demsrbmhin thead, #demsrbmhin tbody, #demsrbmhin tfoot, #demsrbmhin tr, #demsrbmhin td, #demsrbmhin th {
+#wzwijerqfd thead, #wzwijerqfd tbody, #wzwijerqfd tfoot, #wzwijerqfd tr, #wzwijerqfd td, #wzwijerqfd th {
   border-style: none;
 }
 
-#demsrbmhin p {
+#wzwijerqfd p {
   margin: 0;
   padding: 0;
 }
 
-#demsrbmhin .gt_table {
+#wzwijerqfd .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -862,12 +825,12 @@ Fred Ho
   border-left-color: #D3D3D3;
 }
 
-#demsrbmhin .gt_caption {
+#wzwijerqfd .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#demsrbmhin .gt_title {
+#wzwijerqfd .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -879,7 +842,7 @@ Fred Ho
   border-bottom-width: 0;
 }
 
-#demsrbmhin .gt_subtitle {
+#wzwijerqfd .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -891,7 +854,7 @@ Fred Ho
   border-top-width: 0;
 }
 
-#demsrbmhin .gt_heading {
+#wzwijerqfd .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -903,13 +866,13 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#demsrbmhin .gt_bottom_border {
+#wzwijerqfd .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#demsrbmhin .gt_col_headings {
+#wzwijerqfd .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -924,7 +887,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#demsrbmhin .gt_col_heading {
+#wzwijerqfd .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -944,7 +907,7 @@ Fred Ho
   overflow-x: hidden;
 }
 
-#demsrbmhin .gt_column_spanner_outer {
+#wzwijerqfd .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -956,15 +919,15 @@ Fred Ho
   padding-right: 4px;
 }
 
-#demsrbmhin .gt_column_spanner_outer:first-child {
+#wzwijerqfd .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#demsrbmhin .gt_column_spanner_outer:last-child {
+#wzwijerqfd .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#demsrbmhin .gt_column_spanner {
+#wzwijerqfd .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -976,11 +939,11 @@ Fred Ho
   width: 100%;
 }
 
-#demsrbmhin .gt_spanner_row {
+#wzwijerqfd .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#demsrbmhin .gt_group_heading {
+#wzwijerqfd .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1006,7 +969,7 @@ Fred Ho
   text-align: left;
 }
 
-#demsrbmhin .gt_empty_group_heading {
+#wzwijerqfd .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1021,15 +984,15 @@ Fred Ho
   vertical-align: middle;
 }
 
-#demsrbmhin .gt_from_md > :first-child {
+#wzwijerqfd .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#demsrbmhin .gt_from_md > :last-child {
+#wzwijerqfd .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#demsrbmhin .gt_row {
+#wzwijerqfd .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1048,7 +1011,7 @@ Fred Ho
   overflow-x: hidden;
 }
 
-#demsrbmhin .gt_stub {
+#wzwijerqfd .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1061,7 +1024,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#demsrbmhin .gt_stub_row_group {
+#wzwijerqfd .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1075,15 +1038,15 @@ Fred Ho
   vertical-align: top;
 }
 
-#demsrbmhin .gt_row_group_first td {
+#wzwijerqfd .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#demsrbmhin .gt_row_group_first th {
+#wzwijerqfd .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#demsrbmhin .gt_summary_row {
+#wzwijerqfd .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1093,16 +1056,16 @@ Fred Ho
   padding-right: 5px;
 }
 
-#demsrbmhin .gt_first_summary_row {
+#wzwijerqfd .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#demsrbmhin .gt_first_summary_row.thick {
+#wzwijerqfd .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#demsrbmhin .gt_last_summary_row {
+#wzwijerqfd .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1112,7 +1075,7 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#demsrbmhin .gt_grand_summary_row {
+#wzwijerqfd .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1122,7 +1085,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#demsrbmhin .gt_first_grand_summary_row {
+#wzwijerqfd .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1132,7 +1095,7 @@ Fred Ho
   border-top-color: #D3D3D3;
 }
 
-#demsrbmhin .gt_last_grand_summary_row_top {
+#wzwijerqfd .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1142,11 +1105,11 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#demsrbmhin .gt_striped {
+#wzwijerqfd .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#demsrbmhin .gt_table_body {
+#wzwijerqfd .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1155,7 +1118,7 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#demsrbmhin .gt_footnotes {
+#wzwijerqfd .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1169,7 +1132,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#demsrbmhin .gt_footnote {
+#wzwijerqfd .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1178,7 +1141,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#demsrbmhin .gt_sourcenotes {
+#wzwijerqfd .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1192,7 +1155,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#demsrbmhin .gt_sourcenote {
+#wzwijerqfd .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1200,72 +1163,587 @@ Fred Ho
   padding-right: 5px;
 }
 
-#demsrbmhin .gt_left {
+#wzwijerqfd .gt_left {
   text-align: left;
 }
 
-#demsrbmhin .gt_center {
+#wzwijerqfd .gt_center {
   text-align: center;
 }
 
-#demsrbmhin .gt_right {
+#wzwijerqfd .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#demsrbmhin .gt_font_normal {
+#wzwijerqfd .gt_font_normal {
   font-weight: normal;
 }
 
-#demsrbmhin .gt_font_bold {
+#wzwijerqfd .gt_font_bold {
   font-weight: bold;
 }
 
-#demsrbmhin .gt_font_italic {
+#wzwijerqfd .gt_font_italic {
   font-style: italic;
 }
 
-#demsrbmhin .gt_super {
+#wzwijerqfd .gt_super {
   font-size: 65%;
 }
 
-#demsrbmhin .gt_footnote_marks {
+#wzwijerqfd .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#demsrbmhin .gt_asterisk {
+#wzwijerqfd .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#demsrbmhin .gt_indent_1 {
+#wzwijerqfd .gt_indent_1 {
   text-indent: 5px;
 }
 
-#demsrbmhin .gt_indent_2 {
+#wzwijerqfd .gt_indent_2 {
   text-indent: 10px;
 }
 
-#demsrbmhin .gt_indent_3 {
+#wzwijerqfd .gt_indent_3 {
   text-indent: 15px;
 }
 
-#demsrbmhin .gt_indent_4 {
+#wzwijerqfd .gt_indent_4 {
   text-indent: 20px;
 }
 
-#demsrbmhin .gt_indent_5 {
+#wzwijerqfd .gt_indent_5 {
   text-indent: 25px;
 }
 
-#demsrbmhin .katex-display {
+#wzwijerqfd .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#demsrbmhin div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#wzwijerqfd div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_col_headings header">
+<th id="Quantity" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Quantity</th>
+<th id="Estimate" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Estimate</th>
+<th id="a95%-CI" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">95% CI</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="Quantity">Improved, streptomycin minus control (difference in proportions)</td>
+<td class="gt_row gt_right" headers="Estimate">0.364</td>
+<td class="gt_row gt_left" headers="95% CI">0.169 to 0.559</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Quantity">Improved, men minus women (difference in proportions)</td>
+<td class="gt_row gt_right" headers="Estimate">0.088</td>
+<td class="gt_row gt_left" headers="95% CI">-0.121 to 0.296</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Quantity">Sedentary time, women minus men, hours/day</td>
+<td class="gt_row gt_right" headers="Estimate">0.260</td>
+<td class="gt_row gt_left" headers="95% CI">0.03 to 0.49</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<ul>
+<li class="fragment">Each row is a difference, so the null value is 0</li>
+<li class="fragment">For each row, would the test on the same data come out below 0.05? How do you know?</li>
+<li class="fragment">Three minutes</li>
+</ul>
+</section>
+<section id="try-it-the-answer" class="slide level2">
+<h2>Try it: the answer</h2>
+<ul>
+<li class="fragment"><strong>Streptomycin minus control</strong>: clear of the null value of 0. p &lt; 0.05</li>
+<li class="fragment"><strong>Men minus women, improved</strong>: straddles the null value of 0. p &gt; 0.05 (p = 0.48)</li>
+<li class="fragment"><strong>Sedentary time, women minus men</strong>: its lower limit sits just clear of the null value of 0. p is only just below 0.05 (we saw p = 0.026)<span class="gap"></span></li>
+<li class="fragment">The 95% CI and the test are one piece of evidence in two presentations, and the 95% CI is the one that also tells us the size</li>
+</ul>
+</section>
+<section id="the-reporting-standard" class="slide level2">
+<h2>The reporting standard</h2>
+<ul>
+<li class="fragment">We should not rely only on a p-value to quantify differences</li>
+<li class="fragment">Whenever possible, report effect size, 95% CI, and p-value</li>
+<li class="fragment">This is what we expect you to do throughout your MPH</li>
+</ul>
+</section>
+<section id="the-independent-samples-t-test" class="slide level2">
+<h2>The independent-samples t-test</h2>
+<ul>
+<li class="fragment">This is the test behind the sedentary time result</li>
+<li class="fragment">Compares two entirely separate groups, with no link between a value in one group and a value in the other</li>
+<li class="fragment">Assumptions: independence between groups, and a roughly normal sampling distribution (or a large enough sample for the CLT to apply)</li>
+</ul>
+</section>
+<section id="example-1-cholesterol-by-gender" class="slide level2 smaller">
+<h2>Example 1: Cholesterol by gender</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div id="jbabgxpdbp" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#jbabgxpdbp table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#jbabgxpdbp thead, #jbabgxpdbp tbody, #jbabgxpdbp tfoot, #jbabgxpdbp tr, #jbabgxpdbp td, #jbabgxpdbp th {
+  border-style: none;
+}
+
+#jbabgxpdbp p {
+  margin: 0;
+  padding: 0;
+}
+
+#jbabgxpdbp .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#jbabgxpdbp .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#jbabgxpdbp .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#jbabgxpdbp .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#jbabgxpdbp .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#jbabgxpdbp .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#jbabgxpdbp .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#jbabgxpdbp .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#jbabgxpdbp .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#jbabgxpdbp .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#jbabgxpdbp .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#jbabgxpdbp .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#jbabgxpdbp .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#jbabgxpdbp .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#jbabgxpdbp .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#jbabgxpdbp .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#jbabgxpdbp .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#jbabgxpdbp .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#jbabgxpdbp .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#jbabgxpdbp .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#jbabgxpdbp .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#jbabgxpdbp .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#jbabgxpdbp .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#jbabgxpdbp .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#jbabgxpdbp .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#jbabgxpdbp .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#jbabgxpdbp .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#jbabgxpdbp .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#jbabgxpdbp .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#jbabgxpdbp .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#jbabgxpdbp .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#jbabgxpdbp .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#jbabgxpdbp .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#jbabgxpdbp .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#jbabgxpdbp .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#jbabgxpdbp .gt_left {
+  text-align: left;
+}
+
+#jbabgxpdbp .gt_center {
+  text-align: center;
+}
+
+#jbabgxpdbp .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#jbabgxpdbp .gt_font_normal {
+  font-weight: normal;
+}
+
+#jbabgxpdbp .gt_font_bold {
+  font-weight: bold;
+}
+
+#jbabgxpdbp .gt_font_italic {
+  font-style: italic;
+}
+
+#jbabgxpdbp .gt_super {
+  font-size: 65%;
+}
+
+#jbabgxpdbp .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#jbabgxpdbp .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#jbabgxpdbp .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#jbabgxpdbp .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#jbabgxpdbp .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#jbabgxpdbp .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#jbabgxpdbp .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#jbabgxpdbp .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#jbabgxpdbp div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1292,32 +1770,47 @@ Fred Ho
 </div>
 </div>
 </div>
-
-<img data-src="week09-comparison_files/figure-revealjs/chol-gender-box-1.png" width="480" class="r-stretch"><ul>
+<div class="columns">
+<div class="column" style="width:50%;">
+<ul>
+<li class="fragment">H0: Mean total cholesterol is the same in men and women in the population</li>
+<li class="fragment">H1: Mean total cholesterol differs between men and women in the population<span class="gap"></span></li>
+<li class="fragment">Mean total cholesterol was about 0.17 mmol/L higher in women than in men (95% CI 0.15 to 0.19 mmol/L, p &lt; 0.001)</li>
 <li class="fragment">Check the direction before reading the CI: the software names which group was subtracted from which</li>
 </ul>
-</section>
-<section id="the-same-test-on-age" class="slide level2">
-<h2>The same test, on age</h2>
+</div><div class="column" style="width:50%;">
 <div class="cell">
 <div class="cell-output-display">
-<div id="bfrjejwzbl" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#bfrjejwzbl table {
+<div>
+<figure>
+<p><img data-src="week09-comparison_files/figure-revealjs/chol-gender-box-1.png" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="example-2-age-by-gender" class="slide level2">
+<h2>Example 2: Age by gender</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div id="uvguykcmtg" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#uvguykcmtg table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#bfrjejwzbl thead, #bfrjejwzbl tbody, #bfrjejwzbl tfoot, #bfrjejwzbl tr, #bfrjejwzbl td, #bfrjejwzbl th {
+#uvguykcmtg thead, #uvguykcmtg tbody, #uvguykcmtg tfoot, #uvguykcmtg tr, #uvguykcmtg td, #uvguykcmtg th {
   border-style: none;
 }
 
-#bfrjejwzbl p {
+#uvguykcmtg p {
   margin: 0;
   padding: 0;
 }
 
-#bfrjejwzbl .gt_table {
+#uvguykcmtg .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1343,12 +1836,12 @@ Fred Ho
   border-left-color: #D3D3D3;
 }
 
-#bfrjejwzbl .gt_caption {
+#uvguykcmtg .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#bfrjejwzbl .gt_title {
+#uvguykcmtg .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1360,7 +1853,7 @@ Fred Ho
   border-bottom-width: 0;
 }
 
-#bfrjejwzbl .gt_subtitle {
+#uvguykcmtg .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1372,7 +1865,7 @@ Fred Ho
   border-top-width: 0;
 }
 
-#bfrjejwzbl .gt_heading {
+#uvguykcmtg .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1384,13 +1877,13 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#bfrjejwzbl .gt_bottom_border {
+#uvguykcmtg .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#bfrjejwzbl .gt_col_headings {
+#uvguykcmtg .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1405,7 +1898,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#bfrjejwzbl .gt_col_heading {
+#uvguykcmtg .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1425,7 +1918,7 @@ Fred Ho
   overflow-x: hidden;
 }
 
-#bfrjejwzbl .gt_column_spanner_outer {
+#uvguykcmtg .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1437,15 +1930,15 @@ Fred Ho
   padding-right: 4px;
 }
 
-#bfrjejwzbl .gt_column_spanner_outer:first-child {
+#uvguykcmtg .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#bfrjejwzbl .gt_column_spanner_outer:last-child {
+#uvguykcmtg .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#bfrjejwzbl .gt_column_spanner {
+#uvguykcmtg .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1457,11 +1950,11 @@ Fred Ho
   width: 100%;
 }
 
-#bfrjejwzbl .gt_spanner_row {
+#uvguykcmtg .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#bfrjejwzbl .gt_group_heading {
+#uvguykcmtg .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1487,7 +1980,7 @@ Fred Ho
   text-align: left;
 }
 
-#bfrjejwzbl .gt_empty_group_heading {
+#uvguykcmtg .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1502,15 +1995,15 @@ Fred Ho
   vertical-align: middle;
 }
 
-#bfrjejwzbl .gt_from_md > :first-child {
+#uvguykcmtg .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#bfrjejwzbl .gt_from_md > :last-child {
+#uvguykcmtg .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#bfrjejwzbl .gt_row {
+#uvguykcmtg .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1529,7 +2022,7 @@ Fred Ho
   overflow-x: hidden;
 }
 
-#bfrjejwzbl .gt_stub {
+#uvguykcmtg .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1542,7 +2035,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#bfrjejwzbl .gt_stub_row_group {
+#uvguykcmtg .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1556,15 +2049,15 @@ Fred Ho
   vertical-align: top;
 }
 
-#bfrjejwzbl .gt_row_group_first td {
+#uvguykcmtg .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#bfrjejwzbl .gt_row_group_first th {
+#uvguykcmtg .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#bfrjejwzbl .gt_summary_row {
+#uvguykcmtg .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1574,16 +2067,16 @@ Fred Ho
   padding-right: 5px;
 }
 
-#bfrjejwzbl .gt_first_summary_row {
+#uvguykcmtg .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#bfrjejwzbl .gt_first_summary_row.thick {
+#uvguykcmtg .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#bfrjejwzbl .gt_last_summary_row {
+#uvguykcmtg .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1593,7 +2086,7 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#bfrjejwzbl .gt_grand_summary_row {
+#uvguykcmtg .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1603,7 +2096,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#bfrjejwzbl .gt_first_grand_summary_row {
+#uvguykcmtg .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1613,7 +2106,7 @@ Fred Ho
   border-top-color: #D3D3D3;
 }
 
-#bfrjejwzbl .gt_last_grand_summary_row_top {
+#uvguykcmtg .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1623,11 +2116,11 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#bfrjejwzbl .gt_striped {
+#uvguykcmtg .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#bfrjejwzbl .gt_table_body {
+#uvguykcmtg .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1636,7 +2129,7 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#bfrjejwzbl .gt_footnotes {
+#uvguykcmtg .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1650,7 +2143,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#bfrjejwzbl .gt_footnote {
+#uvguykcmtg .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1659,7 +2152,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#bfrjejwzbl .gt_sourcenotes {
+#uvguykcmtg .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1673,7 +2166,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#bfrjejwzbl .gt_sourcenote {
+#uvguykcmtg .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1681,72 +2174,72 @@ Fred Ho
   padding-right: 5px;
 }
 
-#bfrjejwzbl .gt_left {
+#uvguykcmtg .gt_left {
   text-align: left;
 }
 
-#bfrjejwzbl .gt_center {
+#uvguykcmtg .gt_center {
   text-align: center;
 }
 
-#bfrjejwzbl .gt_right {
+#uvguykcmtg .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#bfrjejwzbl .gt_font_normal {
+#uvguykcmtg .gt_font_normal {
   font-weight: normal;
 }
 
-#bfrjejwzbl .gt_font_bold {
+#uvguykcmtg .gt_font_bold {
   font-weight: bold;
 }
 
-#bfrjejwzbl .gt_font_italic {
+#uvguykcmtg .gt_font_italic {
   font-style: italic;
 }
 
-#bfrjejwzbl .gt_super {
+#uvguykcmtg .gt_super {
   font-size: 65%;
 }
 
-#bfrjejwzbl .gt_footnote_marks {
+#uvguykcmtg .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#bfrjejwzbl .gt_asterisk {
+#uvguykcmtg .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#bfrjejwzbl .gt_indent_1 {
+#uvguykcmtg .gt_indent_1 {
   text-indent: 5px;
 }
 
-#bfrjejwzbl .gt_indent_2 {
+#uvguykcmtg .gt_indent_2 {
   text-indent: 10px;
 }
 
-#bfrjejwzbl .gt_indent_3 {
+#uvguykcmtg .gt_indent_3 {
   text-indent: 15px;
 }
 
-#bfrjejwzbl .gt_indent_4 {
+#uvguykcmtg .gt_indent_4 {
   text-indent: 20px;
 }
 
-#bfrjejwzbl .gt_indent_5 {
+#uvguykcmtg .gt_indent_5 {
   text-indent: 25px;
 }
 
-#bfrjejwzbl .katex-display {
+#uvguykcmtg .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#bfrjejwzbl div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#uvguykcmtg div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1774,40 +2267,43 @@ Fred Ho
 </div>
 </div>
 <ul>
+<li class="fragment">H0: Mean age is the same in men and women in the population</li>
+<li class="fragment">H1: Mean age differs between men and women in the population<span class="gap"></span></li>
+<li class="fragment">Men in this sample were on average about 0.7 years older than women (95% CI 0.4 to 1.1 years, p &lt; 0.001)</li>
 <li class="fragment">From Chapter 5’s Exercise 3</li>
 </ul>
 </section>
-<section id="significant-and-meaningless" class="slide level2 smaller">
-<h2>Significant and meaningless</h2>
+<section id="significant-but-does-it-matter" class="slide level2">
+<h2>Significant, but does it matter?</h2>
 <ul>
 <li class="fragment">Both results above are significant at p &lt; 0.001</li>
-<li class="fragment">With n near 39,000, a difference of no clinical interest is overwhelmingly significant<span class="gap"></span></li>
-<li class="fragment">Cholesterol: a real, clinically worth-noting gap</li>
+<li class="fragment">With such large samples, a difference of no clinical interest is overwhelmingly significant<span class="gap"></span></li>
+<li class="fragment">Cholesterol: 0.17 mmol/L, real and worth noting alongside the 5.2 mmol/L benchmark ahead</li>
 <li class="fragment">Age: 0.7 years on a population averaging around 47. Statistically real, practically negligible</li>
-<li class="fragment">This is why the reporting standard leads with the effect size, not the p-value</li>
+<li class="fragment">This is why we should look at both effect sizes and p-values</li>
 </ul>
 </section>
 <section id="try-it-write-the-sentence" class="slide level2">
 <h2>Try it: write the sentence</h2>
 <div class="cell">
 <div class="cell-output-display">
-<div id="pnnajfuqry" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#pnnajfuqry table {
+<div id="bbrdyxpyxa" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#bbrdyxpyxa table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#pnnajfuqry thead, #pnnajfuqry tbody, #pnnajfuqry tfoot, #pnnajfuqry tr, #pnnajfuqry td, #pnnajfuqry th {
+#bbrdyxpyxa thead, #bbrdyxpyxa tbody, #bbrdyxpyxa tfoot, #bbrdyxpyxa tr, #bbrdyxpyxa td, #bbrdyxpyxa th {
   border-style: none;
 }
 
-#pnnajfuqry p {
+#bbrdyxpyxa p {
   margin: 0;
   padding: 0;
 }
 
-#pnnajfuqry .gt_table {
+#bbrdyxpyxa .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1833,12 +2329,12 @@ Fred Ho
   border-left-color: #D3D3D3;
 }
 
-#pnnajfuqry .gt_caption {
+#bbrdyxpyxa .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#pnnajfuqry .gt_title {
+#bbrdyxpyxa .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1850,7 +2346,7 @@ Fred Ho
   border-bottom-width: 0;
 }
 
-#pnnajfuqry .gt_subtitle {
+#bbrdyxpyxa .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1862,7 +2358,7 @@ Fred Ho
   border-top-width: 0;
 }
 
-#pnnajfuqry .gt_heading {
+#bbrdyxpyxa .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1874,13 +2370,13 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#pnnajfuqry .gt_bottom_border {
+#bbrdyxpyxa .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#pnnajfuqry .gt_col_headings {
+#bbrdyxpyxa .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1895,7 +2391,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#pnnajfuqry .gt_col_heading {
+#bbrdyxpyxa .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1915,7 +2411,7 @@ Fred Ho
   overflow-x: hidden;
 }
 
-#pnnajfuqry .gt_column_spanner_outer {
+#bbrdyxpyxa .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1927,15 +2423,15 @@ Fred Ho
   padding-right: 4px;
 }
 
-#pnnajfuqry .gt_column_spanner_outer:first-child {
+#bbrdyxpyxa .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#pnnajfuqry .gt_column_spanner_outer:last-child {
+#bbrdyxpyxa .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#pnnajfuqry .gt_column_spanner {
+#bbrdyxpyxa .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1947,11 +2443,11 @@ Fred Ho
   width: 100%;
 }
 
-#pnnajfuqry .gt_spanner_row {
+#bbrdyxpyxa .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#pnnajfuqry .gt_group_heading {
+#bbrdyxpyxa .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1977,7 +2473,7 @@ Fred Ho
   text-align: left;
 }
 
-#pnnajfuqry .gt_empty_group_heading {
+#bbrdyxpyxa .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1992,15 +2488,15 @@ Fred Ho
   vertical-align: middle;
 }
 
-#pnnajfuqry .gt_from_md > :first-child {
+#bbrdyxpyxa .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#pnnajfuqry .gt_from_md > :last-child {
+#bbrdyxpyxa .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#pnnajfuqry .gt_row {
+#bbrdyxpyxa .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2019,7 +2515,7 @@ Fred Ho
   overflow-x: hidden;
 }
 
-#pnnajfuqry .gt_stub {
+#bbrdyxpyxa .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2032,7 +2528,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#pnnajfuqry .gt_stub_row_group {
+#bbrdyxpyxa .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2046,15 +2542,15 @@ Fred Ho
   vertical-align: top;
 }
 
-#pnnajfuqry .gt_row_group_first td {
+#bbrdyxpyxa .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#pnnajfuqry .gt_row_group_first th {
+#bbrdyxpyxa .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#pnnajfuqry .gt_summary_row {
+#bbrdyxpyxa .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2064,16 +2560,16 @@ Fred Ho
   padding-right: 5px;
 }
 
-#pnnajfuqry .gt_first_summary_row {
+#bbrdyxpyxa .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#pnnajfuqry .gt_first_summary_row.thick {
+#bbrdyxpyxa .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#pnnajfuqry .gt_last_summary_row {
+#bbrdyxpyxa .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2083,7 +2579,7 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#pnnajfuqry .gt_grand_summary_row {
+#bbrdyxpyxa .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2093,7 +2589,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#pnnajfuqry .gt_first_grand_summary_row {
+#bbrdyxpyxa .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2103,7 +2599,7 @@ Fred Ho
   border-top-color: #D3D3D3;
 }
 
-#pnnajfuqry .gt_last_grand_summary_row_top {
+#bbrdyxpyxa .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2113,11 +2609,11 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#pnnajfuqry .gt_striped {
+#bbrdyxpyxa .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#pnnajfuqry .gt_table_body {
+#bbrdyxpyxa .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2126,7 +2622,7 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#pnnajfuqry .gt_footnotes {
+#bbrdyxpyxa .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2140,7 +2636,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#pnnajfuqry .gt_footnote {
+#bbrdyxpyxa .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2149,7 +2645,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#pnnajfuqry .gt_sourcenotes {
+#bbrdyxpyxa .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2163,7 +2659,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#pnnajfuqry .gt_sourcenote {
+#bbrdyxpyxa .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2171,72 +2667,72 @@ Fred Ho
   padding-right: 5px;
 }
 
-#pnnajfuqry .gt_left {
+#bbrdyxpyxa .gt_left {
   text-align: left;
 }
 
-#pnnajfuqry .gt_center {
+#bbrdyxpyxa .gt_center {
   text-align: center;
 }
 
-#pnnajfuqry .gt_right {
+#bbrdyxpyxa .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#pnnajfuqry .gt_font_normal {
+#bbrdyxpyxa .gt_font_normal {
   font-weight: normal;
 }
 
-#pnnajfuqry .gt_font_bold {
+#bbrdyxpyxa .gt_font_bold {
   font-weight: bold;
 }
 
-#pnnajfuqry .gt_font_italic {
+#bbrdyxpyxa .gt_font_italic {
   font-style: italic;
 }
 
-#pnnajfuqry .gt_super {
+#bbrdyxpyxa .gt_super {
   font-size: 65%;
 }
 
-#pnnajfuqry .gt_footnote_marks {
+#bbrdyxpyxa .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#pnnajfuqry .gt_asterisk {
+#bbrdyxpyxa .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#pnnajfuqry .gt_indent_1 {
+#bbrdyxpyxa .gt_indent_1 {
   text-indent: 5px;
 }
 
-#pnnajfuqry .gt_indent_2 {
+#bbrdyxpyxa .gt_indent_2 {
   text-indent: 10px;
 }
 
-#pnnajfuqry .gt_indent_3 {
+#bbrdyxpyxa .gt_indent_3 {
   text-indent: 15px;
 }
 
-#pnnajfuqry .gt_indent_4 {
+#bbrdyxpyxa .gt_indent_4 {
   text-indent: 20px;
 }
 
-#pnnajfuqry .gt_indent_5 {
+#bbrdyxpyxa .gt_indent_5 {
   text-indent: 25px;
 }
 
-#pnnajfuqry .katex-display {
+#bbrdyxpyxa .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#pnnajfuqry div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#bbrdyxpyxa div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -2252,16 +2748,16 @@ Fred Ho
 </thead>
 <tbody class="gt_table_body">
 <tr class="odd">
-<td class="gt_row gt_left" headers="Quantity">Cholesterol, women minus men, mmol/L</td>
-<td class="gt_row gt_right" headers="Estimate">0.17</td>
-<td class="gt_row gt_left" headers="95% CI">0.15 to 0.19</td>
+<td class="gt_row gt_left" headers="Quantity">Improved, streptomycin minus control (difference in proportions)</td>
+<td class="gt_row gt_right" headers="Estimate">0.36</td>
+<td class="gt_row gt_left" headers="95% CI">0.17 to 0.56</td>
 <td class="gt_row gt_left" headers="p">&lt; 0.001</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Quantity">Age, men minus women, years</td>
-<td class="gt_row gt_right" headers="Estimate">0.70</td>
-<td class="gt_row gt_left" headers="95% CI">0.4 to 1.1</td>
-<td class="gt_row gt_left" headers="p">&lt; 0.001</td>
+<td class="gt_row gt_left" headers="Quantity">Improved, men minus women (difference in proportions)</td>
+<td class="gt_row gt_right" headers="Estimate">0.09</td>
+<td class="gt_row gt_left" headers="95% CI">-0.12 to 0.3</td>
+<td class="gt_row gt_left" headers="p">0.48</td>
 </tr>
 </tbody>
 </table>
@@ -2274,67 +2770,95 @@ Fred Ho
 <li class="fragment">Three to five minutes</li>
 </ul>
 </section>
-<section id="try-it-the-answer-1" class="slide level2 smaller">
+<section id="try-it-the-answer-1" class="slide level2">
 <h2>Try it: the answer</h2>
 <ul>
-<li class="fragment">Mean total cholesterol was about 0.17 mmol/L higher in women than in men (95% CI: 0.15 to 0.19 mmol/L, p &lt; 0.001)</li>
-<li class="fragment">Men in this sample were on average about 0.7 years older than women (95% CI: 0.4 to 1.1 years, p &lt; 0.001)<span class="gap"></span></li>
-<li class="fragment">Both sentences give the effect size with its units, the CI, and the p-value together. These are the sentences to keep</li>
+<li class="fragment">The proportion improved was about 0.36 higher with streptomycin than with control (95% CI 0.17 to 0.56, p &lt; 0.001)</li>
+<li class="fragment">The proportion improved was about 0.09 higher in men than in women (95% CI -0.12 to 0.3, p = 0.48). The 95% CI includes the null value of 0, so there is no good evidence of a difference by gender<span class="gap"></span></li>
+<li class="fragment">Not the same as evidence of no difference. Each sentence gives the effect size, the 95% CI, and the p-value together, and these are the sentences to keep</li>
 </ul>
 </section>
 <section id="block-2-choosing-the-right-test" class="slide level2 divider" data-background-image="assets/skyline.jpg" data-background-size="cover">
 <h2>Block 2: choosing the right test</h2>
 </section>
-<section id="four-studies-four-outcome-types" class="slide level2">
-<h2>Four studies, four outcome types</h2>
+<section id="limits-of-the-independent-samples-t-test" class="slide level2">
+<h2>Limits of the independent-samples t-test</h2>
 <ul>
-<li class="fragment">Four short study descriptions, coming up in this block’s Try it</li>
-<li class="fragment">Block 1 ended with a t-test that fitted its own question. None of these four is that question<span class="gap"></span></li>
-<li class="fragment">The logic of testing is identical in all of them. The test is not</li>
+<li class="fragment">So far we compared a continuous variable (e.g., age, cholesterol, sedentary time) between two groups. What if our data are different?<span class="gap"></span></li>
+<li class="fragment">There are tests for different scenarios</li>
+<li class="fragment">The logic of testing is identical, but each test copes with different data</li>
 </ul>
 </section>
-<section id="what-decides-the-test" class="slide level2 smaller">
+<section id="what-decides-the-test" class="slide level2">
 <h2>What decides the test</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 19%">
+<col style="width: 47%">
+<col style="width: 32%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Outcome</th>
+<th style="text-align: left;">Comparison / predictor</th>
+<th style="text-align: left;">Test</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Continuous</td>
+<td style="text-align: left;">Binary, i.e., two independent groups</td>
+<td style="text-align: left;">Independent-samples t-test</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Continuous</td>
+<td style="text-align: left;">A fixed benchmark</td>
+<td style="text-align: left;">One-sample t-test</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Continuous</td>
+<td style="text-align: left;">Two related measurements (same person)</td>
+<td style="text-align: left;">Paired t-test</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Categorical</td>
+<td style="text-align: left;">Categorical</td>
+<td style="text-align: left;">Chi-squared test</td>
+</tr>
+</tbody>
+</table>
 <ul>
-<li class="fragment">The outcome type and the study design, Week 7’s variable types doing a second job</li>
-<li class="fragment">A continuous outcome, two independent groups: the t-test Block 1 just worked</li>
-<li class="fragment">A continuous outcome against a fixed benchmark, one sample: the one-sample case, next</li>
-<li class="fragment">The same outcome measured twice on one person: paired t-test</li>
-<li class="fragment">Counts in a table: chi-squared</li>
+<li class="fragment">The outcome type and the study design decide the test</li>
 </ul>
 </section>
-<section id="the-one-sample-t-test" class="slide level2 smaller">
+<section id="the-one-sample-t-test" class="slide level2">
 <h2>The one-sample t-test</h2>
 <ul>
 <li class="fragment">Tests a single sample’s mean against a fixed reference value, not against another group’s mean</li>
-<li class="fragment">Same logic as the independent-samples test, one fewer moving part<span class="gap"></span></li>
-<li class="fragment">The one-sample non-parametric alternative: <code>wilcox.test()</code>’s one-sample form tests the <strong>median</strong> instead of the mean, when normality is in doubt
-<ul>
-<li class="fragment">A smaller sample (typically under 30), or a more pronounced skew, is when that alternative earns its place</li>
-</ul></li>
+<li class="fragment">Same logic as the independent-samples test, one fewer moving part</li>
 </ul>
 </section>
-<section id="cholesterol-against-a-clinical-benchmark" class="slide level2 smaller">
+<section id="cholesterol-against-a-clinical-benchmark" class="slide level2">
 <h2>Cholesterol against a clinical benchmark</h2>
 <div class="cell">
 <div class="cell-output-display">
-<div id="ptjuephrjx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ptjuephrjx table {
+<div id="dnupazntvr" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#dnupazntvr table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#ptjuephrjx thead, #ptjuephrjx tbody, #ptjuephrjx tfoot, #ptjuephrjx tr, #ptjuephrjx td, #ptjuephrjx th {
+#dnupazntvr thead, #dnupazntvr tbody, #dnupazntvr tfoot, #dnupazntvr tr, #dnupazntvr td, #dnupazntvr th {
   border-style: none;
 }
 
-#ptjuephrjx p {
+#dnupazntvr p {
   margin: 0;
   padding: 0;
 }
 
-#ptjuephrjx .gt_table {
+#dnupazntvr .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -2360,12 +2884,12 @@ Fred Ho
   border-left-color: #D3D3D3;
 }
 
-#ptjuephrjx .gt_caption {
+#dnupazntvr .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ptjuephrjx .gt_title {
+#dnupazntvr .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2377,7 +2901,7 @@ Fred Ho
   border-bottom-width: 0;
 }
 
-#ptjuephrjx .gt_subtitle {
+#dnupazntvr .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2389,7 +2913,7 @@ Fred Ho
   border-top-width: 0;
 }
 
-#ptjuephrjx .gt_heading {
+#dnupazntvr .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2401,13 +2925,13 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#ptjuephrjx .gt_bottom_border {
+#dnupazntvr .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ptjuephrjx .gt_col_headings {
+#dnupazntvr .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2422,7 +2946,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#ptjuephrjx .gt_col_heading {
+#dnupazntvr .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2442,7 +2966,7 @@ Fred Ho
   overflow-x: hidden;
 }
 
-#ptjuephrjx .gt_column_spanner_outer {
+#dnupazntvr .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2454,15 +2978,15 @@ Fred Ho
   padding-right: 4px;
 }
 
-#ptjuephrjx .gt_column_spanner_outer:first-child {
+#dnupazntvr .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ptjuephrjx .gt_column_spanner_outer:last-child {
+#dnupazntvr .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ptjuephrjx .gt_column_spanner {
+#dnupazntvr .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2474,11 +2998,11 @@ Fred Ho
   width: 100%;
 }
 
-#ptjuephrjx .gt_spanner_row {
+#dnupazntvr .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#ptjuephrjx .gt_group_heading {
+#dnupazntvr .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2504,7 +3028,7 @@ Fred Ho
   text-align: left;
 }
 
-#ptjuephrjx .gt_empty_group_heading {
+#dnupazntvr .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2519,15 +3043,15 @@ Fred Ho
   vertical-align: middle;
 }
 
-#ptjuephrjx .gt_from_md > :first-child {
+#dnupazntvr .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ptjuephrjx .gt_from_md > :last-child {
+#dnupazntvr .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ptjuephrjx .gt_row {
+#dnupazntvr .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2546,7 +3070,7 @@ Fred Ho
   overflow-x: hidden;
 }
 
-#ptjuephrjx .gt_stub {
+#dnupazntvr .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2559,7 +3083,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#ptjuephrjx .gt_stub_row_group {
+#dnupazntvr .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2573,15 +3097,15 @@ Fred Ho
   vertical-align: top;
 }
 
-#ptjuephrjx .gt_row_group_first td {
+#dnupazntvr .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ptjuephrjx .gt_row_group_first th {
+#dnupazntvr .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#ptjuephrjx .gt_summary_row {
+#dnupazntvr .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2591,16 +3115,16 @@ Fred Ho
   padding-right: 5px;
 }
 
-#ptjuephrjx .gt_first_summary_row {
+#dnupazntvr .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ptjuephrjx .gt_first_summary_row.thick {
+#dnupazntvr .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ptjuephrjx .gt_last_summary_row {
+#dnupazntvr .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2610,7 +3134,7 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#ptjuephrjx .gt_grand_summary_row {
+#dnupazntvr .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2620,7 +3144,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#ptjuephrjx .gt_first_grand_summary_row {
+#dnupazntvr .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2630,7 +3154,7 @@ Fred Ho
   border-top-color: #D3D3D3;
 }
 
-#ptjuephrjx .gt_last_grand_summary_row_top {
+#dnupazntvr .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2640,11 +3164,11 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#ptjuephrjx .gt_striped {
+#dnupazntvr .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ptjuephrjx .gt_table_body {
+#dnupazntvr .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2653,7 +3177,7 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#ptjuephrjx .gt_footnotes {
+#dnupazntvr .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2667,7 +3191,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#ptjuephrjx .gt_footnote {
+#dnupazntvr .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2676,7 +3200,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#ptjuephrjx .gt_sourcenotes {
+#dnupazntvr .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2690,7 +3214,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#ptjuephrjx .gt_sourcenote {
+#dnupazntvr .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2698,72 +3222,72 @@ Fred Ho
   padding-right: 5px;
 }
 
-#ptjuephrjx .gt_left {
+#dnupazntvr .gt_left {
   text-align: left;
 }
 
-#ptjuephrjx .gt_center {
+#dnupazntvr .gt_center {
   text-align: center;
 }
 
-#ptjuephrjx .gt_right {
+#dnupazntvr .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ptjuephrjx .gt_font_normal {
+#dnupazntvr .gt_font_normal {
   font-weight: normal;
 }
 
-#ptjuephrjx .gt_font_bold {
+#dnupazntvr .gt_font_bold {
   font-weight: bold;
 }
 
-#ptjuephrjx .gt_font_italic {
+#dnupazntvr .gt_font_italic {
   font-style: italic;
 }
 
-#ptjuephrjx .gt_super {
+#dnupazntvr .gt_super {
   font-size: 65%;
 }
 
-#ptjuephrjx .gt_footnote_marks {
+#dnupazntvr .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#ptjuephrjx .gt_asterisk {
+#dnupazntvr .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ptjuephrjx .gt_indent_1 {
+#dnupazntvr .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ptjuephrjx .gt_indent_2 {
+#dnupazntvr .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ptjuephrjx .gt_indent_3 {
+#dnupazntvr .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ptjuephrjx .gt_indent_4 {
+#dnupazntvr .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ptjuephrjx .gt_indent_5 {
+#dnupazntvr .gt_indent_5 {
   text-indent: 25px;
 }
 
-#ptjuephrjx .katex-display {
+#dnupazntvr .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#ptjuephrjx div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#dnupazntvr div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -2780,7 +3304,7 @@ Fred Ho
 <tbody class="gt_table_body">
 <tr class="odd">
 <td class="gt_row gt_left" headers="Quantity">Total cholesterol against 5.2 mmol/L benchmark</td>
-<td class="gt_row gt_left" headers="Estimate">-0.23 mmol/L below</td>
+<td class="gt_row gt_left" headers="Estimate">0.23 mmol/L below</td>
 <td class="gt_row gt_left" headers="95% CI">0.22 to 0.24 mmol/L below</td>
 <td class="gt_row gt_left" headers="p">&lt; 0.001</td>
 </tr>
@@ -2791,39 +3315,76 @@ Fred Ho
 </div>
 </div>
 <ul>
+<li class="fragment">H0: Mean cholesterol is at 5.2 mmol/L in the population</li>
+<li class="fragment">H1: Mean cholesterol is different from 5.2 mmol/L in the population<span class="gap"></span></li>
+<li class="fragment">Mean total cholesterol was about 0.23 mmol/L below the benchmark (95% CI 0.22 to 0.24 mmol/L below, p &lt; 0.001)</li>
 <li class="fragment">5.2 mmol/L is the American guideline’s ‘desirable’ figure; UK guidance uses 5.0 mmol/L instead</li>
-<li class="fragment"><code>t.test()</code> prints a CI for the mean itself, 4.96 to 4.98 mmol/L, not the quantity the test is about. Subtracting the benchmark from both ends turns it into the effect size above, the same move the independent-samples slide made with its own CI</li>
 </ul>
 </section>
-<section id="when-both-come-from-the-same-person" class="slide level2 smaller">
-<h2>When both come from the same person</h2>
+<section id="one-sample-t-test-assumption-check" class="slide level2 smaller">
+<h2>One-sample t-test: assumption check</h2>
+<div class="columns">
+<div class="column" style="width:42%;">
 <ul>
-<li class="fragment">The <strong>paired t-test</strong>, and why relatedness changes the analysis</li>
-<li class="fragment">Pairing removes between-person variation, so the test reduces to a one-sample test on the within-person differences<span class="gap"></span></li>
-<li class="fragment">Exactly the case the one-sample slide just introduced</li>
+<li class="fragment">The sampling distribution of the mean should be roughly normal, not <code>chol</code> itself</li>
+<li class="fragment"><code>chol</code> is mildly right-skewed, but n is near 39,000</li>
+<li class="fragment">The CLT applies, so the assumption holds comfortably</li>
+<li class="fragment">10 values above 12 mmol/L are not shown</li>
+</ul>
+</div><div class="column" style="width:58%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="week09-comparison_files/figure-revealjs/chol-hist-1.png" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="one-sample-t-test-the-alternative" class="slide level2">
+<h2>One-sample t-test: the alternative</h2>
+<ul>
+<li class="fragment">The one-sample Wilcoxon signed-rank test tests the <strong>median</strong> instead of the mean</li>
+<li class="fragment">It earns its place when the sample is small (typically under 30) or the skew is pronounced<span class="gap"></span></li>
+<li class="fragment">Here: median 4.89 mmol/L (Q1 to Q3 4.22 to 5.61 mmol/L), p &lt; 0.001</li>
+<li class="fragment">Same conclusion as the t-test, as expected with a sample this large</li>
+</ul>
+</section>
+<section id="the-paired-t-test" class="slide level2">
+<h2>The paired t-test</h2>
+<ul>
+<li class="fragment">The independent-samples t-test assumes the two groups are unrelated observations</li>
+<li class="fragment">The paired t-test is for when the two groups are related<span class="gap"></span>
+<ul>
+<li class="fragment">The same or a similar measurement in the same individuals</li>
+<li class="fragment">Sibling or twin analysis</li>
+<li class="fragment">Matched case-control studies</li>
+</ul></li>
 </ul>
 </section>
 <section id="two-domains-within-one-person" class="slide level2 smaller">
 <h2>Two domains within one person</h2>
 <div class="cell">
 <div class="cell-output-display">
-<div id="ebdmkkymzi" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ebdmkkymzi table {
+<div id="ztcrvlqmkb" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ztcrvlqmkb table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#ebdmkkymzi thead, #ebdmkkymzi tbody, #ebdmkkymzi tfoot, #ebdmkkymzi tr, #ebdmkkymzi td, #ebdmkkymzi th {
+#ztcrvlqmkb thead, #ztcrvlqmkb tbody, #ztcrvlqmkb tfoot, #ztcrvlqmkb tr, #ztcrvlqmkb td, #ztcrvlqmkb th {
   border-style: none;
 }
 
-#ebdmkkymzi p {
+#ztcrvlqmkb p {
   margin: 0;
   padding: 0;
 }
 
-#ebdmkkymzi .gt_table {
+#ztcrvlqmkb .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -2849,12 +3410,12 @@ Fred Ho
   border-left-color: #D3D3D3;
 }
 
-#ebdmkkymzi .gt_caption {
+#ztcrvlqmkb .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ebdmkkymzi .gt_title {
+#ztcrvlqmkb .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2866,7 +3427,7 @@ Fred Ho
   border-bottom-width: 0;
 }
 
-#ebdmkkymzi .gt_subtitle {
+#ztcrvlqmkb .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2878,7 +3439,7 @@ Fred Ho
   border-top-width: 0;
 }
 
-#ebdmkkymzi .gt_heading {
+#ztcrvlqmkb .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2890,13 +3451,13 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#ebdmkkymzi .gt_bottom_border {
+#ztcrvlqmkb .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ebdmkkymzi .gt_col_headings {
+#ztcrvlqmkb .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2911,7 +3472,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#ebdmkkymzi .gt_col_heading {
+#ztcrvlqmkb .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2931,7 +3492,7 @@ Fred Ho
   overflow-x: hidden;
 }
 
-#ebdmkkymzi .gt_column_spanner_outer {
+#ztcrvlqmkb .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2943,15 +3504,15 @@ Fred Ho
   padding-right: 4px;
 }
 
-#ebdmkkymzi .gt_column_spanner_outer:first-child {
+#ztcrvlqmkb .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ebdmkkymzi .gt_column_spanner_outer:last-child {
+#ztcrvlqmkb .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ebdmkkymzi .gt_column_spanner {
+#ztcrvlqmkb .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2963,11 +3524,11 @@ Fred Ho
   width: 100%;
 }
 
-#ebdmkkymzi .gt_spanner_row {
+#ztcrvlqmkb .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#ebdmkkymzi .gt_group_heading {
+#ztcrvlqmkb .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2993,7 +3554,7 @@ Fred Ho
   text-align: left;
 }
 
-#ebdmkkymzi .gt_empty_group_heading {
+#ztcrvlqmkb .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3008,15 +3569,15 @@ Fred Ho
   vertical-align: middle;
 }
 
-#ebdmkkymzi .gt_from_md > :first-child {
+#ztcrvlqmkb .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ebdmkkymzi .gt_from_md > :last-child {
+#ztcrvlqmkb .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ebdmkkymzi .gt_row {
+#ztcrvlqmkb .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3035,7 +3596,7 @@ Fred Ho
   overflow-x: hidden;
 }
 
-#ebdmkkymzi .gt_stub {
+#ztcrvlqmkb .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3048,7 +3609,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#ebdmkkymzi .gt_stub_row_group {
+#ztcrvlqmkb .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3062,15 +3623,15 @@ Fred Ho
   vertical-align: top;
 }
 
-#ebdmkkymzi .gt_row_group_first td {
+#ztcrvlqmkb .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ebdmkkymzi .gt_row_group_first th {
+#ztcrvlqmkb .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#ebdmkkymzi .gt_summary_row {
+#ztcrvlqmkb .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3080,16 +3641,16 @@ Fred Ho
   padding-right: 5px;
 }
 
-#ebdmkkymzi .gt_first_summary_row {
+#ztcrvlqmkb .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ebdmkkymzi .gt_first_summary_row.thick {
+#ztcrvlqmkb .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ebdmkkymzi .gt_last_summary_row {
+#ztcrvlqmkb .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3099,7 +3660,7 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#ebdmkkymzi .gt_grand_summary_row {
+#ztcrvlqmkb .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3109,7 +3670,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#ebdmkkymzi .gt_first_grand_summary_row {
+#ztcrvlqmkb .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3119,7 +3680,7 @@ Fred Ho
   border-top-color: #D3D3D3;
 }
 
-#ebdmkkymzi .gt_last_grand_summary_row_top {
+#ztcrvlqmkb .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3129,11 +3690,11 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#ebdmkkymzi .gt_striped {
+#ztcrvlqmkb .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ebdmkkymzi .gt_table_body {
+#ztcrvlqmkb .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3142,7 +3703,7 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#ebdmkkymzi .gt_footnotes {
+#ztcrvlqmkb .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3156,7 +3717,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#ebdmkkymzi .gt_footnote {
+#ztcrvlqmkb .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -3165,7 +3726,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#ebdmkkymzi .gt_sourcenotes {
+#ztcrvlqmkb .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3179,7 +3740,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#ebdmkkymzi .gt_sourcenote {
+#ztcrvlqmkb .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3187,72 +3748,72 @@ Fred Ho
   padding-right: 5px;
 }
 
-#ebdmkkymzi .gt_left {
+#ztcrvlqmkb .gt_left {
   text-align: left;
 }
 
-#ebdmkkymzi .gt_center {
+#ztcrvlqmkb .gt_center {
   text-align: center;
 }
 
-#ebdmkkymzi .gt_right {
+#ztcrvlqmkb .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ebdmkkymzi .gt_font_normal {
+#ztcrvlqmkb .gt_font_normal {
   font-weight: normal;
 }
 
-#ebdmkkymzi .gt_font_bold {
+#ztcrvlqmkb .gt_font_bold {
   font-weight: bold;
 }
 
-#ebdmkkymzi .gt_font_italic {
+#ztcrvlqmkb .gt_font_italic {
   font-style: italic;
 }
 
-#ebdmkkymzi .gt_super {
+#ztcrvlqmkb .gt_super {
   font-size: 65%;
 }
 
-#ebdmkkymzi .gt_footnote_marks {
+#ztcrvlqmkb .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#ebdmkkymzi .gt_asterisk {
+#ztcrvlqmkb .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ebdmkkymzi .gt_indent_1 {
+#ztcrvlqmkb .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ebdmkkymzi .gt_indent_2 {
+#ztcrvlqmkb .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ebdmkkymzi .gt_indent_3 {
+#ztcrvlqmkb .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ebdmkkymzi .gt_indent_4 {
+#ztcrvlqmkb .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ebdmkkymzi .gt_indent_5 {
+#ztcrvlqmkb .gt_indent_5 {
   text-indent: 25px;
 }
 
-#ebdmkkymzi .katex-display {
+#ztcrvlqmkb .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#ebdmkkymzi div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#ztcrvlqmkb div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -3280,583 +3841,76 @@ Fred Ho
 </div>
 </div>
 <ul>
-<li class="fragment"><code>met_w</code> (activity at work) and <code>met_r</code> (activity outside work): two domains measured within a person, never before and after</li>
-<li class="fragment">Framing this as change over time plants a misconception that causes real trouble in a genuine longitudinal design later on</li>
+<li class="fragment">H0: The mean within-person difference (work minus outside-work activity) is zero in the population</li>
+<li class="fragment">H1: The mean within-person difference is not zero in the population<span class="gap"></span></li>
+<li class="fragment">Activity at work was about 3.07 MET-hours/day higher than activity outside work (95% CI 2.93 to 3.21 MET-hours/day, p &lt; 0.001)</li>
+<li class="fragment"><code>met_w</code> (activity at work) and <code>met_r</code> (activity outside work): two domains measured within a person</li>
 </ul>
 </section>
-<section id="the-difference-distribution-is-skewed-and-zero-heavy" class="slide level2">
-<h2>The difference distribution is skewed, and zero-heavy</h2>
-
-<img data-src="week09-comparison_files/figure-revealjs/met-diff-hist-1.png" width="576" class="r-stretch"><ul>
-<li class="fragment">Many participants report no occupational activity at all, so the difference sits exactly at zero for them</li>
-<li class="fragment">The honest bridge to the non-parametric alternative, next</li>
-</ul>
-</section>
-<section id="when-the-assumptions-do-not-hold" class="slide level2 smaller">
-<h2>When the assumptions do not hold</h2>
+<section id="paired-t-test-assumption-check" class="slide level2 smaller">
+<h2>Paired t-test: assumption check</h2>
+<div class="columns">
+<div class="column" style="width:42%;">
 <ul>
-<li class="fragment">Non-parametric alternatives, naming three: replace the mean or the average rank with the ranks of the raw values, so one extreme value can’t dominate the result</li>
-<li class="fragment"><strong>One-sample</strong>: the signed-rank test already met against the clinical benchmark</li>
-<li class="fragment"><strong>Paired</strong>: Wilcoxon signed-rank, on the within-person differences</li>
-<li class="fragment"><strong>Independent</strong>: Mann-Whitney (rank-sum)<span class="gap"></span></li>
-<li class="fragment">With a sample this large, the t-test and the Wilcoxon test agree here despite the skew (both p &lt; 0.001). That won’t always be true</li>
+<li class="fragment">The sampling distribution of the within-person difference should be roughly normal</li>
+<li class="fragment">The differences are skewed, with a spike at zero: many participants report no occupational activity at all</li>
+<li class="fragment">The sample is large, so the CLT still applies, but the skew is the cue to check the alternative</li>
 </ul>
-</section>
-<section id="try-it-which-test" class="slide level2 smaller">
-<h2>Try it: which test?</h2>
-<ul>
-<li class="fragment"><strong>A.</strong> Blood pressure reduction is compared between two independently randomised drug groups, roughly symmetric in each group</li>
-<li class="fragment"><strong>B.</strong> The same patients’ resting heart rate is measured before starting an exercise programme, then again eight weeks later</li>
-<li class="fragment"><strong>C.</strong> Whether a patient has a chronic cough is recorded against their smoking status, and the question is whether the two are associated<span class="gap"></span></li>
-<li class="fragment"><strong>D.</strong> Recovery time in days is compared between two small groups of eight patients on different pain protocols, strongly right-skewed in both</li>
-<li class="fragment">For each: name the outcome type, and name the test</li>
-</ul>
-</section>
-<section id="try-it-the-answer-2" class="slide level2 smaller">
-<h2>Try it: the answer</h2>
-<ul>
-<li class="fragment"><strong>A.</strong> Continuous, two independent groups, roughly symmetric: independent-samples t-test</li>
-<li class="fragment"><strong>B.</strong> Continuous, two measurements on the same person: paired t-test</li>
-<li class="fragment"><strong>C.</strong> Counts in a 2x2 table: chi-squared test<span class="gap"></span></li>
-<li class="fragment"><strong>D.</strong> Continuous, two independent groups, small and skewed: Mann-Whitney</li>
-</ul>
-</section>
-<section id="counts-in-a-table-the-chi-squared-test" class="slide level2 smaller">
-<h2>Counts in a table: the chi-squared test</h2>
-<ul>
-<li class="fragment">Everything tested so far has been a mean or a difference between means, and the logic ran through a standard error</li>
-<li class="fragment">A contingency table has no mean in it: the data are counts of people in categories<span class="gap"></span></li>
-<li class="fragment">What carries over is the shape of the argument, not the arithmetic: state what the table would look like if the null were true, measure how far the real table sits from that, ask how often a gap that size would arise by chance. Only the measure of distance changes</li>
-</ul>
-</section>
-<section id="observed-against-expected" class="slide level2">
-<h2>Observed against expected</h2>
-<ul>
-<li class="fragment">The intuition: what the table would look like if the two variables were unrelated, against how far the real table actually sits from that</li>
-<li class="fragment">The chi-squared statistic is exactly that distance, summed across every cell</li>
-</ul>
-</section>
-<section id="when-chi-squared-is-not-valid" class="slide level2 smaller">
-<h2>When chi-squared is not valid</h2>
-<ul>
-<li class="fragment">The validity condition: every <strong>expected</strong> count should be reasonably large, conventionally at least 5</li>
-<li class="fragment">Chi-squared is an approximation, and the expected-count condition is precisely what that approximation needs in order to hold<span class="gap"></span></li>
-<li class="fragment"><strong>Fisher’s exact test</strong> is the answer when it fails: the same association, tested exactly rather than by approximation</li>
-</ul>
-</section>
-<section id="two-things-the-lab-needs-named-first" class="slide level2">
-<h2>Two things the lab needs, named first</h2>
-<ul>
-<li class="fragment"><strong>Yates’ continuity correction</strong>, worked on the next slide</li>
-<li class="fragment"><strong>Fisher’s exact test</strong>, already named above</li>
-<li class="fragment">So the lab introduces nothing the room has never heard of</li>
-</ul>
-</section>
-<section id="the-same-table-two-p-values" class="slide level2 smaller">
-<h2>The same table, two p-values</h2>
+</div><div class="column" style="width:58%;">
 <div class="cell">
 <div class="cell-output-display">
-<div id="gmbghbnugb" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#gmbghbnugb table {
-  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-#gmbghbnugb thead, #gmbghbnugb tbody, #gmbghbnugb tfoot, #gmbghbnugb tr, #gmbghbnugb td, #gmbghbnugb th {
-  border-style: none;
-}
-
-#gmbghbnugb p {
-  margin: 0;
-  padding: 0;
-}
-
-#gmbghbnugb .gt_table {
-  display: table;
-  border-collapse: collapse;
-  line-height: normal;
-  margin-left: auto;
-  margin-right: auto;
-  color: #333333;
-  font-size: 16px;
-  font-weight: normal;
-  font-style: normal;
-  background-color: #FFFFFF;
-  width: auto;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #A8A8A8;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #A8A8A8;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-}
-
-#gmbghbnugb .gt_caption {
-  padding-top: 4px;
-  padding-bottom: 4px;
-}
-
-#gmbghbnugb .gt_title {
-  color: #333333;
-  font-size: 125%;
-  font-weight: initial;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-color: #FFFFFF;
-  border-bottom-width: 0;
-}
-
-#gmbghbnugb .gt_subtitle {
-  color: #333333;
-  font-size: 85%;
-  font-weight: initial;
-  padding-top: 3px;
-  padding-bottom: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-color: #FFFFFF;
-  border-top-width: 0;
-}
-
-#gmbghbnugb .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#gmbghbnugb .gt_bottom_border {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#gmbghbnugb .gt_col_headings {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#gmbghbnugb .gt_col_heading {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 6px;
-  padding-left: 5px;
-  padding-right: 5px;
-  overflow-x: hidden;
-}
-
-#gmbghbnugb .gt_column_spanner_outer {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  padding-top: 0;
-  padding-bottom: 0;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-
-#gmbghbnugb .gt_column_spanner_outer:first-child {
-  padding-left: 0;
-}
-
-#gmbghbnugb .gt_column_spanner_outer:last-child {
-  padding-right: 0;
-}
-
-#gmbghbnugb .gt_column_spanner {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  overflow-x: hidden;
-  display: inline-block;
-  width: 100%;
-}
-
-#gmbghbnugb .gt_spanner_row {
-  border-bottom-style: hidden;
-}
-
-#gmbghbnugb .gt_group_heading {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  text-align: left;
-}
-
-#gmbghbnugb .gt_empty_group_heading {
-  padding: 0.5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: middle;
-}
-
-#gmbghbnugb .gt_from_md > :first-child {
-  margin-top: 0;
-}
-
-#gmbghbnugb .gt_from_md > :last-child {
-  margin-bottom: 0;
-}
-
-#gmbghbnugb .gt_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  margin: 10px;
-  border-top-style: solid;
-  border-top-width: 1px;
-  border-top-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  overflow-x: hidden;
-}
-
-#gmbghbnugb .gt_stub {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#gmbghbnugb .gt_stub_row_group {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-  vertical-align: top;
-}
-
-#gmbghbnugb .gt_row_group_first td {
-  border-top-width: 2px;
-}
-
-#gmbghbnugb .gt_row_group_first th {
-  border-top-width: 2px;
-}
-
-#gmbghbnugb .gt_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#gmbghbnugb .gt_first_summary_row {
-  border-top-style: solid;
-  border-top-color: #D3D3D3;
-}
-
-#gmbghbnugb .gt_first_summary_row.thick {
-  border-top-width: 2px;
-}
-
-#gmbghbnugb .gt_last_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#gmbghbnugb .gt_grand_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#gmbghbnugb .gt_first_grand_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-style: double;
-  border-top-width: 6px;
-  border-top-color: #D3D3D3;
-}
-
-#gmbghbnugb .gt_last_grand_summary_row_top {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: double;
-  border-bottom-width: 6px;
-  border-bottom-color: #D3D3D3;
-}
-
-#gmbghbnugb .gt_striped {
-  background-color: rgba(128, 128, 128, 0.05);
-}
-
-#gmbghbnugb .gt_table_body {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#gmbghbnugb .gt_footnotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#gmbghbnugb .gt_footnote {
-  margin: 0px;
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#gmbghbnugb .gt_sourcenotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#gmbghbnugb .gt_sourcenote {
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#gmbghbnugb .gt_left {
-  text-align: left;
-}
-
-#gmbghbnugb .gt_center {
-  text-align: center;
-}
-
-#gmbghbnugb .gt_right {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-#gmbghbnugb .gt_font_normal {
-  font-weight: normal;
-}
-
-#gmbghbnugb .gt_font_bold {
-  font-weight: bold;
-}
-
-#gmbghbnugb .gt_font_italic {
-  font-style: italic;
-}
-
-#gmbghbnugb .gt_super {
-  font-size: 65%;
-}
-
-#gmbghbnugb .gt_footnote_marks {
-  font-size: 75%;
-  vertical-align: 0.4em;
-  position: initial;
-}
-
-#gmbghbnugb .gt_asterisk {
-  font-size: 100%;
-  vertical-align: 0;
-}
-
-#gmbghbnugb .gt_indent_1 {
-  text-indent: 5px;
-}
-
-#gmbghbnugb .gt_indent_2 {
-  text-indent: 10px;
-}
-
-#gmbghbnugb .gt_indent_3 {
-  text-indent: 15px;
-}
-
-#gmbghbnugb .gt_indent_4 {
-  text-indent: 20px;
-}
-
-#gmbghbnugb .gt_indent_5 {
-  text-indent: 25px;
-}
-
-#gmbghbnugb .katex-display {
-  display: inline-flex !important;
-  margin-bottom: 0.75em !important;
-}
-
-#gmbghbnugb div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
-  height: 0px !important;
-}
-</style>
-
-<table class="gt_table caption-top" data-quarto-bootstrap="false">
-<thead>
-<tr class="gt_col_headings header">
-<th id="Default" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Default</th>
-<th id="Chi-squared" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Chi-squared</th>
-<th id="p" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">p</th>
-</tr>
-</thead>
-<tbody class="gt_table_body">
-<tr class="odd">
-<td class="gt_row gt_left" headers="Default">Uncorrected (`correct = FALSE`)</td>
-<td class="gt_row gt_right" headers="Chi-squared">14.18</td>
-<td class="gt_row gt_right" headers="p">0.000166</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="Default">With Yates' correction (R's default)</td>
-<td class="gt_row gt_right" headers="Chi-squared">12.76</td>
-<td class="gt_row gt_right" headers="p">0.0003548</td>
-</tr>
-</tbody>
-</table>
-
+<div>
+<figure>
+<p><img data-src="week09-comparison_files/figure-revealjs/met-diff-hist-1.png" width="576"></p>
+</figure>
 </div>
 </div>
 </div>
+</div></div>
+</section>
+<section id="paired-t-test-the-alternative" class="slide level2">
+<h2>Paired t-test: the alternative</h2>
 <ul>
-<li class="fragment">Same data, same table, two different p-values, purely from one function default</li>
-<li class="fragment">Yates’ correction shrinks the test statistic slightly, a conservative adjustment for approximating whole-number counts with a smooth curve. It earns its place when expected counts run low, typically down around 5 to 10; ours are comfortably above that</li>
+<li class="fragment">The Wilcoxon signed-rank test works on the ranks of the within-person differences, so one extreme value can’t dominate the result</li>
+<li class="fragment">It earns its place when the sample is small or the differences are strongly skewed<span class="gap"></span></li>
+<li class="fragment">Here the t-test and the Wilcoxon test agree despite the skew (both p &lt; 0.001)</li>
+<li class="fragment">With a smaller sample, or a more extreme distribution, they can disagree</li>
 </ul>
 </section>
-<section id="streptomycin-tested" class="slide level2">
+<section id="the-chi-squared-test" class="slide level2 smaller">
+<h2>The chi-squared test</h2>
+<ul>
+<li class="fragment">Everything tested so far has been a mean or a difference between means</li>
+<li class="fragment">The chi-squared test examines the association between two categorical variables, usually presented in a contingency table</li>
+<li class="fragment">The same logic applies:
+<ul>
+<li class="fragment">What the table is <strong>expected</strong> to look like if the two variables were unrelated (i.e., H0)</li>
+<li class="fragment">How far the real table sits from that</li>
+<li class="fragment">The chi-squared statistic is that distance, summed across every cell</li>
+</ul></li>
+</ul>
+</section>
+<section id="streptomycin-tested" class="slide level2 smaller">
 <h2>Streptomycin, tested</h2>
 <div class="cell">
 <div class="cell-output-display">
-<div id="pgurukcmmf" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#pgurukcmmf table {
+<div id="dexhoraqwh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#dexhoraqwh table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#pgurukcmmf thead, #pgurukcmmf tbody, #pgurukcmmf tfoot, #pgurukcmmf tr, #pgurukcmmf td, #pgurukcmmf th {
+#dexhoraqwh thead, #dexhoraqwh tbody, #dexhoraqwh tfoot, #dexhoraqwh tr, #dexhoraqwh td, #dexhoraqwh th {
   border-style: none;
 }
 
-#pgurukcmmf p {
+#dexhoraqwh p {
   margin: 0;
   padding: 0;
 }
 
-#pgurukcmmf .gt_table {
+#dexhoraqwh .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -3882,12 +3936,12 @@ Fred Ho
   border-left-color: #D3D3D3;
 }
 
-#pgurukcmmf .gt_caption {
+#dexhoraqwh .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#pgurukcmmf .gt_title {
+#dexhoraqwh .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -3899,7 +3953,7 @@ Fred Ho
   border-bottom-width: 0;
 }
 
-#pgurukcmmf .gt_subtitle {
+#dexhoraqwh .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -3911,7 +3965,7 @@ Fred Ho
   border-top-width: 0;
 }
 
-#pgurukcmmf .gt_heading {
+#dexhoraqwh .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -3923,13 +3977,13 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#pgurukcmmf .gt_bottom_border {
+#dexhoraqwh .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#pgurukcmmf .gt_col_headings {
+#dexhoraqwh .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3944,7 +3998,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#pgurukcmmf .gt_col_heading {
+#dexhoraqwh .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3964,7 +4018,7 @@ Fred Ho
   overflow-x: hidden;
 }
 
-#pgurukcmmf .gt_column_spanner_outer {
+#dexhoraqwh .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3976,15 +4030,15 @@ Fred Ho
   padding-right: 4px;
 }
 
-#pgurukcmmf .gt_column_spanner_outer:first-child {
+#dexhoraqwh .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#pgurukcmmf .gt_column_spanner_outer:last-child {
+#dexhoraqwh .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#pgurukcmmf .gt_column_spanner {
+#dexhoraqwh .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -3996,11 +4050,11 @@ Fred Ho
   width: 100%;
 }
 
-#pgurukcmmf .gt_spanner_row {
+#dexhoraqwh .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#pgurukcmmf .gt_group_heading {
+#dexhoraqwh .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4026,7 +4080,7 @@ Fred Ho
   text-align: left;
 }
 
-#pgurukcmmf .gt_empty_group_heading {
+#dexhoraqwh .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -4041,15 +4095,15 @@ Fred Ho
   vertical-align: middle;
 }
 
-#pgurukcmmf .gt_from_md > :first-child {
+#dexhoraqwh .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#pgurukcmmf .gt_from_md > :last-child {
+#dexhoraqwh .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#pgurukcmmf .gt_row {
+#dexhoraqwh .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4068,7 +4122,7 @@ Fred Ho
   overflow-x: hidden;
 }
 
-#pgurukcmmf .gt_stub {
+#dexhoraqwh .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4081,7 +4135,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#pgurukcmmf .gt_stub_row_group {
+#dexhoraqwh .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4095,15 +4149,15 @@ Fred Ho
   vertical-align: top;
 }
 
-#pgurukcmmf .gt_row_group_first td {
+#dexhoraqwh .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#pgurukcmmf .gt_row_group_first th {
+#dexhoraqwh .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#pgurukcmmf .gt_summary_row {
+#dexhoraqwh .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -4113,16 +4167,16 @@ Fred Ho
   padding-right: 5px;
 }
 
-#pgurukcmmf .gt_first_summary_row {
+#dexhoraqwh .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#pgurukcmmf .gt_first_summary_row.thick {
+#dexhoraqwh .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#pgurukcmmf .gt_last_summary_row {
+#dexhoraqwh .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4132,7 +4186,7 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#pgurukcmmf .gt_grand_summary_row {
+#dexhoraqwh .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -4142,7 +4196,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#pgurukcmmf .gt_first_grand_summary_row {
+#dexhoraqwh .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4152,7 +4206,7 @@ Fred Ho
   border-top-color: #D3D3D3;
 }
 
-#pgurukcmmf .gt_last_grand_summary_row_top {
+#dexhoraqwh .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4162,11 +4216,11 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#pgurukcmmf .gt_striped {
+#dexhoraqwh .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#pgurukcmmf .gt_table_body {
+#dexhoraqwh .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -4175,7 +4229,7 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#pgurukcmmf .gt_footnotes {
+#dexhoraqwh .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4189,7 +4243,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#pgurukcmmf .gt_footnote {
+#dexhoraqwh .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -4198,7 +4252,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#pgurukcmmf .gt_sourcenotes {
+#dexhoraqwh .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4212,7 +4266,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#pgurukcmmf .gt_sourcenote {
+#dexhoraqwh .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -4220,72 +4274,72 @@ Fred Ho
   padding-right: 5px;
 }
 
-#pgurukcmmf .gt_left {
+#dexhoraqwh .gt_left {
   text-align: left;
 }
 
-#pgurukcmmf .gt_center {
+#dexhoraqwh .gt_center {
   text-align: center;
 }
 
-#pgurukcmmf .gt_right {
+#dexhoraqwh .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#pgurukcmmf .gt_font_normal {
+#dexhoraqwh .gt_font_normal {
   font-weight: normal;
 }
 
-#pgurukcmmf .gt_font_bold {
+#dexhoraqwh .gt_font_bold {
   font-weight: bold;
 }
 
-#pgurukcmmf .gt_font_italic {
+#dexhoraqwh .gt_font_italic {
   font-style: italic;
 }
 
-#pgurukcmmf .gt_super {
+#dexhoraqwh .gt_super {
   font-size: 65%;
 }
 
-#pgurukcmmf .gt_footnote_marks {
+#dexhoraqwh .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#pgurukcmmf .gt_asterisk {
+#dexhoraqwh .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#pgurukcmmf .gt_indent_1 {
+#dexhoraqwh .gt_indent_1 {
   text-indent: 5px;
 }
 
-#pgurukcmmf .gt_indent_2 {
+#dexhoraqwh .gt_indent_2 {
   text-indent: 10px;
 }
 
-#pgurukcmmf .gt_indent_3 {
+#dexhoraqwh .gt_indent_3 {
   text-indent: 15px;
 }
 
-#pgurukcmmf .gt_indent_4 {
+#dexhoraqwh .gt_indent_4 {
   text-indent: 20px;
 }
 
-#pgurukcmmf .gt_indent_5 {
+#dexhoraqwh .gt_indent_5 {
   text-indent: 25px;
 }
 
-#pgurukcmmf .katex-display {
+#dexhoraqwh .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#pgurukcmmf div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#dexhoraqwh div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -4312,46 +4366,27 @@ Fred Ho
 </div>
 </div>
 </div>
-<ul>
-<li class="fragment">All four expected counts are comfortably above 5, so the test is on solid ground</li>
-</ul>
-</section>
-<section id="risk-ratio-and-odds-ratio-with-uncertainty" class="slide level2">
-<h2>Risk ratio and odds ratio, with uncertainty</h2>
-<ul>
-<li class="fragment">Both quantities came from the epi half as point estimates</li>
-<li class="fragment">They are estimates like any other, so a CI goes round each one</li>
-</ul>
-</section>
-<section id="the-null-value-is-1-not-0" class="slide level2 smaller">
-<h2>The null value is 1, not 0</h2>
-<ul>
-<li class="fragment">The single most important difference from everything before it in this session</li>
-<li class="fragment">A ratio of 1 means no association<span class="gap"></span></li>
-<li class="fragment">A CI excluding 1 corresponds to a significant chi-squared test on the same table</li>
-</ul>
-</section>
-<section id="risk-ratio-and-odds-ratio-for-streptomycin" class="slide level2">
-<h2>Risk ratio and odds ratio for streptomycin</h2>
+<div class="columns">
+<div class="column" style="width:42%;">
 <div class="cell">
 <div class="cell-output-display">
-<div id="jghxcuukrm" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#jghxcuukrm table {
+<div id="ouhkgcruaa" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ouhkgcruaa table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#jghxcuukrm thead, #jghxcuukrm tbody, #jghxcuukrm tfoot, #jghxcuukrm tr, #jghxcuukrm td, #jghxcuukrm th {
+#ouhkgcruaa thead, #ouhkgcruaa tbody, #ouhkgcruaa tfoot, #ouhkgcruaa tr, #ouhkgcruaa td, #ouhkgcruaa th {
   border-style: none;
 }
 
-#jghxcuukrm p {
+#ouhkgcruaa p {
   margin: 0;
   padding: 0;
 }
 
-#jghxcuukrm .gt_table {
+#ouhkgcruaa .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -4377,12 +4412,12 @@ Fred Ho
   border-left-color: #D3D3D3;
 }
 
-#jghxcuukrm .gt_caption {
+#ouhkgcruaa .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#jghxcuukrm .gt_title {
+#ouhkgcruaa .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -4394,7 +4429,7 @@ Fred Ho
   border-bottom-width: 0;
 }
 
-#jghxcuukrm .gt_subtitle {
+#ouhkgcruaa .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -4406,7 +4441,7 @@ Fred Ho
   border-top-width: 0;
 }
 
-#jghxcuukrm .gt_heading {
+#ouhkgcruaa .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -4418,13 +4453,13 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#jghxcuukrm .gt_bottom_border {
+#ouhkgcruaa .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#jghxcuukrm .gt_col_headings {
+#ouhkgcruaa .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -4439,7 +4474,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#jghxcuukrm .gt_col_heading {
+#ouhkgcruaa .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4459,7 +4494,7 @@ Fred Ho
   overflow-x: hidden;
 }
 
-#jghxcuukrm .gt_column_spanner_outer {
+#ouhkgcruaa .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4471,15 +4506,15 @@ Fred Ho
   padding-right: 4px;
 }
 
-#jghxcuukrm .gt_column_spanner_outer:first-child {
+#ouhkgcruaa .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#jghxcuukrm .gt_column_spanner_outer:last-child {
+#ouhkgcruaa .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#jghxcuukrm .gt_column_spanner {
+#ouhkgcruaa .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -4491,11 +4526,11 @@ Fred Ho
   width: 100%;
 }
 
-#jghxcuukrm .gt_spanner_row {
+#ouhkgcruaa .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#jghxcuukrm .gt_group_heading {
+#ouhkgcruaa .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4521,7 +4556,7 @@ Fred Ho
   text-align: left;
 }
 
-#jghxcuukrm .gt_empty_group_heading {
+#ouhkgcruaa .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -4536,15 +4571,15 @@ Fred Ho
   vertical-align: middle;
 }
 
-#jghxcuukrm .gt_from_md > :first-child {
+#ouhkgcruaa .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#jghxcuukrm .gt_from_md > :last-child {
+#ouhkgcruaa .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#jghxcuukrm .gt_row {
+#ouhkgcruaa .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4563,7 +4598,7 @@ Fred Ho
   overflow-x: hidden;
 }
 
-#jghxcuukrm .gt_stub {
+#ouhkgcruaa .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4576,7 +4611,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#jghxcuukrm .gt_stub_row_group {
+#ouhkgcruaa .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4590,15 +4625,15 @@ Fred Ho
   vertical-align: top;
 }
 
-#jghxcuukrm .gt_row_group_first td {
+#ouhkgcruaa .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#jghxcuukrm .gt_row_group_first th {
+#ouhkgcruaa .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#jghxcuukrm .gt_summary_row {
+#ouhkgcruaa .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -4608,16 +4643,16 @@ Fred Ho
   padding-right: 5px;
 }
 
-#jghxcuukrm .gt_first_summary_row {
+#ouhkgcruaa .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#jghxcuukrm .gt_first_summary_row.thick {
+#ouhkgcruaa .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#jghxcuukrm .gt_last_summary_row {
+#ouhkgcruaa .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4627,7 +4662,7 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#jghxcuukrm .gt_grand_summary_row {
+#ouhkgcruaa .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -4637,7 +4672,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#jghxcuukrm .gt_first_grand_summary_row {
+#ouhkgcruaa .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4647,7 +4682,7 @@ Fred Ho
   border-top-color: #D3D3D3;
 }
 
-#jghxcuukrm .gt_last_grand_summary_row_top {
+#ouhkgcruaa .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4657,11 +4692,11 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#jghxcuukrm .gt_striped {
+#ouhkgcruaa .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#jghxcuukrm .gt_table_body {
+#ouhkgcruaa .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -4670,7 +4705,7 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#jghxcuukrm .gt_footnotes {
+#ouhkgcruaa .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4684,7 +4719,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#jghxcuukrm .gt_footnote {
+#ouhkgcruaa .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -4693,7 +4728,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#jghxcuukrm .gt_sourcenotes {
+#ouhkgcruaa .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4707,7 +4742,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#jghxcuukrm .gt_sourcenote {
+#ouhkgcruaa .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -4715,72 +4750,1157 @@ Fred Ho
   padding-right: 5px;
 }
 
-#jghxcuukrm .gt_left {
+#ouhkgcruaa .gt_left {
   text-align: left;
 }
 
-#jghxcuukrm .gt_center {
+#ouhkgcruaa .gt_center {
   text-align: center;
 }
 
-#jghxcuukrm .gt_right {
+#ouhkgcruaa .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#jghxcuukrm .gt_font_normal {
+#ouhkgcruaa .gt_font_normal {
   font-weight: normal;
 }
 
-#jghxcuukrm .gt_font_bold {
+#ouhkgcruaa .gt_font_bold {
   font-weight: bold;
 }
 
-#jghxcuukrm .gt_font_italic {
+#ouhkgcruaa .gt_font_italic {
   font-style: italic;
 }
 
-#jghxcuukrm .gt_super {
+#ouhkgcruaa .gt_super {
   font-size: 65%;
 }
 
-#jghxcuukrm .gt_footnote_marks {
+#ouhkgcruaa .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#jghxcuukrm .gt_asterisk {
+#ouhkgcruaa .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#jghxcuukrm .gt_indent_1 {
+#ouhkgcruaa .gt_indent_1 {
   text-indent: 5px;
 }
 
-#jghxcuukrm .gt_indent_2 {
+#ouhkgcruaa .gt_indent_2 {
   text-indent: 10px;
 }
 
-#jghxcuukrm .gt_indent_3 {
+#ouhkgcruaa .gt_indent_3 {
   text-indent: 15px;
 }
 
-#jghxcuukrm .gt_indent_4 {
+#ouhkgcruaa .gt_indent_4 {
   text-indent: 20px;
 }
 
-#jghxcuukrm .gt_indent_5 {
+#ouhkgcruaa .gt_indent_5 {
   text-indent: 25px;
 }
 
-#jghxcuukrm .katex-display {
+#ouhkgcruaa .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#jghxcuukrm div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#ouhkgcruaa div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_col_headings header">
+<th id="Arm" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Arm</th>
+<th id="Not-improved" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Not improved</th>
+<th id="Improved" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Improved</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="Arm">Streptomycin</td>
+<td class="gt_row gt_right" headers="Not improved">17</td>
+<td class="gt_row gt_right" headers="Improved">38</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Arm">Control</td>
+<td class="gt_row gt_right" headers="Not improved">35</td>
+<td class="gt_row gt_right" headers="Improved">17</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</div><div class="column" style="width:58%;">
+<ul>
+<li class="fragment">H0: The proportion improved is the same with streptomycin and with control in the population</li>
+<li class="fragment">H1: The proportion improved differs between the two arms in the population<span class="gap"></span></li>
+<li class="fragment">Improvement was more common with streptomycin (38 of 55) than with control (17 of 52), p &lt; 0.001</li>
+<li class="fragment">A p-value alone doesn’t say by how much: the risk ratio and odds ratio, later in this block, put a size on it</li>
+</ul>
+</div></div>
+</section>
+<section id="chi-squared-test-assumption-check" class="slide level2">
+<h2>Chi-squared test: assumption check</h2>
+<ul>
+<li class="fragment">Every <strong>expected</strong> count should be reasonably large, conventionally at least 5</li>
+<li class="fragment">Chi-squared is an approximation, and the expected-count condition is required for the approximation to work<span class="gap"></span></li>
+<li class="fragment">For the streptomycin table, the smallest expected count is 25.3, comfortably above 5</li>
+<li class="fragment">So the test is on solid ground here</li>
+</ul>
+</section>
+<section id="yates-continuity-correction" class="slide level2 smaller">
+<h2>Yates’ continuity correction</h2>
+<ul>
+<li class="fragment">Same data, same table, two different p-values</li>
+</ul>
+<div class="cell">
+<div class="cell-output-display">
+<div id="gfbcozgrih" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#gfbcozgrih table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#gfbcozgrih thead, #gfbcozgrih tbody, #gfbcozgrih tfoot, #gfbcozgrih tr, #gfbcozgrih td, #gfbcozgrih th {
+  border-style: none;
+}
+
+#gfbcozgrih p {
+  margin: 0;
+  padding: 0;
+}
+
+#gfbcozgrih .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#gfbcozgrih .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#gfbcozgrih .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#gfbcozgrih .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#gfbcozgrih .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#gfbcozgrih .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gfbcozgrih .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#gfbcozgrih .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#gfbcozgrih .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#gfbcozgrih .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#gfbcozgrih .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#gfbcozgrih .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#gfbcozgrih .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#gfbcozgrih .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#gfbcozgrih .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#gfbcozgrih .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#gfbcozgrih .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#gfbcozgrih .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#gfbcozgrih .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gfbcozgrih .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#gfbcozgrih .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#gfbcozgrih .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#gfbcozgrih .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gfbcozgrih .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#gfbcozgrih .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#gfbcozgrih .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gfbcozgrih .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gfbcozgrih .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#gfbcozgrih .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gfbcozgrih .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#gfbcozgrih .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gfbcozgrih .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#gfbcozgrih .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gfbcozgrih .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#gfbcozgrih .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gfbcozgrih .gt_left {
+  text-align: left;
+}
+
+#gfbcozgrih .gt_center {
+  text-align: center;
+}
+
+#gfbcozgrih .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#gfbcozgrih .gt_font_normal {
+  font-weight: normal;
+}
+
+#gfbcozgrih .gt_font_bold {
+  font-weight: bold;
+}
+
+#gfbcozgrih .gt_font_italic {
+  font-style: italic;
+}
+
+#gfbcozgrih .gt_super {
+  font-size: 65%;
+}
+
+#gfbcozgrih .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#gfbcozgrih .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#gfbcozgrih .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#gfbcozgrih .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#gfbcozgrih .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#gfbcozgrih .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#gfbcozgrih .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#gfbcozgrih .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#gfbcozgrih div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_col_headings header">
+<th id="Version" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Version</th>
+<th id="Chi-squared" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Chi-squared</th>
+<th id="p" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">p</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="Version">Uncorrected</td>
+<td class="gt_row gt_right" headers="Chi-squared">14.18</td>
+<td class="gt_row gt_right" headers="p">0.000166</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Version">With Yates' correction</td>
+<td class="gt_row gt_right" headers="Chi-squared">12.76</td>
+<td class="gt_row gt_right" headers="p">0.0003548</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="columns">
+<div class="column" style="width:58%;">
+<ul>
+<li class="fragment"><strong>Rationale</strong>
+<ul>
+<li class="fragment">Counts are whole numbers, but the chi-squared distribution is smooth</li>
+<li class="fragment">With small expected counts, that approximation makes the p-value too small</li>
+<li class="fragment">The correction subtracts 0.5 from each observed-expected gap before squaring</li>
+<li class="fragment">The statistic shrinks slightly, so the p-value rises</li>
+</ul></li>
+</ul>
+</div><div class="column" style="width:42%;">
+<ul>
+<li class="fragment"><strong>Recommendation</strong>
+<ul>
+<li class="fragment">Expected counts around 5 to 10: use the correction</li>
+<li class="fragment">Expected counts below 5: use Fisher’s exact test instead</li>
+<li class="fragment">Comfortably above that, as here: leave it off, since it changes little</li>
+</ul></li>
+</ul>
+</div></div>
+</section>
+<section id="chi-squared-test-the-alternative" class="slide level2">
+<h2>Chi-squared test: the alternative</h2>
+<ul>
+<li class="fragment"><strong>Fisher’s exact test</strong> is the answer when the expected-count condition fails</li>
+<li class="fragment">It tests the same association, exactly instead of by approximation<span class="gap"></span></li>
+<li class="fragment">Here: p = 0.000222, the same conclusion as the chi-squared test</li>
+<li class="fragment">Typical in a small trial or with a rare outcome</li>
+</ul>
+</section>
+<section id="try-it-which-test" class="slide level2 smaller">
+<h2>Try it: which test?</h2>
+<ul>
+<li class="fragment"><strong>A.</strong> Blood pressure reduction is compared between two independently randomised drug groups, roughly symmetric in each group</li>
+<li class="fragment"><strong>B.</strong> The same patients’ resting heart rate is measured before starting an exercise programme, then again eight weeks later</li>
+<li class="fragment"><strong>C.</strong> Whether a patient has a chronic cough is recorded against smoking status in a survey of 2,000 adults</li>
+<li class="fragment"><strong>D.</strong> Recovery time in days is recorded for eight patients on each of two pain protocols in turn, and the within-patient differences are strongly right-skewed</li>
+<li class="fragment"><strong>E.</strong> Whether a rare side effect occurs is compared between two arms of a 24-patient pilot trial, and several expected counts in the 2x2 table are below 5<span class="gap"></span></li>
+<li class="fragment">For each: name the outcome type, the comparison, and the test</li>
+</ul>
+</section>
+<section id="try-it-the-answer-2" class="slide level2 smaller">
+<h2>Try it: the answer</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 3%">
+<col style="width: 14%">
+<col style="width: 50%">
+<col style="width: 32%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Outcome</th>
+<th style="text-align: left;">Comparison / predictor</th>
+<th style="text-align: left;">Test</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>A</strong></td>
+<td style="text-align: left;">Continuous</td>
+<td style="text-align: left;">Two independent groups, roughly symmetric</td>
+<td style="text-align: left;">Independent-samples t-test</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>B</strong></td>
+<td style="text-align: left;">Continuous</td>
+<td style="text-align: left;">Two measurements on the same person</td>
+<td style="text-align: left;">Paired t-test</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>C</strong></td>
+<td style="text-align: left;">Categorical</td>
+<td style="text-align: left;">Categorical, large sample</td>
+<td style="text-align: left;">Chi-squared test</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>D</strong></td>
+<td style="text-align: left;">Continuous</td>
+<td style="text-align: left;">Two measurements on the same person, small sample, strongly skewed differences</td>
+<td style="text-align: left;">Wilcoxon signed-rank test</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>E</strong></td>
+<td style="text-align: left;">Categorical</td>
+<td style="text-align: left;">Categorical, expected counts below 5</td>
+<td style="text-align: left;">Fisher’s exact test</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="risk-ratio-and-odds-ratio-with-95-cis" class="slide level2">
+<h2>Risk ratio and odds ratio, with 95% CIs</h2>
+<ul>
+<li class="fragment">Both quantities came from the epi half as point estimates</li>
+<li class="fragment">They are estimates like any other, so a 95% CI goes round each one</li>
+<li class="fragment"><strong>Null value is 1</strong>
+<ul>
+<li class="fragment">The effect size is now a ratio, not a difference</li>
+<li class="fragment">A ratio of 1 means no association<span class="gap"></span></li>
+<li class="fragment">A CI excluding 1 corresponds to a significant chi-squared test</li>
+</ul></li>
+</ul>
+</section>
+<section id="risk-ratio-and-odds-ratio-for-streptomycin" class="slide level2">
+<h2>Risk ratio and odds ratio for streptomycin</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div id="oxmfjgnbqn" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#oxmfjgnbqn table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#oxmfjgnbqn thead, #oxmfjgnbqn tbody, #oxmfjgnbqn tfoot, #oxmfjgnbqn tr, #oxmfjgnbqn td, #oxmfjgnbqn th {
+  border-style: none;
+}
+
+#oxmfjgnbqn p {
+  margin: 0;
+  padding: 0;
+}
+
+#oxmfjgnbqn .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#oxmfjgnbqn .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#oxmfjgnbqn .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#oxmfjgnbqn .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#oxmfjgnbqn .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#oxmfjgnbqn .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#oxmfjgnbqn .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#oxmfjgnbqn .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#oxmfjgnbqn .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#oxmfjgnbqn .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#oxmfjgnbqn .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#oxmfjgnbqn .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#oxmfjgnbqn .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#oxmfjgnbqn .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#oxmfjgnbqn .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#oxmfjgnbqn .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#oxmfjgnbqn .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#oxmfjgnbqn .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#oxmfjgnbqn .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#oxmfjgnbqn .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#oxmfjgnbqn .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#oxmfjgnbqn .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#oxmfjgnbqn .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#oxmfjgnbqn .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#oxmfjgnbqn .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#oxmfjgnbqn .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#oxmfjgnbqn .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#oxmfjgnbqn .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#oxmfjgnbqn .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#oxmfjgnbqn .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#oxmfjgnbqn .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#oxmfjgnbqn .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#oxmfjgnbqn .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#oxmfjgnbqn .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#oxmfjgnbqn .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#oxmfjgnbqn .gt_left {
+  text-align: left;
+}
+
+#oxmfjgnbqn .gt_center {
+  text-align: center;
+}
+
+#oxmfjgnbqn .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#oxmfjgnbqn .gt_font_normal {
+  font-weight: normal;
+}
+
+#oxmfjgnbqn .gt_font_bold {
+  font-weight: bold;
+}
+
+#oxmfjgnbqn .gt_font_italic {
+  font-style: italic;
+}
+
+#oxmfjgnbqn .gt_super {
+  font-size: 65%;
+}
+
+#oxmfjgnbqn .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#oxmfjgnbqn .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#oxmfjgnbqn .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#oxmfjgnbqn .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#oxmfjgnbqn .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#oxmfjgnbqn .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#oxmfjgnbqn .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#oxmfjgnbqn .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#oxmfjgnbqn div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -4813,28 +5933,32 @@ Fred Ho
 </div>
 </div>
 </div>
+<ul>
+<li class="fragment">Improvement was about twice as likely with streptomycin as with control (RR 2.11, 95% CI 1.38 to 3.24, p &lt; 0.001)</li>
+<li class="fragment">Both 95% CIs exclude the null value of 1, matching the significant chi-squared test</li>
+</ul>
 </section>
 <section id="try-it-the-2x2-by-hand" class="slide level2">
 <h2>Try it: the 2x2, by hand</h2>
 <div class="cell">
 <div class="cell-output-display">
-<div id="sxhghiuqgg" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#sxhghiuqgg table {
+<div id="ofnbufrdmu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ofnbufrdmu table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#sxhghiuqgg thead, #sxhghiuqgg tbody, #sxhghiuqgg tfoot, #sxhghiuqgg tr, #sxhghiuqgg td, #sxhghiuqgg th {
+#ofnbufrdmu thead, #ofnbufrdmu tbody, #ofnbufrdmu tfoot, #ofnbufrdmu tr, #ofnbufrdmu td, #ofnbufrdmu th {
   border-style: none;
 }
 
-#sxhghiuqgg p {
+#ofnbufrdmu p {
   margin: 0;
   padding: 0;
 }
 
-#sxhghiuqgg .gt_table {
+#ofnbufrdmu .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -4860,12 +5984,12 @@ Fred Ho
   border-left-color: #D3D3D3;
 }
 
-#sxhghiuqgg .gt_caption {
+#ofnbufrdmu .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#sxhghiuqgg .gt_title {
+#ofnbufrdmu .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -4877,7 +6001,7 @@ Fred Ho
   border-bottom-width: 0;
 }
 
-#sxhghiuqgg .gt_subtitle {
+#ofnbufrdmu .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -4889,7 +6013,7 @@ Fred Ho
   border-top-width: 0;
 }
 
-#sxhghiuqgg .gt_heading {
+#ofnbufrdmu .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -4901,13 +6025,13 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#sxhghiuqgg .gt_bottom_border {
+#ofnbufrdmu .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#sxhghiuqgg .gt_col_headings {
+#ofnbufrdmu .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -4922,7 +6046,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#sxhghiuqgg .gt_col_heading {
+#ofnbufrdmu .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4942,7 +6066,7 @@ Fred Ho
   overflow-x: hidden;
 }
 
-#sxhghiuqgg .gt_column_spanner_outer {
+#ofnbufrdmu .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4954,15 +6078,15 @@ Fred Ho
   padding-right: 4px;
 }
 
-#sxhghiuqgg .gt_column_spanner_outer:first-child {
+#ofnbufrdmu .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#sxhghiuqgg .gt_column_spanner_outer:last-child {
+#ofnbufrdmu .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#sxhghiuqgg .gt_column_spanner {
+#ofnbufrdmu .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -4974,11 +6098,11 @@ Fred Ho
   width: 100%;
 }
 
-#sxhghiuqgg .gt_spanner_row {
+#ofnbufrdmu .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#sxhghiuqgg .gt_group_heading {
+#ofnbufrdmu .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -5004,7 +6128,7 @@ Fred Ho
   text-align: left;
 }
 
-#sxhghiuqgg .gt_empty_group_heading {
+#ofnbufrdmu .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -5019,15 +6143,15 @@ Fred Ho
   vertical-align: middle;
 }
 
-#sxhghiuqgg .gt_from_md > :first-child {
+#ofnbufrdmu .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#sxhghiuqgg .gt_from_md > :last-child {
+#ofnbufrdmu .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#sxhghiuqgg .gt_row {
+#ofnbufrdmu .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -5046,7 +6170,7 @@ Fred Ho
   overflow-x: hidden;
 }
 
-#sxhghiuqgg .gt_stub {
+#ofnbufrdmu .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -5059,7 +6183,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#sxhghiuqgg .gt_stub_row_group {
+#ofnbufrdmu .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -5073,15 +6197,15 @@ Fred Ho
   vertical-align: top;
 }
 
-#sxhghiuqgg .gt_row_group_first td {
+#ofnbufrdmu .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#sxhghiuqgg .gt_row_group_first th {
+#ofnbufrdmu .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#sxhghiuqgg .gt_summary_row {
+#ofnbufrdmu .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -5091,16 +6215,16 @@ Fred Ho
   padding-right: 5px;
 }
 
-#sxhghiuqgg .gt_first_summary_row {
+#ofnbufrdmu .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#sxhghiuqgg .gt_first_summary_row.thick {
+#ofnbufrdmu .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#sxhghiuqgg .gt_last_summary_row {
+#ofnbufrdmu .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -5110,7 +6234,7 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#sxhghiuqgg .gt_grand_summary_row {
+#ofnbufrdmu .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -5120,7 +6244,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#sxhghiuqgg .gt_first_grand_summary_row {
+#ofnbufrdmu .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -5130,7 +6254,7 @@ Fred Ho
   border-top-color: #D3D3D3;
 }
 
-#sxhghiuqgg .gt_last_grand_summary_row_top {
+#ofnbufrdmu .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -5140,11 +6264,11 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#sxhghiuqgg .gt_striped {
+#ofnbufrdmu .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#sxhghiuqgg .gt_table_body {
+#ofnbufrdmu .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -5153,7 +6277,7 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#sxhghiuqgg .gt_footnotes {
+#ofnbufrdmu .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -5167,7 +6291,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#sxhghiuqgg .gt_footnote {
+#ofnbufrdmu .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -5176,7 +6300,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#sxhghiuqgg .gt_sourcenotes {
+#ofnbufrdmu .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -5190,7 +6314,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#sxhghiuqgg .gt_sourcenote {
+#ofnbufrdmu .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -5198,72 +6322,72 @@ Fred Ho
   padding-right: 5px;
 }
 
-#sxhghiuqgg .gt_left {
+#ofnbufrdmu .gt_left {
   text-align: left;
 }
 
-#sxhghiuqgg .gt_center {
+#ofnbufrdmu .gt_center {
   text-align: center;
 }
 
-#sxhghiuqgg .gt_right {
+#ofnbufrdmu .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#sxhghiuqgg .gt_font_normal {
+#ofnbufrdmu .gt_font_normal {
   font-weight: normal;
 }
 
-#sxhghiuqgg .gt_font_bold {
+#ofnbufrdmu .gt_font_bold {
   font-weight: bold;
 }
 
-#sxhghiuqgg .gt_font_italic {
+#ofnbufrdmu .gt_font_italic {
   font-style: italic;
 }
 
-#sxhghiuqgg .gt_super {
+#ofnbufrdmu .gt_super {
   font-size: 65%;
 }
 
-#sxhghiuqgg .gt_footnote_marks {
+#ofnbufrdmu .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#sxhghiuqgg .gt_asterisk {
+#ofnbufrdmu .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#sxhghiuqgg .gt_indent_1 {
+#ofnbufrdmu .gt_indent_1 {
   text-indent: 5px;
 }
 
-#sxhghiuqgg .gt_indent_2 {
+#ofnbufrdmu .gt_indent_2 {
   text-indent: 10px;
 }
 
-#sxhghiuqgg .gt_indent_3 {
+#ofnbufrdmu .gt_indent_3 {
   text-indent: 15px;
 }
 
-#sxhghiuqgg .gt_indent_4 {
+#ofnbufrdmu .gt_indent_4 {
   text-indent: 20px;
 }
 
-#sxhghiuqgg .gt_indent_5 {
+#ofnbufrdmu .gt_indent_5 {
   text-indent: 25px;
 }
 
-#sxhghiuqgg .katex-display {
+#ofnbufrdmu .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#sxhghiuqgg div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#ofnbufrdmu div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -5272,20 +6396,20 @@ Fred Ho
 <thead>
 <tr class="gt_col_headings header">
 <th id="Arm" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Arm</th>
-<th id="FALSE" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">FALSE</th>
-<th id="TRUE" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">TRUE</th>
+<th id="Not-improved" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Not improved</th>
+<th id="Improved" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Improved</th>
 </tr>
 </thead>
 <tbody class="gt_table_body">
 <tr class="odd">
 <td class="gt_row gt_left" headers="Arm">Streptomycin</td>
-<td class="gt_row gt_right" headers="FALSE">17</td>
-<td class="gt_row gt_right" headers="TRUE">38</td>
+<td class="gt_row gt_right" headers="Not improved">17</td>
+<td class="gt_row gt_right" headers="Improved">38</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="Arm">Control</td>
-<td class="gt_row gt_right" headers="FALSE">35</td>
-<td class="gt_row gt_right" headers="TRUE">17</td>
+<td class="gt_row gt_right" headers="Not improved">35</td>
+<td class="gt_row gt_right" headers="Improved">17</td>
 </tr>
 </tbody>
 </table>
@@ -5296,10 +6420,10 @@ Fred Ho
 <ul>
 <li class="fragment">From this table: the risk of improvement in each arm, then the risk ratio, then the odds ratio</li>
 <li class="fragment">Then: why does the odds ratio sit so much further from 1 than the risk ratio?</li>
-<li class="fragment">Five minutes, phones fine</li>
+<li class="fragment">Five minutes</li>
 </ul>
 </section>
-<section id="try-it-the-answer-3" class="slide level2 smaller">
+<section id="try-it-the-answer-3" class="slide level2">
 <h2>Try it: the answer</h2>
 <ul>
 <li class="fragment">Streptomycin risk: 38/55 = 0.69. Control risk: 17/52 = 0.33<span class="gap"></span></li>
@@ -5308,70 +6432,127 @@ Fred Ho
 <li class="fragment">The odds ratio exaggerates when the outcome is common, which is why it is not a risk ratio and should not be read as one</li>
 </ul>
 </section>
+<section id="back-to-the-independent-samples-t-test" class="slide level2">
+<h2>Back to the independent-samples t-test</h2>
+<ul>
+<li class="fragment"><strong>Assumption check</strong>: the two groups should look similar in shape, as the boxplots for cholesterol by gender did
+<ul>
+<li class="fragment">Spread may differ between groups: <code>t.test()</code> doesn’t assume equal variance by default</li>
+</ul></li>
+<li class="fragment"><strong>Alternative</strong>: the Mann-Whitney test (Wilcoxon rank-sum) compares the ranks of the two groups’ values<span class="gap"></span>
+<ul>
+<li class="fragment">It earns its place when the samples are small or strongly skewed</li>
+</ul></li>
+</ul>
+</section>
+<section id="what-decides-the-test-and-what-to-check" class="slide level2 smaller">
+<h2>What decides the test, and what to check</h2>
+<table class="caption-top" style="width:100%;">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 21%">
+<col style="width: 18%">
+<col style="width: 28%">
+<col style="width: 21%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Outcome</th>
+<th style="text-align: left;">Comparison / predictor</th>
+<th style="text-align: left;">Test</th>
+<th style="text-align: left;">Assumption check</th>
+<th style="text-align: left;">If it fails</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Continuous</td>
+<td style="text-align: left;">Binary, i.e., two independent groups</td>
+<td style="text-align: left;">Independent-samples t-test</td>
+<td style="text-align: left;">Similar spread and shape in each group; roughly normal sampling distribution</td>
+<td style="text-align: left;">Mann-Whitney (Wilcoxon rank-sum)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Continuous</td>
+<td style="text-align: left;">A fixed benchmark</td>
+<td style="text-align: left;">One-sample t-test</td>
+<td style="text-align: left;">Roughly normal sampling distribution of the mean</td>
+<td style="text-align: left;">One-sample Wilcoxon signed-rank</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Continuous</td>
+<td style="text-align: left;">Two related measurements (same person)</td>
+<td style="text-align: left;">Paired t-test</td>
+<td style="text-align: left;">Roughly normal sampling distribution of the within-person difference</td>
+<td style="text-align: left;">Wilcoxon signed-rank</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Categorical</td>
+<td style="text-align: left;">Categorical</td>
+<td style="text-align: left;">Chi-squared test</td>
+<td style="text-align: left;">Every expected count at least 5</td>
+<td style="text-align: left;">Fisher’s exact test</td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="block-3-error-power-and-multiple-testing" class="slide level2 divider" data-background-image="assets/skyline.jpg" data-background-size="cover">
 <h2>Block 3: error, power, and multiple testing</h2>
 </section>
-<section id="statistical-power-and-what-it-depends-on" class="slide level2 smaller">
+<section id="statistical-power-and-what-it-depends-on" class="slide level2">
 <h2>Statistical power, and what it depends on</h2>
 <ul>
-<li class="fragment"><strong>Power</strong>: the probability of detecting an effect of a given size, if it is really there. One minus the Type II error rate this session opened with</li>
+<li class="fragment"><strong>Power</strong>: the probability of detecting an effect of a given size, if it exists. One minus the Type II error rate this session opened with</li>
 <li class="fragment">Rises with a larger effect, a bigger sample, or less variable data<span class="gap"></span></li>
 <li class="fragment">Falls under a stricter significance level</li>
 </ul>
 </section>
-<section id="why-post-hoc-power-is-a-circular-argument" class="slide level2 smaller">
+<section id="why-post-hoc-power-is-a-circular-argument" class="slide level2">
 <h2>Why post-hoc power is a circular argument</h2>
 <ul>
 <li class="fragment">Power asks how likely a study is to detect an effect, <strong>before it runs</strong></li>
-<li class="fragment">Once the data are in, the estimate and its CI already say what the study could resolve<span class="gap"></span></li>
+<li class="fragment">Once the data are in, the estimate and its 95% CI already say what the study could resolve<span class="gap"></span></li>
 <li class="fragment">Power computed from the observed effect is just a re-expression of the p-value</li>
-<li class="fragment">A wide CI is the honest way to report a study that was too small</li>
 </ul>
 </section>
-<section id="testing-many-things-at-once" class="slide level2 smaller">
+<section id="testing-many-things-at-once" class="slide level2">
 <h2>Testing many things at once</h2>
 
 <img data-src="week09-comparison_files/figure-revealjs/multiplicity-curve-1.png" width="576" class="r-stretch"><ul>
-<li class="fragment">Twenty independent tests at 0.05 each, and one comes up significant by construction</li>
-<li class="fragment">The error rate people think they are controlling is per test. The one that matters is per study</li>
-</ul>
-</section>
-<section id="try-it-still-trustworthy" class="slide level2">
-<h2>Try it: still trustworthy?</h2>
-<ul>
-<li class="fragment">A paper runs 20 independent tests at 0.05 and highlights the one significant result</li>
-<li class="fragment">Is that finding still trustworthy at face value? Discuss</li>
+<li class="fragment">Twenty independent tests at 0.05 each: on average one comes up significant by chance alone</li>
+<li class="fragment">The error rate people think they are controlling is per test</li>
+<li class="fragment">With many tests in one study, some Type I errors are bound to occur</li>
 </ul>
 </section>
 <section id="application-absence-of-evidence" class="slide level2 divider" data-background-image="assets/skyline.jpg" data-background-size="cover">
 <h2>Application: absence of evidence</h2>
 </section>
-<section id="four-claims-four-intervals" class="slide level2 smaller">
-<h2>Four claims, four intervals</h2>
+<section id="four-claims-four-95-cis" class="slide level2 smaller">
+<h2>Four claims, four 95% CIs</h2>
 <ul>
 <li class="fragment">Read each result and the paper’s own conclusion, and discuss in pairs</li>
-<li class="fragment">Does the sentence say what the numbers actually support? Where it does not, what would you write instead?</li>
+<li class="fragment">Does the sentence say what the numbers support? Where it does not, what would you write instead?</li>
 <li class="fragment">Ten minutes</li>
 </ul>
 <div class="cell">
 <div class="cell-output-display">
-<div id="pqknqszuml" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#pqknqszuml table {
+<div id="ukmphxvxqg" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ukmphxvxqg table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#pqknqszuml thead, #pqknqszuml tbody, #pqknqszuml tfoot, #pqknqszuml tr, #pqknqszuml td, #pqknqszuml th {
+#ukmphxvxqg thead, #ukmphxvxqg tbody, #ukmphxvxqg tfoot, #ukmphxvxqg tr, #ukmphxvxqg td, #ukmphxvxqg th {
   border-style: none;
 }
 
-#pqknqszuml p {
+#ukmphxvxqg p {
   margin: 0;
   padding: 0;
 }
 
-#pqknqszuml .gt_table {
+#ukmphxvxqg .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -5397,12 +6578,12 @@ Fred Ho
   border-left-color: #D3D3D3;
 }
 
-#pqknqszuml .gt_caption {
+#ukmphxvxqg .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#pqknqszuml .gt_title {
+#ukmphxvxqg .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -5414,7 +6595,7 @@ Fred Ho
   border-bottom-width: 0;
 }
 
-#pqknqszuml .gt_subtitle {
+#ukmphxvxqg .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -5426,7 +6607,7 @@ Fred Ho
   border-top-width: 0;
 }
 
-#pqknqszuml .gt_heading {
+#ukmphxvxqg .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -5438,13 +6619,13 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#pqknqszuml .gt_bottom_border {
+#ukmphxvxqg .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#pqknqszuml .gt_col_headings {
+#ukmphxvxqg .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -5459,7 +6640,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#pqknqszuml .gt_col_heading {
+#ukmphxvxqg .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -5479,7 +6660,7 @@ Fred Ho
   overflow-x: hidden;
 }
 
-#pqknqszuml .gt_column_spanner_outer {
+#ukmphxvxqg .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -5491,15 +6672,15 @@ Fred Ho
   padding-right: 4px;
 }
 
-#pqknqszuml .gt_column_spanner_outer:first-child {
+#ukmphxvxqg .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#pqknqszuml .gt_column_spanner_outer:last-child {
+#ukmphxvxqg .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#pqknqszuml .gt_column_spanner {
+#ukmphxvxqg .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -5511,11 +6692,11 @@ Fred Ho
   width: 100%;
 }
 
-#pqknqszuml .gt_spanner_row {
+#ukmphxvxqg .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#pqknqszuml .gt_group_heading {
+#ukmphxvxqg .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -5541,7 +6722,7 @@ Fred Ho
   text-align: left;
 }
 
-#pqknqszuml .gt_empty_group_heading {
+#ukmphxvxqg .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -5556,15 +6737,15 @@ Fred Ho
   vertical-align: middle;
 }
 
-#pqknqszuml .gt_from_md > :first-child {
+#ukmphxvxqg .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#pqknqszuml .gt_from_md > :last-child {
+#ukmphxvxqg .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#pqknqszuml .gt_row {
+#ukmphxvxqg .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -5583,7 +6764,7 @@ Fred Ho
   overflow-x: hidden;
 }
 
-#pqknqszuml .gt_stub {
+#ukmphxvxqg .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -5596,7 +6777,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#pqknqszuml .gt_stub_row_group {
+#ukmphxvxqg .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -5610,15 +6791,15 @@ Fred Ho
   vertical-align: top;
 }
 
-#pqknqszuml .gt_row_group_first td {
+#ukmphxvxqg .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#pqknqszuml .gt_row_group_first th {
+#ukmphxvxqg .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#pqknqszuml .gt_summary_row {
+#ukmphxvxqg .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -5628,16 +6809,16 @@ Fred Ho
   padding-right: 5px;
 }
 
-#pqknqszuml .gt_first_summary_row {
+#ukmphxvxqg .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#pqknqszuml .gt_first_summary_row.thick {
+#ukmphxvxqg .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#pqknqszuml .gt_last_summary_row {
+#ukmphxvxqg .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -5647,7 +6828,7 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#pqknqszuml .gt_grand_summary_row {
+#ukmphxvxqg .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -5657,7 +6838,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#pqknqszuml .gt_first_grand_summary_row {
+#ukmphxvxqg .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -5667,7 +6848,7 @@ Fred Ho
   border-top-color: #D3D3D3;
 }
 
-#pqknqszuml .gt_last_grand_summary_row_top {
+#ukmphxvxqg .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -5677,11 +6858,11 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#pqknqszuml .gt_striped {
+#ukmphxvxqg .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#pqknqszuml .gt_table_body {
+#ukmphxvxqg .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -5690,7 +6871,7 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#pqknqszuml .gt_footnotes {
+#ukmphxvxqg .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -5704,7 +6885,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#pqknqszuml .gt_footnote {
+#ukmphxvxqg .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -5713,7 +6894,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#pqknqszuml .gt_sourcenotes {
+#ukmphxvxqg .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -5727,7 +6908,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#pqknqszuml .gt_sourcenote {
+#ukmphxvxqg .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -5735,72 +6916,72 @@ Fred Ho
   padding-right: 5px;
 }
 
-#pqknqszuml .gt_left {
+#ukmphxvxqg .gt_left {
   text-align: left;
 }
 
-#pqknqszuml .gt_center {
+#ukmphxvxqg .gt_center {
   text-align: center;
 }
 
-#pqknqszuml .gt_right {
+#ukmphxvxqg .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#pqknqszuml .gt_font_normal {
+#ukmphxvxqg .gt_font_normal {
   font-weight: normal;
 }
 
-#pqknqszuml .gt_font_bold {
+#ukmphxvxqg .gt_font_bold {
   font-weight: bold;
 }
 
-#pqknqszuml .gt_font_italic {
+#ukmphxvxqg .gt_font_italic {
   font-style: italic;
 }
 
-#pqknqszuml .gt_super {
+#ukmphxvxqg .gt_super {
   font-size: 65%;
 }
 
-#pqknqszuml .gt_footnote_marks {
+#ukmphxvxqg .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#pqknqszuml .gt_asterisk {
+#ukmphxvxqg .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#pqknqszuml .gt_indent_1 {
+#ukmphxvxqg .gt_indent_1 {
   text-indent: 5px;
 }
 
-#pqknqszuml .gt_indent_2 {
+#ukmphxvxqg .gt_indent_2 {
   text-indent: 10px;
 }
 
-#pqknqszuml .gt_indent_3 {
+#ukmphxvxqg .gt_indent_3 {
   text-indent: 15px;
 }
 
-#pqknqszuml .gt_indent_4 {
+#ukmphxvxqg .gt_indent_4 {
   text-indent: 20px;
 }
 
-#pqknqszuml .gt_indent_5 {
+#ukmphxvxqg .gt_indent_5 {
   text-indent: 25px;
 }
 
-#pqknqszuml .katex-display {
+#ukmphxvxqg .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#pqknqszuml div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#ukmphxvxqg div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -5854,6 +7035,8 @@ Fred Ho
 </section>
 <section id="four-claims-judged" class="slide level2 smaller">
 <h2>Four claims, judged</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
 <ul>
 <li class="fragment"><strong>ORBITA: too imprecise to support ‘no benefit’</strong>
 <ul>
@@ -5863,8 +7046,12 @@ Fred Ho
 <li class="fragment"><strong>Nissen and Wolski: borderline, not dismissible</strong>
 <ul>
 <li class="fragment">An OR of 1.64 (CI to 2.74) isn’t a small risk if it’s real</li>
-<li class="fragment">‘Borderline significance’ is honest; p just over 0.05 doesn’t mean no risk<span class="gap"></span></li>
+<li class="fragment">‘Borderline significance’ is often not accepted now</li>
+<li class="fragment">Interpret as non-significant increase but acknowledge imprecision</li>
 </ul></li>
+</ul>
+</div><div class="column" style="width:50%;">
+<ul>
 <li class="fragment"><strong>Sung et al.: too small to claim equivalence</strong>
 <ul>
 <li class="fragment">n = 100; the CI on the difference runs to almost 20 percentage points</li>
@@ -5872,18 +7059,24 @@ Fred Ho
 </ul></li>
 <li class="fragment"><strong>CRASH-2: sound</strong>
 <ul>
-<li class="fragment">Huge sample, tight CI clear of the null, scoped to ‘in this study’, not overclaimed</li>
+<li class="fragment">Huge sample, tight CI clear of the null, meaningful effect size</li>
 </ul></li>
 </ul>
+</div></div>
 </section>
 <section id="key-points-and-what-the-lab-does" class="slide level2 smaller">
 <h2>Key points, and what the lab does</h2>
 <ul>
-<li class="fragment">A p-value is how compatible the data are with the null, and nothing else: not the probability the null is true, not an effect size, never a licence to say ‘no effect’</li>
-<li class="fragment">Report the estimate, its CI, and its p-value together</li>
-<li class="fragment">The outcome type and the design pick the test</li>
-<li class="fragment">For a ratio, the null value is 1<span class="gap"></span></li>
-<li class="fragment">The lab runs every one of these tests in R on <code>nhanes_mph</code> and <code>strep_tb</code>, reconciles today’s hand-calculated RR and OR against <code>epitools</code>, and shows what Yates’ correction does to a p-value</li>
+<li class="fragment">A p-value is how compatible the data are with the null, and nothing else:
+<ul>
+<li class="fragment">not the probability the null is true</li>
+<li class="fragment">not an effect size</li>
+<li class="fragment">not evidence that there is no effect</li>
+</ul></li>
+<li class="fragment">Report the estimate, its 95% CI, and its p-value together whenever possible</li>
+<li class="fragment">The outcome type and the design pick the test, and each test has an assumption to check and an alternative if it fails</li>
+<li class="fragment">Comparisons can be made by looking at either the difference (null = 0) or a ratio (null = 1)</li>
+<li class="fragment">The lab runs every one of these tests in R on <code>nhanes_mph</code> and <code>strep_tb</code></li>
 </ul>
 
 </section>
