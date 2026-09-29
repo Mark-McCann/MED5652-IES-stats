@@ -231,9 +231,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#correlation-pearsons-r-and-spearmans-rho" id="toc-correlation-pearsons-r-and-spearmans-rho" class="nav-link" data-scroll-target="#correlation-pearsons-r-and-spearmans-rho"><span class="header-section-number">6.3</span> Correlation: Pearson’s r and Spearman’s rho</a></li>
   <li><a href="#a-scatterplot-with-a-fitted-line-cholesterol-by-age" id="toc-a-scatterplot-with-a-fitted-line-cholesterol-by-age" class="nav-link" data-scroll-target="#a-scatterplot-with-a-fitted-line-cholesterol-by-age"><span class="header-section-number">6.4</span> A scatterplot with a fitted line: cholesterol by age</a></li>
   <li><a href="#fitting-the-model-with-lm" id="toc-fitting-the-model-with-lm" class="nav-link" data-scroll-target="#fitting-the-model-with-lm"><span class="header-section-number">6.5</span> Fitting the model with <code>lm()</code></a></li>
-  <li><a href="#a-binary-predictor-cholesterol-by-gender" id="toc-a-binary-predictor-cholesterol-by-gender" class="nav-link" data-scroll-target="#a-binary-predictor-cholesterol-by-gender"><span class="header-section-number">6.6</span> A binary predictor: cholesterol by gender</a></li>
-  <li><a href="#a-multi-level-categorical-predictor-cholesterol-by-education" id="toc-a-multi-level-categorical-predictor-cholesterol-by-education" class="nav-link" data-scroll-target="#a-multi-level-categorical-predictor-cholesterol-by-education"><span class="header-section-number">6.7</span> A multi-level categorical predictor: cholesterol by education</a></li>
-  <li><a href="#checking-assumptions-diagnostic-plots" id="toc-checking-assumptions-diagnostic-plots" class="nav-link" data-scroll-target="#checking-assumptions-diagnostic-plots"><span class="header-section-number">6.8</span> Checking assumptions: diagnostic plots</a></li>
+  <li><a href="#checking-assumptions-diagnostic-plots" id="toc-checking-assumptions-diagnostic-plots" class="nav-link" data-scroll-target="#checking-assumptions-diagnostic-plots"><span class="header-section-number">6.6</span> Checking assumptions: diagnostic plots</a></li>
+  <li><a href="#a-binary-explanatory-variable-cholesterol-by-gender" id="toc-a-binary-explanatory-variable-cholesterol-by-gender" class="nav-link" data-scroll-target="#a-binary-explanatory-variable-cholesterol-by-gender"><span class="header-section-number">6.7</span> A binary explanatory variable: cholesterol by gender</a></li>
+  <li><a href="#a-multi-level-categorical-explanatory-variable-cholesterol-by-education" id="toc-a-multi-level-categorical-explanatory-variable-cholesterol-by-education" class="nav-link" data-scroll-target="#a-multi-level-categorical-explanatory-variable-cholesterol-by-education"><span class="header-section-number">6.8</span> A multi-level categorical explanatory variable: cholesterol by education</a></li>
   <li><a href="#prediction-and-extrapolation-from-the-model" id="toc-prediction-and-extrapolation-from-the-model" class="nav-link" data-scroll-target="#prediction-and-extrapolation-from-the-model"><span class="header-section-number">6.9</span> Prediction and extrapolation from the model</a></li>
   <li><a href="#worked-example-cholesterol-by-sedentary-time" id="toc-worked-example-cholesterol-by-sedentary-time" class="nav-link" data-scroll-target="#worked-example-cholesterol-by-sedentary-time"><span class="header-section-number">6.10</span> Worked example: cholesterol by sedentary time</a></li>
   <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">6.11</span> Exercises</a></li>
@@ -263,18 +263,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Chapter 5 compared two groups directly against each other, with cholesterol sorted into one of two buckets. Age and hours of sedentary time don’t come in buckets: they’re continuous, and the question about them isn’t whether a group differs but whether the outcome moves as they move. Establishing that a straight line is a fair way to describe that movement, and not just a shape imposed on the data, is what this chapter builds toward.</p>
-<p>We describe the relationship before modelling it, with a scatterplot and Pearson’s correlation coefficient, plus Spearman’s rank correlation for the case where one variable is ordered categories rather than a measurement. The model itself is a simple linear regression, Y = α + βX + ε: an outcome Y as an intercept α plus a slope β times a predictor X, with ε standing for the error the line doesn’t capture, giving us an intercept, a slope with a confidence interval, and an R² saying how much of the outcome’s variation was accounted for. Fitting that same model with a two-category predictor instead of a continuous one shows that Chapter 5’s independent-samples t-test was this model all along, seen from a different angle. Residual and QQ plots check whether the assumptions behind the line hold up, and once we trust it, the model can predict: ask it about an input like the ones it was built on and the prediction means something, ask it about one far outside that range and it will still answer, just not reliably.</p>
+<p>Chapter 5 compared two groups directly against each other, with cholesterol sorted into one of two buckets. Age and hours of sedentary time don’t come in buckets: they’re continuous, and the question about them isn’t whether a group differs but whether cholesterol moves as they move. Establishing that a straight line is a fair way to describe that movement, and not just a shape imposed on the data, is what this chapter builds toward.</p>
+<p>We describe the relationship before modelling it, with a scatterplot and Pearson’s correlation coefficient, plus Spearman’s rank correlation for when one variable is ordered categories, not a measurement, or the relationship is curved but keeps going the same way. The model itself is a simple linear regression, Y = α + βX + ε: a response Y as an intercept α plus a slope β times an explanatory variable X, with ε standing for the error the line doesn’t capture, giving us an intercept, a slope with a confidence interval, or CI, and an R² saying how much of the response’s variation was accounted for. Residual and QQ plots then check whether the assumptions behind the line hold up. Fitting that same model with a two-category explanatory variable instead of a continuous one shows that Chapter 5’s independent-samples t-test was this model all along, seen from a different angle. And once we trust a model, it can predict: ask it about an input like the ones it was built on and the prediction means something, ask it about one far outside that range and it will still answer, just not reliably.</p>
 <section id="chapter-intended-learning-outcomes" class="level2" data-number="6.1">
 <h2 data-number="6.1" class="anchored" data-anchor-id="chapter-intended-learning-outcomes"><span class="header-section-number">6.1</span> Chapter intended learning outcomes</h2>
-<p>By the end of this chapter you will be able to:</p>
+<p>By the end of this week you will be able to:</p>
 <ol type="1">
-<li>Produce and interpret a scatterplot with a fitted regression line using <code>ggplot2</code></li>
-<li>Fit a simple linear regression with <code>lm()</code>, using a continuous, binary, or multi-category predictor</li>
-<li>Explain why an independent-samples t-test and a simple linear regression on a binary predictor give equivalent results</li>
-<li>Generate and interpret standard diagnostic plots</li>
-<li>Generate predictions and identify when a prediction constitutes extrapolation</li>
-<li>Extract coefficients and confidence intervals, and report a simple regression result in an appropriate academic style</li>
+<li>Select an appropriate correlation measure and interpret the findings, using <code>cor.test()</code></li>
+<li>Apply the simple linear regression model, and assess its assumptions using residual diagnostics, with <code>lm()</code>, <code>broom::augment()</code>, and <code>ggplot2</code></li>
+<li>Interpret the intercept and slope with confidence intervals and p-values, using <code>broom::tidy()</code></li>
+<li>Use a fitted model for prediction, and explain the danger of extrapolation, using <code>predict()</code></li>
 </ol>
 </section>
 <section id="setup" class="level2" data-number="6.2">
@@ -318,7 +316,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="correlation-pearsons-r-and-spearmans-rho" class="level2" data-number="6.3">
 <h2 data-number="6.3" class="anchored" data-anchor-id="correlation-pearsons-r-and-spearmans-rho"><span class="header-section-number">6.3</span> Correlation: Pearson’s r and Spearman’s rho</h2>
-<p>A correlation coefficient examines whether and to what extent two variables move together proportionally. The two variables are symmetric in a correlation: neither is assumed to be an ‘outcome’.</p>
+<p>A correlation coefficient examines whether and to what extent two variables move together proportionally. The two variables are symmetric in a correlation: neither is treated as the one being explained.</p>
 <p><code>cor()</code>, from base R, calculates a correlation coefficient between two continuous variables. Its default method is Pearson’s r, which measures the strength of a linear, or straight-line, association. We’ll use the pairing this chapter’s first model uses, <code>age</code> and <code>chol</code>:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(nhanes<span class="sc">$</span>age, nhanes<span class="sc">$</span>chol, <span class="at">use =</span> <span class="st">'complete.obs'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -346,7 +344,7 @@ sample estimates:
 </div>
 </div>
 <p>Pearson’s r here is about 0.094 (95% CI 0.084 to 0.104, p &lt; 0.001): a weak but non-zero positive correlation between age and cholesterol.</p>
-<p>Pearson’s r assumes both variables sit on a scale where equal units of increase or decrease mean the same thing throughout, i.e.&nbsp;an interval or ratio scale. <code>phq.c</code> doesn’t fit with this assumption as ‘Possible depression’ isn’t a fixed distance from ‘Mild symptoms’ the way one extra year of age is from another, it’s an ordered category, not a measurement. Spearman’s rank correlation is the alternative, correlating ranks rather than raw values, so it only needs observations put in order, not a distance measured between them. <code>phq.c</code> is already an ordered factor, so <code>as.numeric()</code> from base R turns it into the numbers 1, 2, and 3 in the order the factor was built, the ranking Spearman’s correlation needs.</p>
+<p>Pearson’s r assumes both variables sit on a scale where equal steps mean the same thing throughout: one extra year of age is the same step at 30 as at 60. <code>phq.c</code> doesn’t fit that assumption. ‘Possible depression’ isn’t a fixed distance from ‘Mild symptoms’ the way one extra year of age is from another; it’s an ordered category, not a measurement. Spearman’s rank correlation is the alternative, correlating ranks instead of raw values, so it only needs observations put in order, not a distance measured between them. Working on ranks also means it measures a <strong>monotonic</strong> relationship, one that keeps going the same way, up or down, without having to follow a straight line, which is why it’s also the choice for a relationship that’s curved but never changes direction. <code>phq.c</code> is already an ordered factor, so <code>as.numeric()</code> from base R turns it into the numbers 1, 2, and 3 in the order the factor was built, the ranking Spearman’s correlation needs.</p>
 <p><strong>Null hypothesis.</strong> In the population, the true rank correlation between age and depression symptom category is zero.</p>
 <p><strong>Alternative hypothesis.</strong> The true rank correlation is not zero.</p>
 <div class="cell">
@@ -372,7 +370,7 @@ sample estimates:
 </section>
 <section id="a-scatterplot-with-a-fitted-line-cholesterol-by-age" class="level2" data-number="6.4">
 <h2 data-number="6.4" class="anchored" data-anchor-id="a-scatterplot-with-a-fitted-line-cholesterol-by-age"><span class="header-section-number">6.4</span> A scatterplot with a fitted line: cholesterol by age</h2>
-<p>Chapter 3 plotted total cholesterol (<code>chol</code>, in mmol/L) against age (in years) as a plain scatterplot, with no line through it. <code>geom_smooth()</code>, from <code>ggplot2</code>, adds one. With <code>method = 'lm'</code>, it fits exactly the simple linear regression this chapter is about, and draws the result:</p>
+<p>Chapter 3 plotted total cholesterol (<code>chol</code>, in mmol/L) against age (in years) as a plain scatterplot, with no line through it. <code>geom_smooth()</code>, from <code>ggplot2</code>, adds one. With <code>method = 'lm'</code>, it fits the simple linear regression this chapter is about, and draws the result:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(age), <span class="sc">!</span><span class="fu">is.na</span>(chol)), <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> chol)) <span class="sc">+</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
@@ -389,8 +387,8 @@ sample estimates:
 </div>
 </div>
 </div>
-<p>Above the plot, <code>ggplot2</code> printed <code>`geom_smooth()` using formula = 'y ~ x'</code>. That’s a message, not a warning: it’s just reporting which formula it fitted, since <code>geom_smooth()</code> picks one for us if we don’t say. Here it chose a straight line in <code>x</code>, exactly the simple linear regression we asked for with <code>method = 'lm'</code>.</p>
-<p>The shaded band around the line is a 95% CI for the line itself, the same idea as every other CI in this course, just drawn as a band rather than printed as two numbers. The line slopes gently upward: cholesterol tends to be a little higher in older participants. The cloud of points around it is wide, though. Age doesn’t determine cholesterol on its own, and the next section puts a number on exactly how much of the variation in cholesterol age can explain.</p>
+<p>Above the plot, <code>ggplot2</code> printed <code>`geom_smooth()` using formula = 'y ~ x'</code>. That’s a message, not a warning: it’s reporting which formula it fitted, since <code>geom_smooth()</code> picks one for us if we don’t say. Here it chose a straight line in <code>x</code>, the simple linear regression we asked for with <code>method = 'lm'</code>.</p>
+<p>The shaded band around the line is a 95% CI for the line itself, the same idea as every other CI in this course, drawn as a band instead of printed as two numbers. The line slopes gently upward: cholesterol tends to be a little higher in older participants. The cloud of points around it is wide, though. Age doesn’t determine cholesterol on its own, and the next section puts a number on how much of the variation in cholesterol age can explain.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -407,7 +405,7 @@ sample estimates:
 </section>
 <section id="fitting-the-model-with-lm" class="level2" data-number="6.5">
 <h2 data-number="6.5" class="anchored" data-anchor-id="fitting-the-model-with-lm"><span class="header-section-number">6.5</span> Fitting the model with <code>lm()</code></h2>
-<p><code>lm()</code>, from base R, fits a linear model. Its first argument is a formula, in the same <code>y ~ x</code> form <code>t.test()</code> used in Chapter 4: the variable on the left is what we’re modelling, and the variable on the right is what we’re modelling it with. We drop the rows where either variable is missing first, the same habit we’ve used for every model and test so far.</p>
+<p><code>lm()</code>, from base R, fits a linear model. Its first argument is a formula, in the same <code>y ~ x</code> form <code>t.test()</code> used in Chapter 4: the variable on the left is what we’re modelling, and the variable on the right is what we’re modelling it with. The one on the left is the <strong>response</strong>, the variable being explained, and the one on the right is the <strong>explanatory variable</strong>, the one doing the explaining. In epidemiology’s terms, the outcome is the response and the exposure is an explanatory variable. We drop the rows where either variable is missing first, the same habit we’ve used for every model and test so far.</p>
 <p><strong>Null hypothesis.</strong> In the population, the slope of cholesterol on age is zero: age carries no linear association with cholesterol.</p>
 <p><strong>Alternative hypothesis.</strong> The slope is not zero.</p>
 <div class="cell">
@@ -436,10 +434,11 @@ F-statistic: 349.1 on 1 and 39174 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 <p>As with <code>t.test()</code> in Chapter 4, there’s no <code>$</code> anywhere in that call. <code>lm()</code>’s <code>data =</code> argument tells it to look for <code>chol</code> and <code>age</code> inside <code>age_complete</code>, so it finds them there directly instead of us pulling either one out by hand first. Every model in this course, <code>lm()</code> and <code>glm()</code> alike, follows this same pattern: name the variables bare in the formula, and point <code>data =</code> at wherever they live.</p>
-<p><code>summary()</code> prints a lot at once. The <code>Coefficients</code> table has the two numbers that define the fitted line: the <code>(Intercept)</code>, the model’s predicted cholesterol at age zero, and the slope on <code>age</code>, the predicted change in cholesterol for each additional year of age. Each has a standard error, a t-value, and a p-value attached, exactly the reporting standard from Chapter 5. The slope here is small but non-zero: cholesterol tends to be about 0.0056 mmol/L higher for every extra year of age, and the p-value is far below 0.001.</p>
-<p><code>Multiple R-squared</code>, R², says what fraction of the variation in cholesterol this model accounts for. Here it’s under 0.01: age explains under 1% of the variation in cholesterol between participants. That isn’t a contradiction of the significant slope above. A relationship can be real, precisely estimated, and still leave most of the variation in the outcome unexplained. For a simple regression like this one, with a single predictor, the square of Pearson’s r is exactly the same number as the R² above, and the hypothesis test for Pearson’s r is equivalent to the test of the slope coefficient.</p>
-<p>A low R² would mean a poorer explanation or prediction of the variation of the outcome. However, that isn’t our goal here. Instead, we’re estimating how cholesterol varies with age, as precisely as the data allow. Chapter 7 returns to this distinction, between explaining an association and predicting an outcome, when it looks at what a regression model can and can’t claim to establish.</p>
-<p><code>coef()</code> and <code>confint()</code>, both base R, pull out just the coefficients and just their CIs, without the rest of the printout:</p>
+<p><code>summary()</code> prints a lot at once. The <code>Coefficients</code> table has the two numbers that define the fitted line: the <code>(Intercept)</code>, the model’s predicted cholesterol at age zero, and the slope on <code>age</code>, the predicted change in cholesterol for each additional year of age. Each has a standard error, a t-value, and a p-value attached, the reporting standard from Chapter 5. The slope here is small but non-zero: cholesterol tends to be about 0.0056 mmol/L higher for every extra year of age, and the p-value is far below 0.001.</p>
+<p><code>Multiple R-squared</code>, R², says what fraction of the variation in cholesterol this model accounts for. Here it’s under 0.01: age explains under 1% of the variation in cholesterol between participants. That isn’t a contradiction of the significant slope above. A relationship can be real, precisely estimated, and still leave most of the variation in the response unexplained. For a simple regression like this one, with a single explanatory variable, the square of Pearson’s r is the same number as the R² above, and the hypothesis test for Pearson’s r is equivalent to the test of the slope coefficient.</p>
+<p>A low R² would mean a poorer explanation or prediction of the variation of the response. However, that isn’t our goal here. Instead, we’re estimating how cholesterol varies with age, as precisely as the data allow. Chapter 7 returns to this distinction, between explaining an association and predicting a response, when it looks at what a regression model can and can’t claim to establish.</p>
+<p>Two more lines near the bottom of that printout come up again in this chapter. <code>Residual standard error</code> is the typical distance, in mmol/L, between a participant’s cholesterol and the fitted line. Each of those vertical distances is called a <strong>residual</strong>, and the diagnostics section below looks at them properly. The residual standard error describes how far the points sit from the line, not how precise the line itself is. The <code>F-statistic</code> tests the model as a whole. With one explanatory variable that’s the same question the slope’s own test answers, which is why its p-value matches the slope’s; it becomes more useful once a model has several explanatory variables.</p>
+<p><code>coef()</code> and <code>confint()</code>, both base R, pull out only the coefficients and their CIs, without the rest of the printout:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(m_age)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -466,15 +465,69 @@ age         0.004981885 0.006149643</code></pre>
 </div>
 <p>Reported in full, that reads: total cholesterol was on average 0.0056 mmol/L higher for each additional year of age (95% CI: 0.0050 to 0.0061 mmol/L, p &lt; 0.001), although age accounted for less than 1% of the variation in cholesterol between participants.</p>
 </section>
-<section id="a-binary-predictor-cholesterol-by-gender" class="level2" data-number="6.6">
-<h2 data-number="6.6" class="anchored" data-anchor-id="a-binary-predictor-cholesterol-by-gender"><span class="header-section-number">6.6</span> A binary predictor: cholesterol by gender</h2>
-<p><code>age</code> is a continuous predictor, taking any value across a range. <code>lm()</code> doesn’t need that. A predictor on the right of the formula can be a two-category factor instead, and Chapter 5 already asked exactly this question with a t-test: does mean total cholesterol differ between men and women? Let’s fit it as a regression and put the two answers side by side.</p>
+<section id="checking-assumptions-diagnostic-plots" class="level2" data-number="6.6">
+<h2 data-number="6.6" class="anchored" data-anchor-id="checking-assumptions-diagnostic-plots"><span class="header-section-number">6.6</span> Checking assumptions: diagnostic plots</h2>
+<p>A fitted line is only trustworthy if the model’s assumptions hold: linearity (a straight line is the right shape), constant variance (the scatter around the line doesn’t change as we move along it), and normally distributed residuals. A fourth assumption, independence between observations, isn’t something a plot from one fitted model can check. It’s a property of how the data were collected, and NHANES’s sampling design is what would need inspecting for that, not this model’s output.</p>
+<p><code>broom::augment()</code> adds each observation’s fitted value and residual back onto the original data, in columns named <code>.fitted</code> and <code>.resid</code>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>age_aug <span class="ot">&lt;-</span> <span class="fu">augment</span>(m_age)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>age_aug</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 39,176 × 8
+    chol   age .fitted .resid      .hat .sigma     .cooksd .std.resid
+   &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;  &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;
+ 1  4.03    37    4.91 -0.884 0.0000339   1.09 0.0000112       -0.814
+ 2  3.75    23    4.84 -1.09  0.0000709   1.09 0.0000355       -1.00 
+ 3  5.04    38    4.92  0.120 0.0000324   1.09 0.000000198      0.110
+ 4  5.56    37    4.91  0.646 0.0000339   1.09 0.00000599       0.594
+ 5  5.66    27    4.86  0.801 0.0000573   1.09 0.0000156        0.738
+ 6  8.9     30    4.88  4.02  0.0000487   1.09 0.000335         3.70 
+ 7  3.57    30    4.88 -1.31  0.0000487   1.09 0.0000352       -1.20 
+ 8  6.57    30    4.88  1.69  0.0000487   1.09 0.0000593        1.56 
+ 9  6.67    22    4.83  1.84  0.0000747   1.09 0.000107         1.69 
+10  5.9     29    4.87  1.03  0.0000515   1.09 0.0000231        0.948
+# ℹ 39,166 more rows</code></pre>
+</div>
+</div>
+<p>Plotting residuals against fitted values checks linearity and constant variance together. If the model is a good fit, the points should scatter evenly above and below zero, with no obvious curve and no obvious change in spread from left to right. <code>geom_hline()</code>, from <code>ggplot2</code>, draws a single horizontal line across the plot at whatever height <code>yintercept</code> names, and we put one at zero to make ‘above and below’ easy to judge by eye:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(age_aug, <span class="fu">aes</span>(<span class="at">x =</span> .fitted, <span class="at">y =</span> .resid)) <span class="sc">+</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Fitted value (mmol/L)'</span>, <span class="at">y =</span> <span class="st">'Residual (mmol/L)'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="10-regression_files/figure-html/resid-fitted-age-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Most points sit in a fairly even band around zero, consistent with linearity and roughly constant variance. A small number of participants with very high cholesterol readings sit well above the line, though, visible here as points a long way above zero. Those same participants are worth keeping in mind for the QQ plot, which checks whether the residuals are approximately normally distributed. <code>.std.resid</code>, also added by <code>augment()</code>, standardises each residual to the same scale a normal distribution would use. <code>stat_qq()</code> and <code>stat_qq_line()</code>, both from <code>ggplot2</code>, plot the standardised residuals against what a perfect normal distribution would produce, with a reference line for comparison:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(age_aug, <span class="fu">aes</span>(<span class="at">sample =</span> .std.resid)) <span class="sc">+</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq_line</span>() <span class="sc">+</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Theoretical quantiles'</span>, <span class="at">y =</span> <span class="st">'Standardised residuals'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="10-regression_files/figure-html/qq-age-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Points that fall on the line are consistent with normally distributed residuals. Here, the middle of the distribution sits close to the line, but the upper tail pulls away from it. That’s the same small group of participants with unusually high cholesterol showing up again: the residuals are a little more heavy-tailed than a normal distribution would predict. With a sample this large, the model’s estimates are still reliable despite this. With a much smaller sample, tail behaviour like this would be more of a concern.</p>
+</section>
+<section id="a-binary-explanatory-variable-cholesterol-by-gender" class="level2" data-number="6.7">
+<h2 data-number="6.7" class="anchored" data-anchor-id="a-binary-explanatory-variable-cholesterol-by-gender"><span class="header-section-number">6.7</span> A binary explanatory variable: cholesterol by gender</h2>
+<p><code>age</code> is a continuous explanatory variable, taking any value across a range. <code>lm()</code> doesn’t need that. An explanatory variable on the right of the formula can be a two-category factor instead, and Chapter 5 already asked this question with a t-test: does mean total cholesterol differ between men and women? Let’s fit it as a regression and put the two answers side by side.</p>
 <p><strong>Null hypothesis.</strong> In the population, mean total cholesterol is the same in men and women.</p>
 <p><strong>Alternative hypothesis.</strong> Mean total cholesterol differs between men and women.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>gender_chol_complete <span class="ot">&lt;-</span> nhanes <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(gender), <span class="sc">!</span><span class="fu">is.na</span>(chol))</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>m_gender <span class="ot">&lt;-</span> <span class="fu">lm</span>(chol <span class="sc">~</span> gender, <span class="at">data =</span> gender_chol_complete)</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m_gender)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>gender_chol_complete <span class="ot">&lt;-</span> nhanes <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(gender), <span class="sc">!</span><span class="fu">is.na</span>(chol))</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>m_gender <span class="ot">&lt;-</span> <span class="fu">lm</span>(chol <span class="sc">~</span> gender, <span class="at">data =</span> gender_chol_complete)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m_gender)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -495,18 +548,18 @@ Residual standard error: 1.088 on 39174 degrees of freedom
 Multiple R-squared:  0.005958,  Adjusted R-squared:  0.005932 
 F-statistic: 234.8 on 1 and 39174 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(m_gender)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(m_gender)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                 2.5 %    97.5 %
 (Intercept)  4.8704159 4.9014630
 genderFemale 0.1469893 0.1901101</code></pre>
 </div>
 </div>
-<p>With a continuous predictor like <code>age</code>, the <code>(Intercept)</code> was an abstract number, cholesterol at age zero, nobody’s actual cholesterol. With a two-category predictor it’s concrete: <code>gender</code>’s first level is <code>'Male'</code>, so <code>(Intercept)</code>, 4.8859 mmol/L, is mean cholesterol in men. This is the reference level again, the same idea Chapter 3 introduced and Chapter 5’s <code>relevel()</code> work used a second time: whichever category is listed first becomes the one everything else in the model is compared against, and here that comparison is the whole model.</p>
+<p>With a continuous explanatory variable like <code>age</code>, the <code>(Intercept)</code> was an abstract number, cholesterol at age zero, nobody’s actual cholesterol. With a two-category explanatory variable it’s concrete: <code>gender</code>’s first level is <code>'Male'</code>, so <code>(Intercept)</code>, 4.8859 mmol/L, is mean cholesterol in men. This is the reference level again, the same idea Chapter 3 introduced and Chapter 5’s <code>relevel()</code> work used a second time: whichever category is listed first becomes the one everything else in the model is compared against, and here that comparison is the whole model.</p>
 <p>The slope, on <code>genderFemale</code>, is the difference between the two group means: 0.1685 mmol/L, women minus men, with its own standard error, t-value, and p-value, and a 95% CI of 0.1470 to 0.1901 mmol/L. Chapter 5 reported the same comparison as 0.17 mmol/L higher in women (95% CI: 0.15 to 0.19 mmol/L), but only after reversing the signs on what <code>t.test()</code> printed, because <code>t.test()</code> reports Male minus Female by default. <code>lm()</code> reports the comparison the other way round, reference category first, so the sign comes out already the way we want to read it: the same underlying result, with no sign-flipping needed here.</p>
-<p>The two results agree this closely because they’re close to the same calculation, but not identically the same one. <code>t.test()</code>’s default doesn’t assume the two groups share one variance, as Chapter 5’s independent-samples section said explicitly; <code>lm()</code> does assume it, one shared residual variance for the whole model. Telling <code>t.test()</code> to make that same assumption, with <code>var.equal = TRUE</code>, closes the gap completely:</p>
+<p>The two results agree this closely because they’re close to the same calculation, but not identically the same one. <code>t.test()</code>’s default doesn’t assume the two groups share one variance, as Chapter 5’s independent-samples section said explicitly; <code>lm()</code> does assume it, with one shared spread of the residuals for the whole model. Telling <code>t.test()</code> to make that same assumption, with <code>var.equal = TRUE</code>, closes the gap completely:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(chol <span class="sc">~</span> gender, <span class="at">data =</span> nhanes <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(gender)), <span class="at">var.equal =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(chol <span class="sc">~</span> gender, <span class="at">data =</span> nhanes <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(gender)), <span class="at">var.equal =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Two Sample t-test
@@ -522,17 +575,17 @@ sample estimates:
 </div>
 </div>
 <p><code>t = -15.323</code> on 39174 degrees of freedom, the same degrees of freedom <code>summary(m_gender)</code> reported for the regression, and a CI of -0.1901 to -0.1470, the exact mirror of <code>lm()</code>‘s 0.1470 to 0.1901. <code>var.equal = TRUE</code> isn’t a better version of the default. Chapter 5’s default, unequal-variance form is the safer everyday choice, since it stays valid whether or not the two groups’ spreads match. Setting <code>var.equal = TRUE</code> here is only to show that a t-test <em>is</em> this regression, once both make the same assumption.</p>
-<p>An independent-samples t-test on cholesterol by gender, and a simple linear regression of cholesterol on the two-category factor <code>gender</code>, are the same model, read two ways. The diagnostic plots in the next section apply here too, and are worth trying on <code>m_gender</code>: with only two possible fitted values, the residuals-vs-fitted plot collapses into two vertical columns of points instead of the scattered cloud <code>m_age</code> produced, which is exactly what a two-category predictor should look like, not a sign that something has gone wrong.</p>
+<p>An independent-samples t-test on cholesterol by gender, and a simple linear regression of cholesterol on the two-category factor <code>gender</code>, are the same model, read two ways. The diagnostic plots from earlier in this chapter apply here too, and are worth trying on <code>m_gender</code>: with only two possible fitted values, the residuals-vs-fitted plot collapses into two vertical columns of points instead of the scattered cloud <code>m_age</code> produced, which is what a two-category explanatory variable should look like, not a sign that something has gone wrong.</p>
 </section>
-<section id="a-multi-level-categorical-predictor-cholesterol-by-education" class="level2" data-number="6.7">
-<h2 data-number="6.7" class="anchored" data-anchor-id="a-multi-level-categorical-predictor-cholesterol-by-education"><span class="header-section-number">6.7</span> A multi-level categorical predictor: cholesterol by education</h2>
-<p><code>gender</code> has two categories, so <code>lm()</code> needed one extra row to describe it. A factor with more categories just needs more rows, one per non-reference level. <code>edu</code> has three: does mean cholesterol differ by education?</p>
+<section id="a-multi-level-categorical-explanatory-variable-cholesterol-by-education" class="level2" data-number="6.8">
+<h2 data-number="6.8" class="anchored" data-anchor-id="a-multi-level-categorical-explanatory-variable-cholesterol-by-education"><span class="header-section-number">6.8</span> A multi-level categorical explanatory variable: cholesterol by education</h2>
+<p><code>gender</code> has two categories, so <code>lm()</code> needed one extra row to describe it. A factor with more categories needs more rows, one per non-reference level. <code>edu</code> has three: does mean cholesterol differ by education?</p>
 <p><strong>Null hypothesis.</strong> In the population, a non-reference education category’s mean cholesterol equals the reference category’s.</p>
 <p><strong>Alternative hypothesis.</strong> It differs. Each non-reference row in the coefficients table tests this comparison separately, one category against the reference.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>edu_chol_complete <span class="ot">&lt;-</span> nhanes <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(edu), <span class="sc">!</span><span class="fu">is.na</span>(chol))</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>m_edu <span class="ot">&lt;-</span> <span class="fu">lm</span>(chol <span class="sc">~</span> edu, <span class="at">data =</span> edu_chol_complete)</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m_edu)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>edu_chol_complete <span class="ot">&lt;-</span> nhanes <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(edu), <span class="sc">!</span><span class="fu">is.na</span>(chol))</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>m_edu <span class="ot">&lt;-</span> <span class="fu">lm</span>(chol <span class="sc">~</span> edu, <span class="at">data =</span> edu_chol_complete)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m_edu)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -554,7 +607,7 @@ Residual standard error: 1.09 on 38080 degrees of freedom
 Multiple R-squared:  2.988e-05, Adjusted R-squared:  -2.264e-05 
 F-statistic: 0.569 on 2 and 38080 DF,  p-value: 0.5661</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(m_edu)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(m_edu)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                              2.5 %     97.5 %
 (Intercept)              4.98280100 5.02644712
@@ -563,12 +616,12 @@ eduAbove high school    -0.03895027 0.01424346</code></pre>
 </div>
 </div>
 <p>Two rows this time, <code>eduHigh school graduate</code> and <code>eduAbove high school</code>, each a difference from whichever category is first in <code>levels(edu_chol_complete$edu)</code>. Compared with ‘Less than high school’, high school graduates’ cholesterol is about -0.016 mmol/L lower (95% CI: -0.047 to 0.016 mmol/L, p = 0.33), and those with more than high school are about 0.012 mmol/L lower (95% CI: -0.039 to 0.014 mmol/L, p = 0.363). Both CIs sit close to, and comfortably include, zero: these data are consistent with little or no difference in cholesterol by education level in this sample, and they don’t rule one out either.</p>
-<p><code>levels()</code> confirms the reference is <code>'Less than high school'</code>. <code>relevel()</code>, already met in Chapter 3, moves a different category to the front. This time we write the releveled factor back into a data frame, rather than working on a standalone copy the way Chapter 3 did: <code>lm()</code> needs to find <code>edu</code> already releveled inside whatever <code>data =</code> points at, so it goes into a new object, <code>edu_relevelled</code>, leaving <code>edu_chol_complete</code> and the model fitted on it untouched:</p>
+<p><code>levels()</code> confirms the reference is <code>'Less than high school'</code>. <code>relevel()</code>, already met in Chapter 3, moves a different category to the front. This time we write the releveled factor back into a data frame, instead of working on a standalone copy the way Chapter 3 did: <code>lm()</code> needs to find <code>edu</code> already releveled inside whatever <code>data =</code> points at, so it goes into a new object, <code>edu_relevelled</code>, leaving <code>edu_chol_complete</code> and the model fitted on it untouched:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>edu_relevelled <span class="ot">&lt;-</span> edu_chol_complete <span class="sc">|&gt;</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">edu =</span> <span class="fu">relevel</span>(edu, <span class="at">ref =</span> <span class="st">'Above high school'</span>))</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>m_edu_relevel <span class="ot">&lt;-</span> <span class="fu">lm</span>(chol <span class="sc">~</span> edu, <span class="at">data =</span> edu_relevelled)</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m_edu_relevel)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>edu_relevelled <span class="ot">&lt;-</span> edu_chol_complete <span class="sc">|&gt;</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">edu =</span> <span class="fu">relevel</span>(edu, <span class="at">ref =</span> <span class="st">'Above high school'</span>))</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>m_edu_relevel <span class="ot">&lt;-</span> <span class="fu">lm</span>(chol <span class="sc">~</span> edu, <span class="at">data =</span> edu_relevelled)</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m_edu_relevel)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -590,7 +643,7 @@ Residual standard error: 1.09 on 38080 degrees of freedom
 Multiple R-squared:  2.988e-05, Adjusted R-squared:  -2.264e-05 
 F-statistic: 0.569 on 2 and 38080 DF,  p-value: 0.5661</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(m_edu_relevel)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(m_edu_relevel)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                               2.5 %     97.5 %
 (Intercept)               4.97706713 5.00747418
@@ -598,66 +651,12 @@ eduLess than high school -0.01424346 0.03895027
 eduHigh school graduate  -0.03073571 0.02406383</code></pre>
 </div>
 </div>
-<p>Both rows changed, since they’re now contrasts against a different category. But look at <code>Multiple R-squared</code> and <code>Residual standard error</code> in the two printouts: identical, 2.988e-05 and 1.09, to every digit. So is the F-statistic. Releveling didn’t change what the model fits, only which comparisons it prints. The fitted values are the same for every participant either way; relabelling the reference category just changes which category each row is measured against, nothing about the cholesterol the model predicts for anyone.</p>
-<p>Keep that distinct from a different invariant met again later, in Chapter 7: there, releveling one predictor inside a multivariable model doesn’t move a <em>different</em> predictor’s own coefficient. Both are true, and neither licenses reading a releveled row as if it were a causal effect on its own; a coefficient’s meaning still depends on what it’s being compared against and what else is in the model.</p>
-</section>
-<section id="checking-assumptions-diagnostic-plots" class="level2" data-number="6.8">
-<h2 data-number="6.8" class="anchored" data-anchor-id="checking-assumptions-diagnostic-plots"><span class="header-section-number">6.8</span> Checking assumptions: diagnostic plots</h2>
-<p>A fitted line is only trustworthy if the model’s assumptions hold: linearity (a straight line is the right shape), constant variance (the scatter around the line doesn’t change as we move along it), and normally distributed residuals (the vertical distances between the points and the line). A fourth assumption, independence between observations, isn’t something a plot from one fitted model can check. It’s a property of how the data were collected, and NHANES’s sampling design is what would need inspecting for that, not this model’s output.</p>
-<p><code>broom::augment()</code> adds each observation’s fitted value and residual back onto the original data, in columns named <code>.fitted</code> and <code>.resid</code>:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>age_aug <span class="ot">&lt;-</span> <span class="fu">augment</span>(m_age)</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>age_aug</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 39,176 × 8
-    chol   age .fitted .resid      .hat .sigma     .cooksd .std.resid
-   &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;  &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;
- 1  4.03    37    4.91 -0.884 0.0000339   1.09 0.0000112       -0.814
- 2  3.75    23    4.84 -1.09  0.0000709   1.09 0.0000355       -1.00 
- 3  5.04    38    4.92  0.120 0.0000324   1.09 0.000000198      0.110
- 4  5.56    37    4.91  0.646 0.0000339   1.09 0.00000599       0.594
- 5  5.66    27    4.86  0.801 0.0000573   1.09 0.0000156        0.738
- 6  8.9     30    4.88  4.02  0.0000487   1.09 0.000335         3.70 
- 7  3.57    30    4.88 -1.31  0.0000487   1.09 0.0000352       -1.20 
- 8  6.57    30    4.88  1.69  0.0000487   1.09 0.0000593        1.56 
- 9  6.67    22    4.83  1.84  0.0000747   1.09 0.000107         1.69 
-10  5.9     29    4.87  1.03  0.0000515   1.09 0.0000231        0.948
-# ℹ 39,166 more rows</code></pre>
-</div>
-</div>
-<p>Plotting residuals against fitted values checks linearity and constant variance together. If the model is a good fit, the points should scatter evenly above and below zero, with no obvious curve and no obvious change in spread from left to right. <code>geom_hline()</code>, from <code>ggplot2</code>, draws a single horizontal line across the plot at whatever height <code>yintercept</code> names, and we put one at zero to make ‘above and below’ easy to judge by eye:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(age_aug, <span class="fu">aes</span>(<span class="at">x =</span> .fitted, <span class="at">y =</span> .resid)) <span class="sc">+</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Fitted value (mmol/L)'</span>, <span class="at">y =</span> <span class="st">'Residual (mmol/L)'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="10-regression_files/figure-html/resid-fitted-age-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>Most points sit in a fairly even band around zero, consistent with linearity and roughly constant variance. A small number of participants with very high cholesterol readings sit well above the line, though, visible here as points a long way above zero. Those same participants are worth keeping in mind for the QQ plot, which checks whether the residuals are approximately normally distributed. <code>.std.resid</code>, also added by <code>augment()</code>, standardises each residual to the same scale a normal distribution would use. <code>stat_qq()</code> and <code>stat_qq_line()</code>, both from <code>ggplot2</code>, plot the standardised residuals against what a perfect normal distribution would produce, with a reference line for comparison:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(age_aug, <span class="fu">aes</span>(<span class="at">sample =</span> .std.resid)) <span class="sc">+</span></span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span></span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq_line</span>() <span class="sc">+</span></span>
-<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Theoretical quantiles'</span>, <span class="at">y =</span> <span class="st">'Standardised residuals'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="10-regression_files/figure-html/qq-age-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>Points that fall on the line are consistent with normally distributed residuals. Here, the middle of the distribution sits close to the line, but the upper tail pulls away from it. That’s the same small group of participants with unusually high cholesterol showing up again: the residuals are a little more heavy-tailed than a normal distribution would predict. With a sample this large, the model’s estimates are still reliable despite this. With a much smaller sample, tail behaviour like this would be more of a concern.</p>
+<p>Both rows changed, since they’re now contrasts against a different category. But look at <code>Multiple R-squared</code> and <code>Residual standard error</code> in the two printouts: identical, 2.988e-05 and 1.09, to every digit. So is the F-statistic. Releveling didn’t change what the model fits, only which comparisons it prints. The fitted values are the same for every participant either way; relabelling the reference category changes which category each row is measured against, nothing about the cholesterol the model predicts for anyone.</p>
+<p>Keep that distinct from a different invariant met again later, in Chapter 7: there, releveling one explanatory variable inside a multivariable model doesn’t move a <em>different</em> explanatory variable’s own coefficient. Both are true, and neither licenses reading a releveled row as if it were a causal effect on its own; a coefficient’s meaning still depends on what it’s being compared against and what else is in the model.</p>
 </section>
 <section id="prediction-and-extrapolation-from-the-model" class="level2" data-number="6.9">
 <h2 data-number="6.9" class="anchored" data-anchor-id="prediction-and-extrapolation-from-the-model"><span class="header-section-number">6.9</span> Prediction and extrapolation from the model</h2>
-<p><code>predict()</code>, from base R, uses a fitted model to generate a predicted value for a new set of inputs. Those inputs need to arrive as a data frame, with a column named to match each predictor in the model. <code>data.frame()</code>, also from base R, builds one directly from the values we supply, instead of reading one in from a file:</p>
+<p><code>predict()</code>, from base R, uses a fitted model to generate a predicted value for a new set of inputs. Those inputs need to arrive as a data frame, with a column named to match each explanatory variable in the model. <code>data.frame()</code>, also from base R, builds one directly from the values we supply, instead of reading one in from a file:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(m_age, <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">age =</span> <span class="fu">c</span>(<span class="dv">45</span>, <span class="dv">150</span>)), <span class="at">interval =</span> <span class="st">'confidence'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -667,7 +666,7 @@ eduHigh school graduate  -0.03073571 0.02406383</code></pre>
 </div>
 </div>
 <p><code>interval = 'confidence'</code> adds a CI around each prediction. This CI describes the precision of the predicted <strong>mean</strong> value, not the precision for an <strong>individual</strong>. The precision around an individual prediction is called a <strong>prediction interval</strong>, a different quantity from a CI, not an abbreviated form of it. It’s always wider than the CI around the mean, since predicting one person’s value is less certain than predicting the average across many. A prediction interval can be requested by stating <code>interval = 'prediction'</code> instead.</p>
-<p>The first row, age 45, sits comfortably inside the range of ages observed in this sample (18 to 85), so this prediction is supported by data the model was fitted on. The second row, age 150, is not. Nobody in this dataset, or in any verified human population, is 150 years old. The model has no information about what happens at that age, and fitting a straight line through the data we do have says nothing reliable about what lies far outside it. The predicted value it returns looks like an ordinary number, which is exactly what makes extrapolation dangerous: a plausible-looking output doesn’t mean the input that produced it was reasonable. Always check a prediction’s input against the range the model was fitted on before trusting its output.</p>
+<p>The first row, age 45, sits comfortably inside the range of ages observed in this sample (18 to 85), so this prediction is supported by data the model was fitted on. The second row, age 150, is not. Nobody in this dataset, or in any verified human population, is 150 years old. The model has no information about what happens at that age, and fitting a straight line through the data we do have says nothing reliable about what lies far outside it. The predicted value it returns looks like an ordinary number, which is what makes extrapolation dangerous: a plausible-looking output doesn’t mean the input that produced it was reasonable. Always check a prediction’s input against the range the model was fitted on before trusting its output.</p>
 </section>
 <section id="worked-example-cholesterol-by-sedentary-time" class="level2" data-number="6.10">
 <h2 data-number="6.10" class="anchored" data-anchor-id="worked-example-cholesterol-by-sedentary-time"><span class="header-section-number">6.10</span> Worked example: cholesterol by sedentary time</h2>
@@ -765,16 +764,16 @@ sed         -0.002095651 9.269529e-05</code></pre>
 </div>
 </div>
 </div>
-<p>The same pattern from the age model shows up again, more visibly. A handful of participants sit far from the fitted line, and <code>sed</code> itself carries a long right tail. Some participants recorded well over 24 hours of sedentary time a day, which cannot be literally true, and points to some noise in how this variable was recorded or reported. None of this overturns the conclusion above. It’s a reason to hold the result loosely rather than to distrust the direction of the estimate.</p>
+<p>The same pattern from the age model shows up again, more visibly. A handful of participants sit far from the fitted line, and <code>sed</code> itself carries a long right tail. Some participants recorded well over 24 hours of sedentary time a day, which cannot be literally true, and points to some noise in how this variable was recorded or reported. None of this overturns the conclusion above. It’s a reason to hold the result loosely, not to distrust the direction of the estimate.</p>
 <p>In an academic report this becomes: sedentary time was not associated with total cholesterol in this sample (slope -0.0010 mmol/L per hour/day, 95% CI: -0.0021 to 0.0001 mmol/L, p = 0.073). But it would be a mistake to conclude from this alone that sedentary time has no bearing on cholesterol. This model adjusts for nothing else: age, gender, and other characteristics could still be masking a real association. Chapter 7 revisits this same pairing with those factors added back in.</p>
 </section>
 <section id="exercises" class="level2" data-number="6.11">
 <h2 data-number="6.11" class="anchored" data-anchor-id="exercises"><span class="header-section-number">6.11</span> Exercises</h2>
-<p><strong>Exercise 1</strong> (ILOs 1, 2, 6). State the null and alternative hypotheses for the slope. Using <code>vpa_r</code>, vigorous physical activity outside work (hours/day), produce a scatterplot of <code>chol</code> against <code>vpa_r</code> with a fitted regression line. Fit the model with <code>lm()</code>, and extract its coefficients and their 95% CIs with <code>confint()</code> and <code>broom::tidy()</code>. Report the slope in one sentence, in the same style used above.</p>
-<p><strong>Exercise 2</strong> (ILO 4). For the model fitted in Exercise 1, produce a residuals-vs-fitted plot and a QQ plot. Write one sentence describing what each plot shows, and one sentence commenting on anything the plots reveal about the shape of <code>vpa_r</code> itself.</p>
-<p><strong>Exercise 3</strong> (ILO 5). Using the model fitted in Exercise 1, predict total cholesterol at <code>vpa_r</code> = 1 hour/day and at <code>vpa_r</code> = 24 hours/day. Write one sentence stating which of the two predictions can be trusted, and one sentence explaining why the other cannot, referring to the range of <code>vpa_r</code> observed in the data.</p>
+<p><strong>Exercise 1</strong> (ILOs 2, 3). State the null and alternative hypotheses for the slope. Using <code>vpa_r</code>, vigorous physical activity outside work (hours/day), produce a scatterplot of <code>chol</code> against <code>vpa_r</code> with a fitted regression line. Fit the model with <code>lm()</code>, and extract its coefficients and their 95% CIs with <code>confint()</code> and <code>broom::tidy()</code>. Report the slope in one sentence, in the same style used above.</p>
+<p><strong>Exercise 2</strong> (ILO 2). For the model fitted in Exercise 1, produce a residuals-vs-fitted plot and a QQ plot. Write one sentence describing what each plot shows, and one sentence commenting on anything the plots reveal about the shape of <code>vpa_r</code> itself.</p>
+<p><strong>Exercise 3</strong> (ILO 4). Using the model fitted in Exercise 1, predict total cholesterol at <code>vpa_r</code> = 1 hour/day and at <code>vpa_r</code> = 24 hours/day. Write one sentence stating which of the two predictions can be trusted, and one sentence explaining why the other cannot, referring to the range of <code>vpa_r</code> observed in the data.</p>
 <p><strong>Exercise 4</strong> (ILOs 2, 3). State the null and alternative hypotheses, then reproduce Chapter 5’s worked example, sedentary time (<code>sed</code>) by gender, with <code>lm()</code> instead of <code>t.test()</code>. Compare the CI <code>lm()</code> gives you to the one Chapter 5 reported. Write one sentence on what you find, and a second sentence explaining it, using <code>var.equal = TRUE</code> to check your explanation.</p>
-<p><strong>Exercise 5</strong> (ILOs 2, 6). State the null and alternative hypotheses, then fit <code>chol ~ smoking</code>. Use <code>levels()</code> to check which category of <code>smoking</code> the model used as its reference, then refit with <code>relevel()</code> using <code>'Current'</code> as the reference instead. Report the first model’s coefficients in one sentence, then write a second sentence stating what changed between the two model fits and a third stating what stayed exactly the same, and why.</p>
+<p><strong>Exercise 5</strong> (ILOs 2, 3). State the null and alternative hypotheses, then fit <code>chol ~ smoking</code>. Use <code>levels()</code> to check which category of <code>smoking</code> the model used as its reference, then refit with <code>relevel()</code> using <code>'Current'</code> as the reference instead. Report the first model’s coefficients in one sentence, then write a second sentence stating what changed between the two model fits and a third stating what stayed exactly the same, and why.</p>
 </section>
 <section id="writing-exercise" class="level2" data-number="6.12">
 <h2 data-number="6.12" class="anchored" data-anchor-id="writing-exercise"><span class="header-section-number">6.12</span> Writing exercise</h2>
@@ -876,7 +875,7 @@ vpa_r       -0.2006789 -0.1389139</code></pre>
 </div>
 </div>
 </div>
-<p>The residuals-vs-fitted plot checks linearity and constant variance; the QQ plot checks whether the residuals are approximately normally distributed. Most points in the residual plot fall into a small number of vertical strips rather than scattering freely. That’s because <code>vpa_r</code> itself only takes a small number of distinct values: most participants report exactly zero hours/day of vigorous activity outside work. Their fitted value and residual pattern is shared, not spread out. This is a feature of the predictor’s own distribution, not a sign that the model is wrongly specified.</p>
+<p>The residuals-vs-fitted plot checks linearity and constant variance; the QQ plot checks whether the residuals are approximately normally distributed. Most points in the residual plot fall into a small number of vertical strips instead of scattering freely. That’s because <code>vpa_r</code> itself only takes a small number of distinct values: most participants report exactly zero hours/day of vigorous activity outside work. Their fitted value and residual pattern is shared, not spread out. This is a feature of the explanatory variable’s own distribution, not a sign that the model is wrongly specified.</p>
 <p><strong>Exercise 3</strong></p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(m_vpa_r, <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">vpa_r =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">24</span>)), <span class="at">interval =</span> <span class="st">'confidence'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -922,7 +921,7 @@ F-statistic: 4.866 on 1 and 34432 DF,  p-value: 0.0274</code></pre>
 genderFemale 0.02889292 0.4897018</code></pre>
 </div>
 </div>
-<p><code>lm()</code> gives a slope of 0.259 hours/day (95% CI: 0.029 to 0.490 hours/day, p = 0.027), close to Chapter 5’s t-test result but not identical: Chapter 5 reported a mean difference of about 0.26 hours/day (95% CI: 0.03 to 0.49 hours/day, p = 0.026). The gap is small, but it’s real, in the third decimal of the p-value. It happens because <code>t.test()</code>’s default doesn’t assume the two groups share one variance and <code>lm()</code> does, and here that assumption isn’t quite free: <code>sed</code>’s spread genuinely differs by gender, a standard deviation of about 9.75 hours/day in men against about 11.9 hours/day in women. Setting <code>var.equal = TRUE</code> on the t-test confirms it:</p>
+<p><code>lm()</code> gives a slope of 0.259 hours/day (95% CI: 0.029 to 0.490 hours/day, p = 0.027), close to Chapter 5’s t-test result but not identical: Chapter 5 reported a mean difference of about 0.26 hours/day (95% CI: 0.03 to 0.49 hours/day, p = 0.026). The gap is small, but it’s real, in the third decimal of the p-value. It happens because <code>t.test()</code>’s default doesn’t assume the two groups share one variance and <code>lm()</code> does, and here that assumption isn’t quite free: <code>sed</code>’s spread differs by gender, a standard deviation of about 9.75 hours/day in men against about 11.9 hours/day in women. Setting <code>var.equal = TRUE</code> on the t-test confirms it:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(sed <span class="sc">~</span> gender, <span class="at">data =</span> sed_gender_complete, <span class="at">var.equal =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -939,7 +938,7 @@ sample estimates:
             6.430592             6.689889 </code></pre>
 </div>
 </div>
-<p>With <code>var.equal = TRUE</code>, the t-test’s p-value becomes 0.027 and its CI 0.029 to 0.490 once the sign is reversed, matching <code>lm()</code> exactly. The <code>chol</code> model earlier in this chapter agreed with its t-test to four decimal places because the two groups’ spreads there were nearly equal; here they aren’t, so the equal-variance assumption <code>lm()</code> makes actually changes the answer, by a small amount.</p>
+<p>With <code>var.equal = TRUE</code>, the t-test’s p-value becomes 0.027 and its CI 0.029 to 0.490 once the sign is reversed, matching <code>lm()</code> exactly. The <code>chol</code> model earlier in this chapter agreed with its t-test to four decimal places because the two groups’ spreads there were nearly equal; here they aren’t, so the equal-variance assumption <code>lm()</code> makes changes the answer, by a small amount.</p>
 <p><strong>Exercise 5</strong></p>
 <p><strong>Null hypothesis.</strong> In the population, a non-reference smoking category’s mean cholesterol equals the reference category’s.</p>
 <p><strong>Alternative hypothesis.</strong> It differs. Each non-reference row tests this comparison separately.</p>

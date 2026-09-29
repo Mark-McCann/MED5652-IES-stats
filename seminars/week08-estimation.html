@@ -29,7 +29,7 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="week08-estimation_files/libs/revealjs/dist/theme/quarto-aa0ada9d7a70b8d52b92c0f4f3951961.css">
+  <link rel="stylesheet" href="week08-estimation_files/libs/revealjs/dist/theme/quarto-5626e4631eb266b4bf3335b9aa694878.css">
   <link href="week08-estimation_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="week08-estimation_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="week08-estimation_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -148,7 +148,7 @@ Fred Ho
 <li class="fragment"><strong>Epi.</strong>
 <ul>
 <li class="fragment"><strong>Weeks 1 and 5.</strong> External validity and selection bias. This week adds another source of problem: sampling variation, precision instead of bias and validity</li>
-<li class="fragment"><strong>Week 2.</strong> Risk, odds, RR and OR calculated as point estimates. This week calculates also the confidence as well as that for a difference in proportions</li>
+<li class="fragment"><strong>Week 2.</strong> Risk, odds, RR and OR calculated as point estimates. This week puts a confidence interval on a proportion and on a difference in proportions; Week 9 does the RR and OR</li>
 <li class="fragment"><strong>Week 3.</strong> Underpower was discussed. This week does the sample size arithmetic behind it, and Week 9 returns to define power itself</li>
 </ul></li>
 </ul>
@@ -251,7 +251,7 @@ Fred Ho
 </ul></li>
 <li class="fragment">A confidence interval states its precision but not the accuracy
 <ul>
-<li class="fragment">A tight CI can still be biased</li>
+<li class="fragment">A narrow one can still be biased</li>
 </ul></li>
 </ul>
 </div><div class="column" style="width:58%;">
@@ -488,13 +488,13 @@ Reset
 <li class="fragment">Move up through n = 1, 5, 10, 30, 100, for either coin</li>
 <li class="fragment">The sample mean’s own distribution drifts toward a bell shape<span class="gap"></span></li>
 <li class="fragment"><strong>The data does not have to be normal.</strong> Skewed data still end up with a bell-shaped sampling distribution, only with a larger n needed to get there than a symmetric parent needs</li>
-<li class="fragment">The skewed case that matters for this course is <code>sed</code>, right-skewed, in Chapter 4, which refers back to what this seminar showed</li>
+<li class="fragment">The skewed case that matters for this course is <code>sed</code>, right-skewed, which the lab returns to</li>
 </ul>
 </section>
 <section id="the-central-limit-theorem" class="slide level2 smaller">
 <h2>The central limit theorem</h2>
 <ul>
-<li class="fragment">The distribution of the sample mean approaches a normal distribution as n grows</li>
+<li class="fragment">The central limit theorem (CLT): the distribution of the sample mean approaches a normal distribution as n grows</li>
 <li class="fragment">It applies no matter the shape of the underlying data
 <ul>
 <li class="fragment">If the data is highly skewed, a larger sample is needed for the sample mean to follow a normal distribution approximately<span class="gap"></span></li>
@@ -513,7 +513,7 @@ Reset
 <li class="fragment">Recall: any normal distribution is fully described by two numbers, its mean and its SD</li>
 <li class="fragment">The sampling distribution is a normal distribution too
 <ul>
-<li class="fragment">Its centre is the sample mean</li>
+<li class="fragment">Its centre is the population mean</li>
 <li class="fragment">Its spread is the <strong>standard error (SE)</strong></li>
 </ul></li>
 <li class="fragment">The SD describes the data; the SE describes the estimator</li>
@@ -2181,12 +2181,21 @@ New sample
 <li class="fragment">Which are wrong, and what exactly is wrong with each?</li>
 </ul>
 </section>
-<section id="try-it-the-answer-1" class="slide level2">
+<section id="try-it-the-answer-1" class="slide level2 smaller">
 <h2>Try it: the answer</h2>
 <ul>
-<li class="fragment"><strong>A. Wrong</strong>: both the 95% CI and the true mean are fixed</li>
-<li class="fragment"><strong>B. Wrong</strong>: despite sounding careful, ‘confident’ is standing in for ‘probability’, the same error as A</li>
-<li class="fragment"><strong>C. Right</strong>: the coverage statement about the procedure across repeated samples, not about this one CI; doesn’t assume the true mean or the CI to be random</li>
+<li class="fragment"><strong>A. Wrong</strong>: ‘There is a 95% probability the true mean lies in this range’
+<ul>
+<li class="fragment">Both the 95% CI and the true mean are fixed</li>
+</ul></li>
+<li class="fragment"><strong>B. Wrong</strong>: ‘We are 95% confident the true mean lies in this range’
+<ul>
+<li class="fragment">Despite sounding careful, ‘confident’ is standing in for ‘probability’, the same error as A</li>
+</ul></li>
+<li class="fragment"><strong>C. Right</strong>: ‘If we repeated this study many times, 95% of the resulting CIs would contain the true mean’
+<ul>
+<li class="fragment">The coverage statement about the procedure across repeated samples, not about this one CI; doesn’t assume the true mean or the CI to be random</li>
+</ul></li>
 </ul>
 </section>
 <section id="a-common-misconception" class="slide level2 smaller">
@@ -3711,7 +3720,6 @@ New sample
 <th id="Quantity" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Quantity</th>
 <th id="Estimate" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Estimate</th>
 <th id="a95%-CI" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">95% CI</th>
-<th id="p" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">p</th>
 </tr>
 </thead>
 <tbody class="gt_table_body">
@@ -3719,7 +3727,6 @@ New sample
 <td class="gt_row gt_left" headers="Quantity">Cholesterol, women minus men, mmol/L</td>
 <td class="gt_row gt_right" headers="Estimate">0.169</td>
 <td class="gt_row gt_left" headers="95% CI">0.147 to 0.19</td>
-<td class="gt_row gt_left" headers="p">&lt; 0.001</td>
 </tr>
 </tbody>
 </table>
@@ -3740,7 +3747,7 @@ New sample
 <li class="fragment">The approximation won’t be as good as when the underlying data is continuous</li>
 <li class="fragment">Good enough when both groups have a reasonable number of events <strong>and</strong> non-events</li>
 </ul></li>
-<li class="fragment">Exact methods exist for when either count is small (more in the labs)</li>
+<li class="fragment">Exact methods exist for when either count is small (Week 9)</li>
 </ul>
 </section>
 <section id="streptomycin-69-against-33-improved" class="slide level2">
@@ -4794,514 +4801,97 @@ New sample
 <section id="three-claims-three-cis" class="slide level2 smaller">
 <h2>Three claims, three CIs</h2>
 <ul>
-<li class="fragment">Read the papers’ absract, and discuss in pairs:</li>
+<li class="fragment">Read the papers’ abstracts, and discuss in pairs:</li>
 <li class="fragment">Does each sentence say what the CI supports? Where it does not, what would you write instead?</li>
 <li class="fragment">Ten minutes</li>
 </ul>
-<div class="cell">
-<div class="cell-output-display">
-<div id="jlckskuoqy" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#jlckskuoqy table {
-  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-#jlckskuoqy thead, #jlckskuoqy tbody, #jlckskuoqy tfoot, #jlckskuoqy tr, #jlckskuoqy td, #jlckskuoqy th {
-  border-style: none;
-}
-
-#jlckskuoqy p {
-  margin: 0;
-  padding: 0;
-}
-
-#jlckskuoqy .gt_table {
-  display: table;
-  border-collapse: collapse;
-  line-height: normal;
-  margin-left: auto;
-  margin-right: auto;
-  color: #333333;
-  font-size: 17px;
-  font-weight: normal;
-  font-style: normal;
-  background-color: #FFFFFF;
-  width: auto;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #A8A8A8;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #A8A8A8;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-}
-
-#jlckskuoqy .gt_caption {
-  padding-top: 4px;
-  padding-bottom: 4px;
-}
-
-#jlckskuoqy .gt_title {
-  color: #333333;
-  font-size: 125%;
-  font-weight: initial;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-color: #FFFFFF;
-  border-bottom-width: 0;
-}
-
-#jlckskuoqy .gt_subtitle {
-  color: #333333;
-  font-size: 85%;
-  font-weight: initial;
-  padding-top: 3px;
-  padding-bottom: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-color: #FFFFFF;
-  border-top-width: 0;
-}
-
-#jlckskuoqy .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#jlckskuoqy .gt_bottom_border {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#jlckskuoqy .gt_col_headings {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#jlckskuoqy .gt_col_heading {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 6px;
-  padding-left: 5px;
-  padding-right: 5px;
-  overflow-x: hidden;
-}
-
-#jlckskuoqy .gt_column_spanner_outer {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  padding-top: 0;
-  padding-bottom: 0;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-
-#jlckskuoqy .gt_column_spanner_outer:first-child {
-  padding-left: 0;
-}
-
-#jlckskuoqy .gt_column_spanner_outer:last-child {
-  padding-right: 0;
-}
-
-#jlckskuoqy .gt_column_spanner {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  overflow-x: hidden;
-  display: inline-block;
-  width: 100%;
-}
-
-#jlckskuoqy .gt_spanner_row {
-  border-bottom-style: hidden;
-}
-
-#jlckskuoqy .gt_group_heading {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  text-align: left;
-}
-
-#jlckskuoqy .gt_empty_group_heading {
-  padding: 0.5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: middle;
-}
-
-#jlckskuoqy .gt_from_md > :first-child {
-  margin-top: 0;
-}
-
-#jlckskuoqy .gt_from_md > :last-child {
-  margin-bottom: 0;
-}
-
-#jlckskuoqy .gt_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  margin: 10px;
-  border-top-style: solid;
-  border-top-width: 1px;
-  border-top-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  overflow-x: hidden;
-}
-
-#jlckskuoqy .gt_stub {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#jlckskuoqy .gt_stub_row_group {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-  vertical-align: top;
-}
-
-#jlckskuoqy .gt_row_group_first td {
-  border-top-width: 2px;
-}
-
-#jlckskuoqy .gt_row_group_first th {
-  border-top-width: 2px;
-}
-
-#jlckskuoqy .gt_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#jlckskuoqy .gt_first_summary_row {
-  border-top-style: solid;
-  border-top-color: #D3D3D3;
-}
-
-#jlckskuoqy .gt_first_summary_row.thick {
-  border-top-width: 2px;
-}
-
-#jlckskuoqy .gt_last_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#jlckskuoqy .gt_grand_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#jlckskuoqy .gt_first_grand_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-style: double;
-  border-top-width: 6px;
-  border-top-color: #D3D3D3;
-}
-
-#jlckskuoqy .gt_last_grand_summary_row_top {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: double;
-  border-bottom-width: 6px;
-  border-bottom-color: #D3D3D3;
-}
-
-#jlckskuoqy .gt_striped {
-  background-color: rgba(128, 128, 128, 0.05);
-}
-
-#jlckskuoqy .gt_table_body {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#jlckskuoqy .gt_footnotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#jlckskuoqy .gt_footnote {
-  margin: 0px;
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#jlckskuoqy .gt_sourcenotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#jlckskuoqy .gt_sourcenote {
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#jlckskuoqy .gt_left {
-  text-align: left;
-}
-
-#jlckskuoqy .gt_center {
-  text-align: center;
-}
-
-#jlckskuoqy .gt_right {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-#jlckskuoqy .gt_font_normal {
-  font-weight: normal;
-}
-
-#jlckskuoqy .gt_font_bold {
-  font-weight: bold;
-}
-
-#jlckskuoqy .gt_font_italic {
-  font-style: italic;
-}
-
-#jlckskuoqy .gt_super {
-  font-size: 65%;
-}
-
-#jlckskuoqy .gt_footnote_marks {
-  font-size: 75%;
-  vertical-align: 0.4em;
-  position: initial;
-}
-
-#jlckskuoqy .gt_asterisk {
-  font-size: 100%;
-  vertical-align: 0;
-}
-
-#jlckskuoqy .gt_indent_1 {
-  text-indent: 5px;
-}
-
-#jlckskuoqy .gt_indent_2 {
-  text-indent: 10px;
-}
-
-#jlckskuoqy .gt_indent_3 {
-  text-indent: 15px;
-}
-
-#jlckskuoqy .gt_indent_4 {
-  text-indent: 20px;
-}
-
-#jlckskuoqy .gt_indent_5 {
-  text-indent: 25px;
-}
-
-#jlckskuoqy .katex-display {
-  display: inline-flex !important;
-  margin-bottom: 0.75em !important;
-}
-
-#jlckskuoqy div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
-  height: 0px !important;
-}
-</style>
-
-<table class="gt_table caption-top" style="table-layout:fixed;width:100%;" data-quarto-bootstrap="false">
-<colgroup>
-<col style="width: 19%">
-<col style="width: 30%">
-<col style="width: 41%">
-<col style="width: 10%">
-</colgroup>
+<table class="caption-top">
 <thead>
-<tr class="gt_col_headings header">
-<th id="Study" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Study</th>
-<th id="Result" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Result</th>
-<th id="Paper's-conclusion" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Paper's conclusion</th>
-<th id="Link" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Link</th>
+<tr class="header">
+<th>Study</th>
+<th>Result</th>
+<th>Paper’s conclusion</th>
+<th>Link</th>
 </tr>
 </thead>
-<tbody class="gt_table_body">
+<tbody>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Study">Cao et al. (2020), NEJM</td>
-<td class="gt_row gt_left" headers="Result">28-day mortality 19.2% vs 25.0%, difference -5.8pp (95% CI -17.3 to 5.7)</td>
-<td class="gt_row gt_left" headers="Paper's conclusion">'...no benefit was observed with lopinavir-ritonavir treatment beyond standard care.'</td>
-<td class="gt_row gt_left" headers="Link"><a href="https://pubmed.ncbi.nlm.nih.gov/32187464/">PubMed</a></td>
+<td>Cao et al.&nbsp;(2020), NEJM</td>
+<td>28-day mortality 19.2% vs 25.0%, difference -5.8pp (95% CI -17.3 to 5.7)</td>
+<td>‘…no benefit was observed with lopinavir-ritonavir treatment beyond standard care.’</td>
+<td><a href="https://pubmed.ncbi.nlm.nih.gov/32187464/">PubMed</a></td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Study">Radonovich et al. (2019), JAMA</td>
-<td class="gt_row gt_left" headers="Result">Influenza 8.2% vs 7.2% of person-seasons, difference 1.0pp (95% CI -0.5 to 2.5), p = 0.18</td>
-<td class="gt_row gt_left" headers="Paper's conclusion">'...resulted in no significant difference in the incidence of laboratory-confirmed influenza.'</td>
-<td class="gt_row gt_left" headers="Link"><a href="https://pubmed.ncbi.nlm.nih.gov/31479137/">PubMed</a></td>
+<td>Radonovich et al.&nbsp;(2019), JAMA</td>
+<td>Influenza 8.2% vs 7.2% of person-seasons, difference 1.0pp (95% CI -0.5 to 2.5), p = 0.18</td>
+<td>‘…resulted in no significant difference in the incidence of laboratory-confirmed influenza.’</td>
+<td><a href="https://pubmed.ncbi.nlm.nih.gov/31479137/">PubMed</a></td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Study">Williamson et al. (2020), Nature</td>
-<td class="gt_row gt_left" headers="Result">HR 1.48 (1.29 to 1.69) Black; 1.45 (1.32 to 1.58) South Asian, vs white</td>
-<td class="gt_row gt_left" headers="Paper's conclusion">'Black and South Asian people were at higher risk, even after adjustment for other factors.'</td>
-<td class="gt_row gt_left" headers="Link"><a href="https://pubmed.ncbi.nlm.nih.gov/32640463/">PubMed</a></td>
+<td>Williamson et al.&nbsp;(2020), Nature</td>
+<td>HR 1.48 (1.29 to 1.69) Black; 1.45 (1.32 to 1.58) South Asian, vs white</td>
+<td>‘Black and South Asian people were at higher risk, even after adjustment for other factors.’</td>
+<td><a href="https://pubmed.ncbi.nlm.nih.gov/32640463/">PubMed</a></td>
 </tr>
 </tbody>
 </table>
-
-</div>
-</div>
-</div>
 <ul>
 <li class="fragment">A hazard ratio (Williamson) is a ratio measure like the RR and OR from Week 2, with a null value of 1. More details in Week 9.</li>
 </ul>
 </section>
-<section id="three-claims-judged" class="slide level2 smaller">
-<h2>Three claims, judged</h2>
+<section id="three-claims-judged-cao-et-al." class="slide level2 smaller">
+<h2>Three claims, judged: Cao et al.&nbsp;</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 72%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Study</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Cao et al.&nbsp;(2020)</td>
+<td>28-day mortality difference -5.8pp (95% CI -17.3 to 5.7)</td>
+</tr>
+</tbody>
+</table>
 <ul>
 <li class="fragment"><strong>Cao et al.: too imprecise to support ‘no benefit’</strong>
 <ul>
 <li class="fragment">The CI runs from a 17-point reduction in mortality to a 6-point increase, compatible with both a large benefit and real harm</li>
 <li class="fragment">The trial’s own next sentence half-admits this</li>
 </ul></li>
+</ul>
+</section>
+<section id="three-claims-judged-radonovich-et-al.-and-williamson-et-al." class="slide level2 smaller">
+<h2>Three claims, judged: Radonovich et al.&nbsp;and Williamson et al.&nbsp;</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 72%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Study</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Radonovich et al.&nbsp;(2019)</td>
+<td>Influenza difference 1.0pp (95% CI -0.5 to 2.5), p = 0.18</td>
+</tr>
+<tr class="even">
+<td>Williamson et al.&nbsp;(2020)</td>
+<td>HR 1.48 (1.29 to 1.69) Black; 1.45 (1.32 to 1.58) South Asian, vs white</td>
+</tr>
+</tbody>
+</table>
+<ul>
 <li class="fragment"><strong>Radonovich et al.: precise, but the sentence is potentially misleading</strong>
 <ul>
 <li class="fragment">The narrow CI already shows any difference either way is small. ‘No significant difference’ throws that away</li>

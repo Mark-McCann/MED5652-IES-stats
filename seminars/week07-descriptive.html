@@ -29,7 +29,7 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="week07-descriptive_files/libs/revealjs/dist/theme/quarto-aa0ada9d7a70b8d52b92c0f4f3951961.css">
+  <link rel="stylesheet" href="week07-descriptive_files/libs/revealjs/dist/theme/quarto-5626e4631eb266b4bf3335b9aa694878.css">
   <link href="week07-descriptive_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="week07-descriptive_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="week07-descriptive_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -158,14 +158,14 @@ Fred Ho
 </ul></li>
 <li class="fragment">From Stats:
 <ul>
-<li class="fragment">Prep sessions: tidy data, file paths, CSV structure</li>
+<li class="fragment">Weeks 4 and 5: tidy data, file paths, CSV structure</li>
 </ul></li>
 </ul>
 </section>
 <section id="by-the-end-of-this-session-you-will-be-able-to" class="slide level2">
 <h2>By the end of this session, you will be able to</h2>
 <ol type="1">
-<li class="fragment">Classify a variable as nominal, ordinal, discrete, or continuous, and explain how variable type constrains the analysis available</li>
+<li class="fragment">Classify a variable as nominal, ordinal, binary, count, or continuous, and explain how variable type constrains the analysis available</li>
 <li class="fragment">Select and construct an appropriate table or plot for one or more variables of a given type</li>
 <li class="fragment">Calculate and interpret measures of central tendency and spread, and justify a choice between mean/SD and median/IQR by distributional shape</li>
 <li class="fragment">Describe the normal distribution and apply the 68-95-99.7 rule</li>
@@ -215,6 +215,21 @@ Fred Ho
 <p><span class="math display">\[s = \sqrt{\frac{1}{n-1}\sum_{i=1}^{n} (x_i - \bar{x})^2}\]</span></p>
 <ul>
 <li class="fragment">How much individuals typically differ from the mean</li>
+</ul>
+</section>
+<section id="median-and-iqr" class="slide level2 smaller">
+<h2>Median and IQR</h2>
+<ul>
+<li class="fragment">Mean and SD are the most common pair, but not the only one
+<ul>
+<li class="fragment"><strong>Median</strong>: the middle value once sorted, half the data below it, half above</li>
+<li class="fragment"><strong>IQR</strong>: the width of the middle 50% of the data</li>
+</ul></li>
+<li class="fragment"><strong>Q1</strong> and <strong>Q3</strong>: the values a quarter and three quarters of the way up the sorted data</li>
+</ul>
+<p><span class="math display">\[\text{IQR} = Q_3 - Q_1\]</span></p>
+<ul>
+<li class="fragment">Often reported as the range, Q1 to Q3, not just one number</li>
 </ul>
 </section>
 <section id="distribution" class="slide level2">
@@ -303,21 +318,6 @@ Fred Ho
 </div>
 </div></div>
 </section>
-<section id="median-and-iqr" class="slide level2">
-<h2>Median and IQR</h2>
-<ul>
-<li class="fragment">Mean and SD are commonly used, but they can mislead</li>
-<li class="fragment">When the data is skewed, we should consider:
-<ul>
-<li class="fragment"><strong>Median</strong>: the middle value once sorted, half the data below it, half above</li>
-<li class="fragment"><strong>IQR</strong>: the width of the middle 50% of the data</li>
-</ul></li>
-</ul>
-<p><span class="math display">\[\text{IQR} = Q_3 - Q_1\]</span></p>
-<ul>
-<li class="fragment">Often reported as the range, Q1 to Q3, not just one number</li>
-</ul>
-</section>
 <section id="which-do-we-report-meansd-or-medianiqr" class="slide level2">
 <h2>Which do we report: mean/SD, or median/IQR?</h2>
 <ul>
@@ -374,8 +374,8 @@ Fred Ho
 <ul>
 <li class="fragment">Mean, SD, median and IQR give a crude description</li>
 <li class="fragment">Five numbers give a fuller picture: minimum, Q1, median, Q3, maximum<span class="gap"></span></li>
-<li class="fragment"><strong>Q1</strong>, the 25th percentile: a quarter of the data falls at or below it</li>
-<li class="fragment"><strong>Q3</strong>, the 75th percentile: three quarters of the data falls at or below it</li>
+<li class="fragment"><strong>Q1</strong> is also called the 25th percentile: a quarter of the data falls at or below it</li>
+<li class="fragment"><strong>Q3</strong> is the 75th percentile: three quarters of the data falls at or below it</li>
 <li class="fragment">Together, the five numbers split the data into four equal-sized chunks</li>
 </ul>
 </section>
@@ -3139,8 +3139,10 @@ Fred Ho
 <li class="fragment">Name each column’s type, and which you could average</li>
 </ul>
 </section>
-<section id="try-it-the-answer-1" class="slide level2">
+<section id="try-it-the-answer-1" class="slide level2 smaller">
 <h2>Try it: the answer</h2>
+<div class="columns">
+<div class="column" style="width:52%;">
 <ul>
 <li class="fragment"><code>patient_id</code>: nominal; it is a number, but it labels an individual</li>
 <li class="fragment"><code>arm</code>: nominal (binary); Streptomycin or Control</li>
@@ -3149,48 +3151,7 @@ Fred Ho
 <li class="fragment"><code>rad_num</code>: a 1 to 6 score standing for an ordered category; or a count</li>
 <li class="fragment"><code>improved</code>: binary, stored as TRUE/FALSE; storage is not type</li>
 </ul>
-</section>
-<section id="which-summary-which-plot-for-which-type" class="slide level2">
-<h2>Which summary, which plot, for which type</h2>
-<table class="caption-top">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Type</th>
-<th>Summary</th>
-<th>Plot</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Nominal / ordinal / binary</td>
-<td>Frequency, percentage</td>
-<td>Bar chart</td>
-</tr>
-<tr class="even">
-<td>Count</td>
-<td>Frequency, or mean/SD/median/IQR if the range is wide</td>
-<td>Bar chart, or histogram</td>
-</tr>
-<tr class="odd">
-<td>Continuous, roughly symmetric</td>
-<td>Mean and SD</td>
-<td>Histogram, box plot</td>
-</tr>
-<tr class="even">
-<td>Continuous, skewed</td>
-<td>Median and IQR</td>
-<td>Histogram, box plot</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="two-variables-at-once-the-cross-tabulation" class="slide level2">
-<h2>Two variables at once: the cross-tabulation</h2>
+</div><div class="column" style="width:48%;">
 <div class="cell">
 <div class="cell-output-display">
 <div id="klpshfflyq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -3216,7 +3177,7 @@ Fred Ho
   margin-left: auto;
   margin-right: auto;
   color: #333333;
-  font-size: 16px;
+  font-size: 13px;
   font-weight: normal;
   font-style: normal;
   background-color: #FFFFFF;
@@ -3403,8 +3364,8 @@ Fred Ho
 }
 
 #klpshfflyq .gt_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
+  padding-top: 2px;
+  padding-bottom: 2px;
   padding-left: 5px;
   padding-right: 5px;
   margin: 10px;
@@ -3646,26 +3607,94 @@ Fred Ho
 <table class="gt_table caption-top" data-quarto-bootstrap="false">
 <thead>
 <tr class="gt_col_headings header">
-<th id="Smoking" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Smoking</th>
-<th id="Male" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Male</th>
-<th id="Female" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Female</th>
+<th id="patient_id" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">patient_id</th>
+<th id="arm" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">arm</th>
+<th id="gender" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">gender</th>
+<th id="baseline_condition" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">baseline_condition</th>
+<th id="rad_num" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">rad_num</th>
+<th id="improved" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">improved</th>
 </tr>
 </thead>
 <tbody class="gt_table_body">
 <tr class="odd">
-<td class="gt_row gt_center" headers="Smoking">Never</td>
-<td class="gt_row gt_right" headers="Male">9302</td>
-<td class="gt_row gt_right" headers="Female">14092</td>
+<td class="gt_row gt_right" headers="patient_id">0008</td>
+<td class="gt_row gt_center" headers="arm">Control</td>
+<td class="gt_row gt_center" headers="gender">M</td>
+<td class="gt_row gt_center" headers="baseline_condition">1_Good</td>
+<td class="gt_row gt_right" headers="rad_num">5</td>
+<td class="gt_row gt_center" headers="improved">TRUE</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_center" headers="Smoking">Previous</td>
-<td class="gt_row gt_right" headers="Male">5704</td>
-<td class="gt_row gt_right" headers="Female">3764</td>
+<td class="gt_row gt_right" headers="patient_id">0017</td>
+<td class="gt_row gt_center" headers="arm">Control</td>
+<td class="gt_row gt_center" headers="gender">F</td>
+<td class="gt_row gt_center" headers="baseline_condition">2_Fair</td>
+<td class="gt_row gt_right" headers="rad_num">5</td>
+<td class="gt_row gt_center" headers="improved">TRUE</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_center" headers="Smoking">Current</td>
-<td class="gt_row gt_right" headers="Male">4913</td>
-<td class="gt_row gt_right" headers="Female">3667</td>
+<td class="gt_row gt_right" headers="patient_id">0020</td>
+<td class="gt_row gt_center" headers="arm">Control</td>
+<td class="gt_row gt_center" headers="gender">M</td>
+<td class="gt_row gt_center" headers="baseline_condition">2_Fair</td>
+<td class="gt_row gt_right" headers="rad_num">3</td>
+<td class="gt_row gt_center" headers="improved">FALSE</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="patient_id">0039</td>
+<td class="gt_row gt_center" headers="arm">Control</td>
+<td class="gt_row gt_center" headers="gender">F</td>
+<td class="gt_row gt_center" headers="baseline_condition">3_Poor</td>
+<td class="gt_row gt_right" headers="rad_num">1</td>
+<td class="gt_row gt_center" headers="improved">FALSE</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="patient_id">0041</td>
+<td class="gt_row gt_center" headers="arm">Control</td>
+<td class="gt_row gt_center" headers="gender">F</td>
+<td class="gt_row gt_center" headers="baseline_condition">3_Poor</td>
+<td class="gt_row gt_right" headers="rad_num">1</td>
+<td class="gt_row gt_center" headers="improved">FALSE</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="patient_id">0055</td>
+<td class="gt_row gt_center" headers="arm">Streptomycin</td>
+<td class="gt_row gt_center" headers="gender">F</td>
+<td class="gt_row gt_center" headers="baseline_condition">1_Good</td>
+<td class="gt_row gt_right" headers="rad_num">6</td>
+<td class="gt_row gt_center" headers="improved">TRUE</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="patient_id">0072</td>
+<td class="gt_row gt_center" headers="arm">Streptomycin</td>
+<td class="gt_row gt_center" headers="gender">M</td>
+<td class="gt_row gt_center" headers="baseline_condition">2_Fair</td>
+<td class="gt_row gt_right" headers="rad_num">5</td>
+<td class="gt_row gt_center" headers="improved">TRUE</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="patient_id">0083</td>
+<td class="gt_row gt_center" headers="arm">Streptomycin</td>
+<td class="gt_row gt_center" headers="gender">M</td>
+<td class="gt_row gt_center" headers="baseline_condition">3_Poor</td>
+<td class="gt_row gt_right" headers="rad_num">6</td>
+<td class="gt_row gt_center" headers="improved">TRUE</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="patient_id">0101</td>
+<td class="gt_row gt_center" headers="arm">Streptomycin</td>
+<td class="gt_row gt_center" headers="gender">F</td>
+<td class="gt_row gt_center" headers="baseline_condition">3_Poor</td>
+<td class="gt_row gt_right" headers="rad_num">2</td>
+<td class="gt_row gt_center" headers="improved">FALSE</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="patient_id">0102</td>
+<td class="gt_row gt_center" headers="arm">Streptomycin</td>
+<td class="gt_row gt_center" headers="gender">M</td>
+<td class="gt_row gt_center" headers="baseline_condition">3_Poor</td>
+<td class="gt_row gt_right" headers="rad_num">6</td>
+<td class="gt_row gt_center" headers="improved">TRUE</td>
 </tr>
 </tbody>
 </table>
@@ -3673,16 +3702,49 @@ Fred Ho
 </div>
 </div>
 </div>
-<ul>
-<li class="fragment">Rows: <code>smoking</code>. Columns: <code>gender</code></li>
-<li class="fragment">One cell per combination of the two variables</li>
-</ul>
+</div></div>
 </section>
-<section id="row-or-column-percentages" class="slide level2">
-<h2>Row or column percentages?</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<p>Within each smoking group, the split by gender:</p>
+<section id="which-summary-which-plot-for-which-type" class="slide level2">
+<h2>Which summary, which plot, for which type</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Type</th>
+<th>Summary</th>
+<th>Plot</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Nominal / ordinal / binary</td>
+<td>Frequency, percentage</td>
+<td>Bar chart</td>
+</tr>
+<tr class="even">
+<td>Count</td>
+<td>Frequency, or mean/SD/median/IQR if the range is wide</td>
+<td>Bar chart, or histogram</td>
+</tr>
+<tr class="odd">
+<td>Continuous, roughly symmetric</td>
+<td>Mean and SD</td>
+<td>Histogram, box plot</td>
+</tr>
+<tr class="even">
+<td>Continuous, skewed</td>
+<td>Median and IQR</td>
+<td>Histogram, box plot</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="two-variables-at-once-the-cross-tabulation" class="slide level2">
+<h2>Two variables at once: the cross-tabulation</h2>
 <div class="cell">
 <div class="cell-output-display">
 <div id="jsfmvgfclo" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -4146,18 +4208,18 @@ Fred Ho
 <tbody class="gt_table_body">
 <tr class="odd">
 <td class="gt_row gt_center" headers="Smoking">Never</td>
-<td class="gt_row gt_right" headers="Male">39.8</td>
-<td class="gt_row gt_right" headers="Female">60.2</td>
+<td class="gt_row gt_right" headers="Male">9302</td>
+<td class="gt_row gt_right" headers="Female">14092</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_center" headers="Smoking">Previous</td>
-<td class="gt_row gt_right" headers="Male">60.2</td>
-<td class="gt_row gt_right" headers="Female">39.8</td>
+<td class="gt_row gt_right" headers="Male">5704</td>
+<td class="gt_row gt_right" headers="Female">3764</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_center" headers="Smoking">Current</td>
-<td class="gt_row gt_right" headers="Male">57.3</td>
-<td class="gt_row gt_right" headers="Female">42.7</td>
+<td class="gt_row gt_right" headers="Male">4913</td>
+<td class="gt_row gt_right" headers="Female">3667</td>
 </tr>
 </tbody>
 </table>
@@ -4165,8 +4227,16 @@ Fred Ho
 </div>
 </div>
 </div>
-</div><div class="column" style="width:50%;">
-<p>Within each gender, the split by smoking:</p>
+<ul>
+<li class="fragment">Rows: <code>smoking</code>. Columns: <code>gender</code></li>
+<li class="fragment">One cell per combination of the two variables</li>
+</ul>
+</section>
+<section id="row-or-column-percentages" class="slide level2">
+<h2>Row or column percentages?</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Within each smoking group, the split by gender:</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="kdowzqxtgr" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -4630,18 +4700,18 @@ Fred Ho
 <tbody class="gt_table_body">
 <tr class="odd">
 <td class="gt_row gt_center" headers="Smoking">Never</td>
-<td class="gt_row gt_right" headers="Male">46.7</td>
-<td class="gt_row gt_right" headers="Female">65.5</td>
+<td class="gt_row gt_right" headers="Male">39.8</td>
+<td class="gt_row gt_right" headers="Female">60.2</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_center" headers="Smoking">Previous</td>
-<td class="gt_row gt_right" headers="Male">28.6</td>
-<td class="gt_row gt_right" headers="Female">17.5</td>
+<td class="gt_row gt_right" headers="Male">60.2</td>
+<td class="gt_row gt_right" headers="Female">39.8</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_center" headers="Smoking">Current</td>
-<td class="gt_row gt_right" headers="Male">24.7</td>
-<td class="gt_row gt_right" headers="Female">17.0</td>
+<td class="gt_row gt_right" headers="Male">57.3</td>
+<td class="gt_row gt_right" headers="Female">42.7</td>
 </tr>
 </tbody>
 </table>
@@ -4649,13 +4719,8 @@ Fred Ho
 </div>
 </div>
 </div>
-</div></div>
-<ul>
-<li class="fragment">Percentage of what depends on the question being asked</li>
-</ul>
-</section>
-<section id="the-2x2-table-from-the-epi-half" class="slide level2">
-<h2>The 2x2 table, from the epi half</h2>
+</div><div class="column" style="width:50%;">
+<p>Within each gender, the split by smoking:</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="jpqrcsxanf" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -5111,21 +5176,26 @@ Fred Ho
 <table class="gt_table caption-top" data-quarto-bootstrap="false">
 <thead>
 <tr class="gt_col_headings header">
-<th id="Gender" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Gender</th>
-<th id="No" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">No</th>
-<th id="Yes" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Yes</th>
+<th id="Smoking" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Smoking</th>
+<th id="Male" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Male</th>
+<th id="Female" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Female</th>
 </tr>
 </thead>
 <tbody class="gt_table_body">
 <tr class="odd">
-<td class="gt_row gt_center" headers="Gender">Male</td>
-<td class="gt_row gt_right" headers="No">17313</td>
-<td class="gt_row gt_right" headers="Yes">2201</td>
+<td class="gt_row gt_center" headers="Smoking">Never</td>
+<td class="gt_row gt_right" headers="Male">46.7</td>
+<td class="gt_row gt_right" headers="Female">65.5</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_center" headers="Gender">Female</td>
-<td class="gt_row gt_right" headers="No">19464</td>
-<td class="gt_row gt_right" headers="Yes">1628</td>
+<td class="gt_row gt_center" headers="Smoking">Previous</td>
+<td class="gt_row gt_right" headers="Male">28.6</td>
+<td class="gt_row gt_right" headers="Female">17.5</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="Smoking">Current</td>
+<td class="gt_row gt_right" headers="Male">24.7</td>
+<td class="gt_row gt_right" headers="Female">17.0</td>
 </tr>
 </tbody>
 </table>
@@ -5133,24 +5203,13 @@ Fred Ho
 </div>
 </div>
 </div>
+</div></div>
 <ul>
-<li class="fragment">Gender by baseline cardiovascular disease</li>
-<li class="fragment">The same layout from epi weeks 1 to 5, reactivated here</li>
-<li class="fragment">No risk ratio or odds ratio yet: <code>blm.cvd</code> is measured at the same visit as the exposure</li>
-<li class="fragment">Week 9 covers the formulae</li>
+<li class="fragment">Percentage of what depends on the question being asked</li>
 </ul>
 </section>
-<section id="try-it-build-the-2x2" class="slide level2">
-<h2>Try it: build the 2x2</h2>
-<div class="columns">
-<div class="column" style="width:60%;">
-<ul>
-<li class="fragment">Same ten patients as before, two columns only: <code>arm</code>, <code>improved</code></li>
-<li class="fragment">Build the 2x2 table for these ten patients</li>
-<li class="fragment">Which variable goes in the rows, and which in the columns? Why?</li>
-<li class="fragment">Ten patients only: this is not the trial’s result</li>
-</ul>
-</div><div class="column" style="width:40%;">
+<section id="the-2x2-table-from-the-epi-half" class="slide level2">
+<h2>The 2x2 table, from the epi half</h2>
 <div class="cell">
 <div class="cell-output-display">
 <div id="tbtecqitgn" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -5606,50 +5665,21 @@ Fred Ho
 <table class="gt_table caption-top" data-quarto-bootstrap="false">
 <thead>
 <tr class="gt_col_headings header">
-<th id="arm" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">arm</th>
-<th id="improved" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">improved</th>
+<th id="Gender" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Gender</th>
+<th id="No" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">No</th>
+<th id="Yes" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Yes</th>
 </tr>
 </thead>
 <tbody class="gt_table_body">
 <tr class="odd">
-<td class="gt_row gt_center" headers="arm">Control</td>
-<td class="gt_row gt_center" headers="improved">TRUE</td>
+<td class="gt_row gt_center" headers="Gender">Male</td>
+<td class="gt_row gt_right" headers="No">17313</td>
+<td class="gt_row gt_right" headers="Yes">2201</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_center" headers="arm">Control</td>
-<td class="gt_row gt_center" headers="improved">TRUE</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_center" headers="arm">Control</td>
-<td class="gt_row gt_center" headers="improved">FALSE</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_center" headers="arm">Control</td>
-<td class="gt_row gt_center" headers="improved">FALSE</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_center" headers="arm">Control</td>
-<td class="gt_row gt_center" headers="improved">FALSE</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_center" headers="arm">Streptomycin</td>
-<td class="gt_row gt_center" headers="improved">TRUE</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_center" headers="arm">Streptomycin</td>
-<td class="gt_row gt_center" headers="improved">TRUE</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_center" headers="arm">Streptomycin</td>
-<td class="gt_row gt_center" headers="improved">TRUE</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_center" headers="arm">Streptomycin</td>
-<td class="gt_row gt_center" headers="improved">FALSE</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_center" headers="arm">Streptomycin</td>
-<td class="gt_row gt_center" headers="improved">TRUE</td>
+<td class="gt_row gt_center" headers="Gender">Female</td>
+<td class="gt_row gt_right" headers="No">19464</td>
+<td class="gt_row gt_right" headers="Yes">1628</td>
 </tr>
 </tbody>
 </table>
@@ -5657,10 +5687,24 @@ Fred Ho
 </div>
 </div>
 </div>
-</div></div>
+<ul>
+<li class="fragment">Gender by baseline cardiovascular disease</li>
+<li class="fragment">The same layout from epi weeks 1 to 5, reactivated here</li>
+<li class="fragment">No risk ratio or odds ratio here: <code>blm.cvd</code> was recorded at the same visit, so the table shows who already had CVD, not who went on to develop it</li>
+<li class="fragment">Week 9 covers the formulae</li>
+</ul>
 </section>
-<section id="try-it-the-answer-2" class="slide level2 smaller">
-<h2>Try it: the answer</h2>
+<section id="try-it-build-the-2x2" class="slide level2">
+<h2>Try it: build the 2x2</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<ul>
+<li class="fragment">Same ten patients as before, two columns only: <code>arm</code>, <code>improved</code></li>
+<li class="fragment">Build the 2x2 table for these ten patients</li>
+<li class="fragment">Which variable goes in the rows, and which in the columns? Why?</li>
+<li class="fragment">Ten patients only: this is not the trial’s result</li>
+</ul>
+</div><div class="column" style="width:40%;">
 <div class="cell">
 <div class="cell-output-display">
 <div id="djgdskvcnq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -6116,21 +6160,50 @@ Fred Ho
 <table class="gt_table caption-top" data-quarto-bootstrap="false">
 <thead>
 <tr class="gt_col_headings header">
-<th id="Arm" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Arm</th>
-<th id="FALSE" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">FALSE</th>
-<th id="TRUE" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">TRUE</th>
+<th id="arm" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">arm</th>
+<th id="improved" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">improved</th>
 </tr>
 </thead>
 <tbody class="gt_table_body">
 <tr class="odd">
-<td class="gt_row gt_center" headers="Arm">Streptomycin</td>
-<td class="gt_row gt_right" headers="FALSE">1</td>
-<td class="gt_row gt_right" headers="TRUE">4</td>
+<td class="gt_row gt_center" headers="arm">Control</td>
+<td class="gt_row gt_center" headers="improved">TRUE</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_center" headers="Arm">Control</td>
-<td class="gt_row gt_right" headers="FALSE">3</td>
-<td class="gt_row gt_right" headers="TRUE">2</td>
+<td class="gt_row gt_center" headers="arm">Control</td>
+<td class="gt_row gt_center" headers="improved">TRUE</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="arm">Control</td>
+<td class="gt_row gt_center" headers="improved">FALSE</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="arm">Control</td>
+<td class="gt_row gt_center" headers="improved">FALSE</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="arm">Control</td>
+<td class="gt_row gt_center" headers="improved">FALSE</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="arm">Streptomycin</td>
+<td class="gt_row gt_center" headers="improved">TRUE</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="arm">Streptomycin</td>
+<td class="gt_row gt_center" headers="improved">TRUE</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="arm">Streptomycin</td>
+<td class="gt_row gt_center" headers="improved">TRUE</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="arm">Streptomycin</td>
+<td class="gt_row gt_center" headers="improved">FALSE</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="arm">Streptomycin</td>
+<td class="gt_row gt_center" headers="improved">TRUE</td>
 </tr>
 </tbody>
 </table>
@@ -6138,27 +6211,10 @@ Fred Ho
 </div>
 </div>
 </div>
-<ul>
-<li class="fragment">Treatment in the rows, outcome in the columns, as in the epi half</li>
-<li class="fragment">Streptomycin: 4 improved, 1 not</li>
-<li class="fragment">Control: 2 improved, 3 not</li>
-<li class="fragment">The exposure defines the groups being compared, so it gets the rows<span class="gap"></span></li>
-<li class="fragment">Ten patients cannot support a measure of association</li>
-<li class="fragment">The real trial has 107, and Week 9 does it</li>
-</ul>
+</div></div>
 </section>
-<section id="what-is-a-table-1" class="slide level2">
-<h2>What is a ‘Table 1’?</h2>
-<ul>
-<li class="fragment">The conventional first table in a paper, describing the participants</li>
-<li class="fragment">Often stratified by the exposure or group of interest</li>
-<li class="fragment">Each row shows the appropriate summary for that variable’s type<span class="gap"></span></li>
-<li class="fragment">Mean/SD or median/IQR for numeric, count/percentage for categorical</li>
-<li class="fragment">The same choice from a few slides ago</li>
-</ul>
-</section>
-<section id="a-table-1" class="slide level2">
-<h2>A Table 1</h2>
+<section id="try-it-the-answer-2" class="slide level2 smaller">
+<h2>Try it: the answer</h2>
 <div class="cell">
 <div class="cell-output-display">
 <div id="gnesyqfdzy" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -6607,6 +6663,504 @@ Fred Ho
 }
 
 #gnesyqfdzy div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_col_headings header">
+<th id="Arm" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Arm</th>
+<th id="FALSE" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">FALSE</th>
+<th id="TRUE" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">TRUE</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_center" headers="Arm">Streptomycin</td>
+<td class="gt_row gt_right" headers="FALSE">1</td>
+<td class="gt_row gt_right" headers="TRUE">4</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="Arm">Control</td>
+<td class="gt_row gt_right" headers="FALSE">3</td>
+<td class="gt_row gt_right" headers="TRUE">2</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<ul>
+<li class="fragment">Treatment in the rows, outcome in the columns, as in the epi half</li>
+<li class="fragment">Streptomycin: 4 improved, 1 not</li>
+<li class="fragment">Control: 2 improved, 3 not</li>
+<li class="fragment">The exposure defines the groups being compared, so it gets the rows<span class="gap"></span></li>
+<li class="fragment">Ten patients cannot support a measure of association</li>
+<li class="fragment">The real trial has 107, and Week 9 does it</li>
+</ul>
+</section>
+<section id="what-is-a-table-1" class="slide level2">
+<h2>What is a ‘Table 1’?</h2>
+<ul>
+<li class="fragment">The conventional first table in a paper, describing the participants</li>
+<li class="fragment">Often stratified by the exposure or group of interest</li>
+<li class="fragment">Each row shows the appropriate summary for that variable’s type<span class="gap"></span></li>
+<li class="fragment">Mean/SD or median/IQR for continuous, count/percentage for categorical</li>
+<li class="fragment">The same choice from a few slides ago</li>
+</ul>
+</section>
+<section id="a-table-1" class="slide level2">
+<h2>A Table 1</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div id="xetwuywtca" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#xetwuywtca table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#xetwuywtca thead, #xetwuywtca tbody, #xetwuywtca tfoot, #xetwuywtca tr, #xetwuywtca td, #xetwuywtca th {
+  border-style: none;
+}
+
+#xetwuywtca p {
+  margin: 0;
+  padding: 0;
+}
+
+#xetwuywtca .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#xetwuywtca .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#xetwuywtca .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#xetwuywtca .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#xetwuywtca .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#xetwuywtca .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#xetwuywtca .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#xetwuywtca .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#xetwuywtca .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#xetwuywtca .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#xetwuywtca .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#xetwuywtca .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#xetwuywtca .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#xetwuywtca .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#xetwuywtca .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#xetwuywtca .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#xetwuywtca .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#xetwuywtca .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#xetwuywtca .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#xetwuywtca .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#xetwuywtca .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#xetwuywtca .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#xetwuywtca .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#xetwuywtca .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#xetwuywtca .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#xetwuywtca .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#xetwuywtca .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#xetwuywtca .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#xetwuywtca .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#xetwuywtca .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#xetwuywtca .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#xetwuywtca .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#xetwuywtca .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#xetwuywtca .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#xetwuywtca .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#xetwuywtca .gt_left {
+  text-align: left;
+}
+
+#xetwuywtca .gt_center {
+  text-align: center;
+}
+
+#xetwuywtca .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#xetwuywtca .gt_font_normal {
+  font-weight: normal;
+}
+
+#xetwuywtca .gt_font_bold {
+  font-weight: bold;
+}
+
+#xetwuywtca .gt_font_italic {
+  font-style: italic;
+}
+
+#xetwuywtca .gt_super {
+  font-size: 65%;
+}
+
+#xetwuywtca .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#xetwuywtca .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#xetwuywtca .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#xetwuywtca .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#xetwuywtca .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#xetwuywtca .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#xetwuywtca .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#xetwuywtca .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#xetwuywtca div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>

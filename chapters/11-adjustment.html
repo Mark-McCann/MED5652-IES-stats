@@ -232,7 +232,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#extending-the-chapter-6-model" id="toc-extending-the-chapter-6-model" class="nav-link" data-scroll-target="#extending-the-chapter-6-model"><span class="header-section-number">7.4</span> Extending the Chapter 6 model</a></li>
   <li><a href="#crude-versus-adjusted-quantifying-the-change" id="toc-crude-versus-adjusted-quantifying-the-change" class="nav-link" data-scroll-target="#crude-versus-adjusted-quantifying-the-change"><span class="header-section-number">7.5</span> Crude versus adjusted: quantifying the change</a></li>
   <li><a href="#diagnostics-for-the-multiple-regression-model" id="toc-diagnostics-for-the-multiple-regression-model" class="nav-link" data-scroll-target="#diagnostics-for-the-multiple-regression-model"><span class="header-section-number">7.6</span> Diagnostics for the multiple regression model</a></li>
-  <li><a href="#when-the-outcome-is-binary-logistic-regression" id="toc-when-the-outcome-is-binary-logistic-regression" class="nav-link" data-scroll-target="#when-the-outcome-is-binary-logistic-regression"><span class="header-section-number">7.7</span> When the outcome is binary: logistic regression</a></li>
+  <li><a href="#when-the-response-is-binary-logistic-regression" id="toc-when-the-response-is-binary-logistic-regression" class="nav-link" data-scroll-target="#when-the-response-is-binary-logistic-regression"><span class="header-section-number">7.7</span> When the response is binary: logistic regression</a></li>
   <li><a href="#odds-ratios-exponentiating-the-coefficients" id="toc-odds-ratios-exponentiating-the-coefficients" class="nav-link" data-scroll-target="#odds-ratios-exponentiating-the-coefficients"><span class="header-section-number">7.8</span> Odds ratios: exponentiating the coefficients</a></li>
   <li><a href="#regression-tables-with-gtsummary" id="toc-regression-tables-with-gtsummary" class="nav-link" data-scroll-target="#regression-tables-with-gtsummary"><span class="header-section-number">7.9</span> Regression tables with <code>gtsummary</code></a></li>
   <li><a href="#the-sensitivity-analysis-is-blm.cvd-a-confounder-or-a-mediator" id="toc-the-sensitivity-analysis-is-blm.cvd-a-confounder-or-a-mediator" class="nav-link" data-scroll-target="#the-sensitivity-analysis-is-blm.cvd-a-confounder-or-a-mediator"><span class="header-section-number">7.10</span> The sensitivity analysis: is <code>blm.cvd</code> a confounder or a mediator?</a></li>
@@ -263,13 +263,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>A confounder is a variable that lies behind an association and distorts it, and Chapter 6’s single-predictor model has no way to hold one still. Baseline cardiovascular disease in our data is measured at the same visit as the exposure, so it’s a real instance of the problem: nothing in the data says whether it sits upstream of sedentary behaviour or downstream of it. Whether it belongs in the model as a confounder to adjust for, or should stay out because it’s a mediator, is a judgement the study design can’t make for us, and this chapter fits the model both ways and reports both.</p>
-<p>Getting there means extending linear regression to hold several predictors at once, so an adjusted coefficient can sit next to the crude one and the gap between them read as an estimate of confounding bias. The same extension handles an outcome that isn’t continuous at all: whether someone died within ten years of their baseline visit becomes the input to a logistic regression, with odds ratios read straight off its exponentiated coefficients.</p>
+<p>A confounder is a variable that lies behind an association and distorts it, and Chapter 6’s single-explanatory-variable model has no way to hold one still. Baseline cardiovascular disease in our data is measured at the same visit as the exposure, so it’s a real instance of the problem: nothing in the data says whether it sits upstream of sedentary behaviour or downstream of it. Whether it belongs in the model as a confounder to adjust for, or should stay out because it’s a mediator, is a judgement the study design can’t make for us, and this chapter fits the model both ways and reports both.</p>
+<p>Getting there means extending linear regression to hold several explanatory variables at once, so an adjusted coefficient can sit next to the crude one and the gap between them read as an estimate of confounding bias. The same extension handles a response that isn’t continuous at all: whether someone died within ten years of their baseline visit becomes the input to a logistic regression, with odds ratios read straight off its exponentiated coefficients.</p>
 <section id="chapter-intended-learning-outcomes" class="level2" data-number="7.1">
 <h2 data-number="7.1" class="anchored" data-anchor-id="chapter-intended-learning-outcomes"><span class="header-section-number">7.1</span> Chapter intended learning outcomes</h2>
-<p>By the end of this chapter you will be able to:</p>
+<p>By the end of this week you will be able to:</p>
 <ol type="1">
-<li>Fit a multiple linear regression using <code>lm()</code>, including categorical predictors with a stated reference level</li>
+<li>Fit a multiple linear regression using <code>lm()</code>, including categorical explanatory variables with a stated reference level</li>
 <li>Compare crude and adjusted estimates and quantify the change</li>
 <li>Fit a logistic regression with <code>glm(family = binomial)</code>, and interpret an exponentiated coefficient as an adjusted odds ratio with a confidence interval</li>
 <li>Compare nested models as a sensitivity analysis, and appraise what each assumes about <code>blm.cvd</code></li>
@@ -323,9 +323,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li>Participants who died, and whose death happened within 120 months (10 years) of their follow-up starting. These count as an event: <code>1</code>.</li>
 <li>Participants known to be alive at 120 months. This includes everyone followed at least that long without dying, but it also includes anyone who died <em>after</em> 120 months: surviving to month 150 and then dying still means they were alive at month 120, so this group counts as a non-event: <code>0</code>, regardless of whether death eventually happened later on.</li>
-<li>Participants who did not die, but whose recorded follow-up ended before 120 months. These cannot be classified either way. They might have died the month after their follow-up ended, or lived another thirty years. Calling them ‘survivors’ would be a guess, so they are excluded rather than coded as <code>0</code>.</li>
+<li>Participants who did not die, but whose recorded follow-up ended before 120 months. These cannot be classified either way. They might have died the month after their follow-up ended, or lived another thirty years. Calling them ‘survivors’ would be a guess, so they are excluded instead of coded as <code>0</code>.</li>
 </ul>
-<p>Two new tools here: <code>case_when()</code>, from <code>dplyr</code>, checks a series of conditions in order and returns the first matching value, which is exactly what a three-way rule needs. Each line pairs a condition on the left of the <code>~</code> with the value to return on the right. The last line is usually a catch-all: <code>TRUE</code> is a condition that is always met, so anything reaching it without matching a line above gets whatever that line returns. Order matters, because <code>case_when()</code> stops at the first condition a participant matches. The second tool is an argument rather than a function. <code>table()</code> normally leaves missing values out of its count, the way it did in Chapter 3. <code>useNA = 'always'</code> tells it to report them as their own category instead. That’s what we want here, since the participants we exclude are the point, not a footnote.</p>
+<p>Two new tools here: <code>case_when()</code>, from <code>dplyr</code>, checks a series of conditions in order and returns the first matching value, which is what a three-way rule needs. Each line pairs a condition on the left of the <code>~</code> with the value to return on the right. The last line is usually a catch-all: <code>TRUE</code> is a condition that is always met, so anything reaching it without matching a line above gets whatever that line returns. Order matters, because <code>case_when()</code> stops at the first condition a participant matches. The second tool is an argument, not a function. <code>table()</code> normally leaves missing values out of its count, the way it did in Chapter 3. <code>useNA = 'always'</code> tells it to report them as their own category instead. That’s what we want here, since the participants we exclude are the point, not a footnote.</p>
 <div class="callout callout-style-simple callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -441,12 +441,12 @@ eduHigh school graduate -0.047739058  2.167485e-02
 eduAbove high school    -0.024811500  3.381773e-02</code></pre>
 </div>
 </div>
-<p>The coefficient on <code>sed</code> is now what this model calls the <em>adjusted</em> association between sedentary time and cholesterol: the association after holding age, gender, and education constant. ‘Adjustment’ here means the model assumes the effect of an extra hour of sedentary time is the same regardless of a participant’s age, gender, or education, and estimates that one shared slope from everybody at once.</p>
-<p><code>gender</code> and <code>edu</code> entered that model as factors, and each one contributes a row per non-reference level rather than one row for the whole variable. <code>levels()</code>, from base R, shows a factor’s categories in order; the first one listed is the reference level, the category every other row is compared against, the same idea Chapter 6 covered in full, including what <code>relevel()</code> does and doesn’t change. We don’t interpret <code>gender</code>’s or <code>edu</code>’s own coefficients here the way we interpret <code>sed</code>’s: neither was the exposure this model was built to assess, so their adjustment sets weren’t chosen with that in mind. More on exactly why, below.</p>
+<p>The coefficient on <code>sed</code> is now what this model calls the <em>adjusted</em> association between sedentary time and cholesterol: the association after holding age, gender, and education constant. ‘Adjustment’ here means the model assumes the association of an extra hour of sedentary time with cholesterol is the same regardless of a participant’s age, gender, or education, and estimates that one shared slope from everybody at once.</p>
+<p><code>gender</code> and <code>edu</code> entered that model as factors, and each one contributes a row per non-reference level instead of one row for the whole variable. <code>levels()</code>, from base R, shows a factor’s categories in order; the first one listed is the reference level, the category every other row is compared against, the same idea Chapter 6 covered in full, including what <code>relevel()</code> does and doesn’t change. We don’t interpret <code>gender</code>’s or <code>edu</code>’s own coefficients here the way we interpret <code>sed</code>’s: neither was the exposure this model was built to assess, so their adjustment sets weren’t chosen with that in mind. The reason is explained below.</p>
 </section>
 <section id="crude-versus-adjusted-quantifying-the-change" class="level2" data-number="7.5">
 <h2 data-number="7.5" class="anchored" data-anchor-id="crude-versus-adjusted-quantifying-the-change"><span class="header-section-number">7.5</span> Crude versus adjusted: quantifying the change</h2>
-<p>Chapter 6’s crude result and this chapter’s adjusted one belong side by side. We refit the crude model here instead of reusing Chapter 6’s, so both models run on <code>chol_adj_complete</code>, the same set of participants. Without aligning the samples, any difference between the two estimates could be attributed to either the adjustment or a difference in sample size, and we couldn’t tell which. This is also why the crude figure below isn’t identical to the one Chapter 6 reported.</p>
+<p>Chapter 6’s crude result and this chapter’s adjusted one belong side by side, each with its confidence interval (CI). We refit the crude model here instead of reusing Chapter 6’s, so both models run on <code>chol_adj_complete</code>, the same set of participants. Without aligning the samples, any difference between the two estimates could be attributed to either the adjustment or a difference in sample size, and we couldn’t tell which. This is also why the crude figure below isn’t identical to the one Chapter 6 reported.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>m_crude <span class="ot">&lt;-</span> <span class="fu">lm</span>(chol <span class="sc">~</span> sed, <span class="at">data =</span> chol_adj_complete)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(m_crude, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">'sed'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -466,11 +466,11 @@ eduAbove high school    -0.024811500  3.381773e-02</code></pre>
 </div>
 <p>Crude, the slope on <code>sed</code> is about -0.00074 mmol/L per hour/day (95% CI -0.00186 to 0.00038 mmol/L per hour/day, p = 0.195). Adjusted for age, gender, and education, it moves to about -0.00113 mmol/L per hour/day (95% CI -0.00224 to -0.00002 mmol/L per hour/day, p = 0.047).</p>
 <p>Look at the estimate first, not the p-value. The adjusted slope is about 1.5 times the size of the crude one: holding age, gender, and education constant pulls the association between sedentary time and cholesterol substantially further from zero. That movement is what confounding looks like. Age and gender were masking part of a real association, and the model that ignores them understates it. The p-value crossing 0.05 is a consequence of the estimate moving away from zero, not a separate finding.</p>
-<p>A caution about reading the other rows of this table: <code>age</code>’s coefficient here is adjusted for <code>sed</code> too, the same as <code>sed</code>’s own coefficient is. If sedentary time sits on the path from age to cholesterol, part of age’s true association runs through it, and <code>age</code>’s row only captures the part that doesn’t. Treating every coefficient in a regression table as though it carried the same interpretation as the one we set out to estimate is called the <em>Table 2 fallacy</em>. <code>sed</code> is the exposure this model was built to assess, and its adjustment set was chosen with that in mind; <code>age</code>, <code>gender</code>, and <code>edu</code> weren’t, so their coefficients shouldn’t be read as if they were each other’s crude-versus-adjusted comparisons in miniature. This is the same logic the sensitivity analysis later in this chapter applies to <code>blm.cvd</code>, just stated as a general caution rather than worked through on one variable.</p>
+<p>A caution about reading the other rows of this table: <code>age</code>’s coefficient here is adjusted for <code>sed</code> too, the same as <code>sed</code>’s own coefficient is. If sedentary time sits on the path from age to cholesterol, part of age’s true association runs through it, and <code>age</code>’s row only captures the part that doesn’t. Treating every coefficient in a regression table as though it carried the same interpretation as the one we set out to estimate is called the <em>Table 2 fallacy</em>. <code>sed</code> is the exposure this model was built to assess, and its adjustment set was chosen with that in mind; <code>age</code>, <code>gender</code>, and <code>edu</code> weren’t, so their coefficients shouldn’t be read as if they were each other’s crude-versus-adjusted comparisons in miniature. This is the same logic the sensitivity analysis later in this chapter applies to <code>blm.cvd</code>, stated as a general caution instead of worked through on one variable.</p>
 </section>
 <section id="diagnostics-for-the-multiple-regression-model" class="level2" data-number="7.6">
 <h2 data-number="7.6" class="anchored" data-anchor-id="diagnostics-for-the-multiple-regression-model"><span class="header-section-number">7.6</span> Diagnostics for the multiple regression model</h2>
-<p>The same diagnostic plots Chapter 6 used still apply here, checked against the adjusted model rather than the simple one:</p>
+<p>The same diagnostic plots Chapter 6 used still apply here, checked against the adjusted model instead of the simple one:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>adj_aug <span class="ot">&lt;-</span> <span class="fu">augment</span>(m_adj)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -499,15 +499,15 @@ eduAbove high school    -0.024811500  3.381773e-02</code></pre>
 </div>
 <p>The same pattern Chapter 6 found reappears: a fairly even scatter around zero for most of the range, with a small group of participants with unusually high cholesterol pulling the upper tail away from the reference line in the QQ plot.</p>
 </section>
-<section id="when-the-outcome-is-binary-logistic-regression" class="level2" data-number="7.7">
-<h2 data-number="7.7" class="anchored" data-anchor-id="when-the-outcome-is-binary-logistic-regression"><span class="header-section-number">7.7</span> When the outcome is binary: logistic regression</h2>
-<p>The question for the rest of this chapter: is sedentary time associated with ten-year mortality, and does that association hold up once potential confounders are adjusted for? <code>chol</code> is continuous, so <code>lm()</code> was the right tool. But <code>dead_10yr</code> is 0 or 1, and we can’t model it the same way. An <code>lm()</code> produces a straight line, and a straight line fitted to a 0/1 outcome can predict values below 0 or above 1, which aren’t valid probabilities. <code>glm()</code>, base R’s function for generalised linear models (a family of regression models taught further in Advanced Statistics), fixes this by modelling the log odds of the outcome instead of the outcome directly.</p>
+<section id="when-the-response-is-binary-logistic-regression" class="level2" data-number="7.7">
+<h2 data-number="7.7" class="anchored" data-anchor-id="when-the-response-is-binary-logistic-regression"><span class="header-section-number">7.7</span> When the response is binary: logistic regression</h2>
+<p>The question for the rest of this chapter: is sedentary time associated with ten-year mortality, and does that association hold up once potential confounders are adjusted for? <code>chol</code> is continuous, so <code>lm()</code> was the right tool. But <code>dead_10yr</code> is 0 or 1, and we can’t model it the same way. An <code>lm()</code> produces a straight line, and a straight line fitted to a 0/1 response can predict values below 0 or above 1, which aren’t valid probabilities. <code>glm()</code>, base R’s function for generalised linear models (a family of regression models taught further in Advanced Statistics), fixes this by modelling the log odds of the response instead of the response directly: the odds from the epidemiology half, put through a logarithm, which stretches them onto a scale with no upper or lower limit.</p>
 <p>We build the complete-case sample first and fit both models on it, for the same reason the linear models above shared one sample: the crude and adjusted estimates should differ because of the adjustment, not because they were calculated on different people.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>dead_complete <span class="ot">&lt;-</span> nhanes <span class="sc">|&gt;</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(dead_10yr), <span class="sc">!</span><span class="fu">is.na</span>(sed), <span class="sc">!</span><span class="fu">is.na</span>(age), <span class="sc">!</span><span class="fu">is.na</span>(gender), <span class="sc">!</span><span class="fu">is.na</span>(edu))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>Fitting one looks almost identical to fitting an <code>lm()</code>. The formula is the same shape, and the only addition is <code>family = binomial</code>, which tells <code>glm()</code> the outcome is binary.</p>
+<p>Fitting one looks almost identical to fitting an <code>lm()</code>. The formula is the same shape, and the only addition is <code>family = binomial</code>, which tells <code>glm()</code> the response is binary.</p>
 <p><strong>Null hypothesis.</strong> In the population, sedentary time carries no association with ten-year mortality: on the odds ratio scale, met below, an odds ratio of 1.</p>
 <p><strong>Alternative hypothesis.</strong> Sedentary time is associated with ten-year mortality, an odds ratio away from 1.</p>
 <div class="cell">
@@ -564,11 +564,11 @@ AIC: 8917.5
 Number of Fisher Scoring iterations: 5</code></pre>
 </div>
 </div>
-<p>We keep this adjustment set deliberately small. <code>dead_complete</code> holds 10,696 participants, of whom 3,028 died within ten years. That’s fewer events than the 3,748 we counted at the start of the chapter, because requiring a recorded value for every predictor drops participants of its own. Those 3,028 events are what the model has to work with, and there isn’t room to add many more predictors before it runs short of events per predictor.</p>
+<p>We keep this adjustment set deliberately small. <code>dead_complete</code> holds 10,696 participants, of whom 3,028 died within ten years. That’s fewer events than the 3,748 we counted at the start of the chapter, because requiring a recorded value for every explanatory variable drops participants of its own. Those 3,028 events are what the model has to work with, and there isn’t room to add many more explanatory variables before it runs short of events per explanatory variable.</p>
 </section>
 <section id="odds-ratios-exponentiating-the-coefficients" class="level2" data-number="7.8">
 <h2 data-number="7.8" class="anchored" data-anchor-id="odds-ratios-exponentiating-the-coefficients"><span class="header-section-number">7.8</span> Odds ratios: exponentiating the coefficients</h2>
-<p>A logistic regression’s coefficients are on the log-odds scale, which isn’t how the epidemiology half reported odds ratios. <code>exp()</code>, base R’s exponential function, undoes the log and converts a coefficient back to an odds ratio. <code>coef()</code> and <code>confint()</code> pull the coefficients and their confidence intervals the same way they did for <code>lm()</code>:</p>
+<p>A logistic regression’s coefficients are on the log-odds scale, which isn’t how the epidemiology half reported odds ratios. <code>exp()</code>, base R’s exponential function, undoes the log and converts a coefficient back to an odds ratio. <code>coef()</code> and <code>confint()</code> pull the coefficients and their CIs the same way they did for <code>lm()</code>:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">coef</span>(m_dead_crude))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -620,7 +620,7 @@ eduAbove high school    0.651773505 0.828632927</code></pre>
 1 sed       1.02   0.00370      5.40 0.0000000659     1.01      1.03</code></pre>
 </div>
 </div>
-<p>Crude, each additional hour/day of sedentary time is associated with an odds ratio of about 1.040 for ten-year mortality (95% CI: 1.029 to 1.053, p &lt; 0.001). Adjusted for age, gender, and education, the odds ratio attenuates to about 1.020 (95% CI: 1.013 to 1.028, p &lt; 0.001). Both CIs sit entirely above 1, the null value for an odds ratio, so both are statistically significant. But the adjusted estimate is noticeably smaller than the crude one. Part of the crude association was really age. Older participants are both more sedentary and more likely to die within ten years, for reasons that have nothing to do with sedentary behaviour itself.</p>
+<p>Crude, each additional hour/day of sedentary time is associated with an odds ratio of about 1.040 for ten-year mortality (95% CI: 1.029 to 1.053, p &lt; 0.001). Adjusted for age, gender, and education, the odds ratio attenuates to about 1.020 (95% CI: 1.013 to 1.028, p &lt; 0.001). Both CIs sit entirely above 1, the null value for an odds ratio, so both are statistically significant. But the adjusted estimate is noticeably smaller than the crude one. Part of the crude association reflected age. Older participants are both more sedentary and more likely to die within ten years, for reasons that have nothing to do with sedentary behaviour itself.</p>
 <p>Both odds ratios sit close to 1, so confounding matters less here than it will in Exercise 2, where the same mechanism, age, moves the estimate by a factor of about six instead of a couple of percent. Do that exercise before deciding how seriously to take adjustment.</p>
 </section>
 <section id="regression-tables-with-gtsummary" class="level2" data-number="7.9">
@@ -635,23 +635,23 @@ Table&nbsp;7.1
 </figcaption>
 <div aria-describedby="tbl-regression-linear-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="tbkhdbqfkq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#tbkhdbqfkq table {
+<div id="znyrfjmtqv" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#znyrfjmtqv table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#tbkhdbqfkq thead, #tbkhdbqfkq tbody, #tbkhdbqfkq tfoot, #tbkhdbqfkq tr, #tbkhdbqfkq td, #tbkhdbqfkq th {
+#znyrfjmtqv thead, #znyrfjmtqv tbody, #znyrfjmtqv tfoot, #znyrfjmtqv tr, #znyrfjmtqv td, #znyrfjmtqv th {
   border-style: none;
 }
 
-#tbkhdbqfkq p {
+#znyrfjmtqv p {
   margin: 0;
   padding: 0;
 }
 
-#tbkhdbqfkq .gt_table {
+#znyrfjmtqv .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -677,12 +677,12 @@ Table&nbsp;7.1
   border-left-color: #D3D3D3;
 }
 
-#tbkhdbqfkq .gt_caption {
+#znyrfjmtqv .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#tbkhdbqfkq .gt_title {
+#znyrfjmtqv .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -694,7 +694,7 @@ Table&nbsp;7.1
   border-bottom-width: 0;
 }
 
-#tbkhdbqfkq .gt_subtitle {
+#znyrfjmtqv .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -706,7 +706,7 @@ Table&nbsp;7.1
   border-top-width: 0;
 }
 
-#tbkhdbqfkq .gt_heading {
+#znyrfjmtqv .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -718,13 +718,13 @@ Table&nbsp;7.1
   border-right-color: #D3D3D3;
 }
 
-#tbkhdbqfkq .gt_bottom_border {
+#znyrfjmtqv .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#tbkhdbqfkq .gt_col_headings {
+#znyrfjmtqv .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -739,7 +739,7 @@ Table&nbsp;7.1
   border-right-color: #D3D3D3;
 }
 
-#tbkhdbqfkq .gt_col_heading {
+#znyrfjmtqv .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -759,7 +759,7 @@ Table&nbsp;7.1
   overflow-x: hidden;
 }
 
-#tbkhdbqfkq .gt_column_spanner_outer {
+#znyrfjmtqv .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -771,15 +771,15 @@ Table&nbsp;7.1
   padding-right: 4px;
 }
 
-#tbkhdbqfkq .gt_column_spanner_outer:first-child {
+#znyrfjmtqv .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#tbkhdbqfkq .gt_column_spanner_outer:last-child {
+#znyrfjmtqv .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#tbkhdbqfkq .gt_column_spanner {
+#znyrfjmtqv .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -791,11 +791,11 @@ Table&nbsp;7.1
   width: 100%;
 }
 
-#tbkhdbqfkq .gt_spanner_row {
+#znyrfjmtqv .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#tbkhdbqfkq .gt_group_heading {
+#znyrfjmtqv .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -821,7 +821,7 @@ Table&nbsp;7.1
   text-align: left;
 }
 
-#tbkhdbqfkq .gt_empty_group_heading {
+#znyrfjmtqv .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -836,15 +836,15 @@ Table&nbsp;7.1
   vertical-align: middle;
 }
 
-#tbkhdbqfkq .gt_from_md > :first-child {
+#znyrfjmtqv .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#tbkhdbqfkq .gt_from_md > :last-child {
+#znyrfjmtqv .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#tbkhdbqfkq .gt_row {
+#znyrfjmtqv .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -863,7 +863,7 @@ Table&nbsp;7.1
   overflow-x: hidden;
 }
 
-#tbkhdbqfkq .gt_stub {
+#znyrfjmtqv .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -876,7 +876,7 @@ Table&nbsp;7.1
   padding-right: 5px;
 }
 
-#tbkhdbqfkq .gt_stub_row_group {
+#znyrfjmtqv .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -890,15 +890,15 @@ Table&nbsp;7.1
   vertical-align: top;
 }
 
-#tbkhdbqfkq .gt_row_group_first td {
+#znyrfjmtqv .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#tbkhdbqfkq .gt_row_group_first th {
+#znyrfjmtqv .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#tbkhdbqfkq .gt_summary_row {
+#znyrfjmtqv .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -908,16 +908,16 @@ Table&nbsp;7.1
   padding-right: 5px;
 }
 
-#tbkhdbqfkq .gt_first_summary_row {
+#znyrfjmtqv .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#tbkhdbqfkq .gt_first_summary_row.thick {
+#znyrfjmtqv .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#tbkhdbqfkq .gt_last_summary_row {
+#znyrfjmtqv .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -927,7 +927,7 @@ Table&nbsp;7.1
   border-bottom-color: #D3D3D3;
 }
 
-#tbkhdbqfkq .gt_grand_summary_row {
+#znyrfjmtqv .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -937,7 +937,7 @@ Table&nbsp;7.1
   padding-right: 5px;
 }
 
-#tbkhdbqfkq .gt_first_grand_summary_row {
+#znyrfjmtqv .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -947,7 +947,7 @@ Table&nbsp;7.1
   border-top-color: #D3D3D3;
 }
 
-#tbkhdbqfkq .gt_last_grand_summary_row_top {
+#znyrfjmtqv .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -957,11 +957,11 @@ Table&nbsp;7.1
   border-bottom-color: #D3D3D3;
 }
 
-#tbkhdbqfkq .gt_striped {
+#znyrfjmtqv .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#tbkhdbqfkq .gt_table_body {
+#znyrfjmtqv .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -970,7 +970,7 @@ Table&nbsp;7.1
   border-bottom-color: #D3D3D3;
 }
 
-#tbkhdbqfkq .gt_footnotes {
+#znyrfjmtqv .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -984,7 +984,7 @@ Table&nbsp;7.1
   border-right-color: #D3D3D3;
 }
 
-#tbkhdbqfkq .gt_footnote {
+#znyrfjmtqv .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -993,7 +993,7 @@ Table&nbsp;7.1
   padding-right: 5px;
 }
 
-#tbkhdbqfkq .gt_sourcenotes {
+#znyrfjmtqv .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1007,7 +1007,7 @@ Table&nbsp;7.1
   border-right-color: #D3D3D3;
 }
 
-#tbkhdbqfkq .gt_sourcenote {
+#znyrfjmtqv .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1015,72 +1015,72 @@ Table&nbsp;7.1
   padding-right: 5px;
 }
 
-#tbkhdbqfkq .gt_left {
+#znyrfjmtqv .gt_left {
   text-align: left;
 }
 
-#tbkhdbqfkq .gt_center {
+#znyrfjmtqv .gt_center {
   text-align: center;
 }
 
-#tbkhdbqfkq .gt_right {
+#znyrfjmtqv .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#tbkhdbqfkq .gt_font_normal {
+#znyrfjmtqv .gt_font_normal {
   font-weight: normal;
 }
 
-#tbkhdbqfkq .gt_font_bold {
+#znyrfjmtqv .gt_font_bold {
   font-weight: bold;
 }
 
-#tbkhdbqfkq .gt_font_italic {
+#znyrfjmtqv .gt_font_italic {
   font-style: italic;
 }
 
-#tbkhdbqfkq .gt_super {
+#znyrfjmtqv .gt_super {
   font-size: 65%;
 }
 
-#tbkhdbqfkq .gt_footnote_marks {
+#znyrfjmtqv .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#tbkhdbqfkq .gt_asterisk {
+#znyrfjmtqv .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#tbkhdbqfkq .gt_indent_1 {
+#znyrfjmtqv .gt_indent_1 {
   text-indent: 5px;
 }
 
-#tbkhdbqfkq .gt_indent_2 {
+#znyrfjmtqv .gt_indent_2 {
   text-indent: 10px;
 }
 
-#tbkhdbqfkq .gt_indent_3 {
+#znyrfjmtqv .gt_indent_3 {
   text-indent: 15px;
 }
 
-#tbkhdbqfkq .gt_indent_4 {
+#znyrfjmtqv .gt_indent_4 {
   text-indent: 20px;
 }
 
-#tbkhdbqfkq .gt_indent_5 {
+#znyrfjmtqv .gt_indent_5 {
   text-indent: 25px;
 }
 
-#tbkhdbqfkq .katex-display {
+#znyrfjmtqv .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#tbkhdbqfkq div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#znyrfjmtqv div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1187,23 +1187,23 @@ Table&nbsp;7.2
 </figcaption>
 <div aria-describedby="tbl-regression-logistic-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="chxgjpqckq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#chxgjpqckq table {
+<div id="gylfdmleyj" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#gylfdmleyj table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#chxgjpqckq thead, #chxgjpqckq tbody, #chxgjpqckq tfoot, #chxgjpqckq tr, #chxgjpqckq td, #chxgjpqckq th {
+#gylfdmleyj thead, #gylfdmleyj tbody, #gylfdmleyj tfoot, #gylfdmleyj tr, #gylfdmleyj td, #gylfdmleyj th {
   border-style: none;
 }
 
-#chxgjpqckq p {
+#gylfdmleyj p {
   margin: 0;
   padding: 0;
 }
 
-#chxgjpqckq .gt_table {
+#gylfdmleyj .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1229,12 +1229,12 @@ Table&nbsp;7.2
   border-left-color: #D3D3D3;
 }
 
-#chxgjpqckq .gt_caption {
+#gylfdmleyj .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#chxgjpqckq .gt_title {
+#gylfdmleyj .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1246,7 +1246,7 @@ Table&nbsp;7.2
   border-bottom-width: 0;
 }
 
-#chxgjpqckq .gt_subtitle {
+#gylfdmleyj .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1258,7 +1258,7 @@ Table&nbsp;7.2
   border-top-width: 0;
 }
 
-#chxgjpqckq .gt_heading {
+#gylfdmleyj .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1270,13 +1270,13 @@ Table&nbsp;7.2
   border-right-color: #D3D3D3;
 }
 
-#chxgjpqckq .gt_bottom_border {
+#gylfdmleyj .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#chxgjpqckq .gt_col_headings {
+#gylfdmleyj .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1291,7 +1291,7 @@ Table&nbsp;7.2
   border-right-color: #D3D3D3;
 }
 
-#chxgjpqckq .gt_col_heading {
+#gylfdmleyj .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1311,7 +1311,7 @@ Table&nbsp;7.2
   overflow-x: hidden;
 }
 
-#chxgjpqckq .gt_column_spanner_outer {
+#gylfdmleyj .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1323,15 +1323,15 @@ Table&nbsp;7.2
   padding-right: 4px;
 }
 
-#chxgjpqckq .gt_column_spanner_outer:first-child {
+#gylfdmleyj .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#chxgjpqckq .gt_column_spanner_outer:last-child {
+#gylfdmleyj .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#chxgjpqckq .gt_column_spanner {
+#gylfdmleyj .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1343,11 +1343,11 @@ Table&nbsp;7.2
   width: 100%;
 }
 
-#chxgjpqckq .gt_spanner_row {
+#gylfdmleyj .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#chxgjpqckq .gt_group_heading {
+#gylfdmleyj .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1373,7 +1373,7 @@ Table&nbsp;7.2
   text-align: left;
 }
 
-#chxgjpqckq .gt_empty_group_heading {
+#gylfdmleyj .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1388,15 +1388,15 @@ Table&nbsp;7.2
   vertical-align: middle;
 }
 
-#chxgjpqckq .gt_from_md > :first-child {
+#gylfdmleyj .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#chxgjpqckq .gt_from_md > :last-child {
+#gylfdmleyj .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#chxgjpqckq .gt_row {
+#gylfdmleyj .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1415,7 +1415,7 @@ Table&nbsp;7.2
   overflow-x: hidden;
 }
 
-#chxgjpqckq .gt_stub {
+#gylfdmleyj .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1428,7 +1428,7 @@ Table&nbsp;7.2
   padding-right: 5px;
 }
 
-#chxgjpqckq .gt_stub_row_group {
+#gylfdmleyj .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1442,15 +1442,15 @@ Table&nbsp;7.2
   vertical-align: top;
 }
 
-#chxgjpqckq .gt_row_group_first td {
+#gylfdmleyj .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#chxgjpqckq .gt_row_group_first th {
+#gylfdmleyj .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#chxgjpqckq .gt_summary_row {
+#gylfdmleyj .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1460,16 +1460,16 @@ Table&nbsp;7.2
   padding-right: 5px;
 }
 
-#chxgjpqckq .gt_first_summary_row {
+#gylfdmleyj .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#chxgjpqckq .gt_first_summary_row.thick {
+#gylfdmleyj .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#chxgjpqckq .gt_last_summary_row {
+#gylfdmleyj .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1479,7 +1479,7 @@ Table&nbsp;7.2
   border-bottom-color: #D3D3D3;
 }
 
-#chxgjpqckq .gt_grand_summary_row {
+#gylfdmleyj .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1489,7 +1489,7 @@ Table&nbsp;7.2
   padding-right: 5px;
 }
 
-#chxgjpqckq .gt_first_grand_summary_row {
+#gylfdmleyj .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1499,7 +1499,7 @@ Table&nbsp;7.2
   border-top-color: #D3D3D3;
 }
 
-#chxgjpqckq .gt_last_grand_summary_row_top {
+#gylfdmleyj .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1509,11 +1509,11 @@ Table&nbsp;7.2
   border-bottom-color: #D3D3D3;
 }
 
-#chxgjpqckq .gt_striped {
+#gylfdmleyj .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#chxgjpqckq .gt_table_body {
+#gylfdmleyj .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1522,7 +1522,7 @@ Table&nbsp;7.2
   border-bottom-color: #D3D3D3;
 }
 
-#chxgjpqckq .gt_footnotes {
+#gylfdmleyj .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1536,7 +1536,7 @@ Table&nbsp;7.2
   border-right-color: #D3D3D3;
 }
 
-#chxgjpqckq .gt_footnote {
+#gylfdmleyj .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1545,7 +1545,7 @@ Table&nbsp;7.2
   padding-right: 5px;
 }
 
-#chxgjpqckq .gt_sourcenotes {
+#gylfdmleyj .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1559,7 +1559,7 @@ Table&nbsp;7.2
   border-right-color: #D3D3D3;
 }
 
-#chxgjpqckq .gt_sourcenote {
+#gylfdmleyj .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1567,72 +1567,72 @@ Table&nbsp;7.2
   padding-right: 5px;
 }
 
-#chxgjpqckq .gt_left {
+#gylfdmleyj .gt_left {
   text-align: left;
 }
 
-#chxgjpqckq .gt_center {
+#gylfdmleyj .gt_center {
   text-align: center;
 }
 
-#chxgjpqckq .gt_right {
+#gylfdmleyj .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#chxgjpqckq .gt_font_normal {
+#gylfdmleyj .gt_font_normal {
   font-weight: normal;
 }
 
-#chxgjpqckq .gt_font_bold {
+#gylfdmleyj .gt_font_bold {
   font-weight: bold;
 }
 
-#chxgjpqckq .gt_font_italic {
+#gylfdmleyj .gt_font_italic {
   font-style: italic;
 }
 
-#chxgjpqckq .gt_super {
+#gylfdmleyj .gt_super {
   font-size: 65%;
 }
 
-#chxgjpqckq .gt_footnote_marks {
+#gylfdmleyj .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#chxgjpqckq .gt_asterisk {
+#gylfdmleyj .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#chxgjpqckq .gt_indent_1 {
+#gylfdmleyj .gt_indent_1 {
   text-indent: 5px;
 }
 
-#chxgjpqckq .gt_indent_2 {
+#gylfdmleyj .gt_indent_2 {
   text-indent: 10px;
 }
 
-#chxgjpqckq .gt_indent_3 {
+#gylfdmleyj .gt_indent_3 {
   text-indent: 15px;
 }
 
-#chxgjpqckq .gt_indent_4 {
+#gylfdmleyj .gt_indent_4 {
   text-indent: 20px;
 }
 
-#chxgjpqckq .gt_indent_5 {
+#gylfdmleyj .gt_indent_5 {
   text-indent: 25px;
 }
 
-#chxgjpqckq .katex-display {
+#gylfdmleyj .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#chxgjpqckq div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#gylfdmleyj div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1729,7 +1729,7 @@ Table&nbsp;7.2
 </figure>
 </div>
 </div>
-<p><code>tbl_merge()</code>, also from <code>gtsummary</code>, places two tables side by side under named headers, which is exactly what a crude-vs-adjusted comparison needs:</p>
+<p><code>tbl_merge()</code>, also from <code>gtsummary</code>, places two tables side by side under named headers, which is what a crude-vs-adjusted comparison needs:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>tbl_crude <span class="ot">&lt;-</span> <span class="fu">tbl_regression</span>(m_dead_crude, <span class="at">exponentiate =</span> <span class="cn">TRUE</span>, <span class="at">include =</span> <span class="dv">1</span>)</span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>tbl_adj <span class="ot">&lt;-</span> <span class="fu">tbl_regression</span>(m_dead_adj, <span class="at">exponentiate =</span> <span class="cn">TRUE</span>, <span class="at">include =</span> <span class="dv">1</span>)</span>
@@ -1743,23 +1743,23 @@ Table&nbsp;7.3
 </figcaption>
 <div aria-describedby="tbl-merge-crude-adjusted-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="ypthlkyoal" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ypthlkyoal table {
+<div id="rcbfeutmvd" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#rcbfeutmvd table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#ypthlkyoal thead, #ypthlkyoal tbody, #ypthlkyoal tfoot, #ypthlkyoal tr, #ypthlkyoal td, #ypthlkyoal th {
+#rcbfeutmvd thead, #rcbfeutmvd tbody, #rcbfeutmvd tfoot, #rcbfeutmvd tr, #rcbfeutmvd td, #rcbfeutmvd th {
   border-style: none;
 }
 
-#ypthlkyoal p {
+#rcbfeutmvd p {
   margin: 0;
   padding: 0;
 }
 
-#ypthlkyoal .gt_table {
+#rcbfeutmvd .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1785,12 +1785,12 @@ Table&nbsp;7.3
   border-left-color: #D3D3D3;
 }
 
-#ypthlkyoal .gt_caption {
+#rcbfeutmvd .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ypthlkyoal .gt_title {
+#rcbfeutmvd .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1802,7 +1802,7 @@ Table&nbsp;7.3
   border-bottom-width: 0;
 }
 
-#ypthlkyoal .gt_subtitle {
+#rcbfeutmvd .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1814,7 +1814,7 @@ Table&nbsp;7.3
   border-top-width: 0;
 }
 
-#ypthlkyoal .gt_heading {
+#rcbfeutmvd .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1826,13 +1826,13 @@ Table&nbsp;7.3
   border-right-color: #D3D3D3;
 }
 
-#ypthlkyoal .gt_bottom_border {
+#rcbfeutmvd .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ypthlkyoal .gt_col_headings {
+#rcbfeutmvd .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1847,7 +1847,7 @@ Table&nbsp;7.3
   border-right-color: #D3D3D3;
 }
 
-#ypthlkyoal .gt_col_heading {
+#rcbfeutmvd .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1867,7 +1867,7 @@ Table&nbsp;7.3
   overflow-x: hidden;
 }
 
-#ypthlkyoal .gt_column_spanner_outer {
+#rcbfeutmvd .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1879,15 +1879,15 @@ Table&nbsp;7.3
   padding-right: 4px;
 }
 
-#ypthlkyoal .gt_column_spanner_outer:first-child {
+#rcbfeutmvd .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ypthlkyoal .gt_column_spanner_outer:last-child {
+#rcbfeutmvd .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ypthlkyoal .gt_column_spanner {
+#rcbfeutmvd .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1899,11 +1899,11 @@ Table&nbsp;7.3
   width: 100%;
 }
 
-#ypthlkyoal .gt_spanner_row {
+#rcbfeutmvd .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#ypthlkyoal .gt_group_heading {
+#rcbfeutmvd .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1929,7 +1929,7 @@ Table&nbsp;7.3
   text-align: left;
 }
 
-#ypthlkyoal .gt_empty_group_heading {
+#rcbfeutmvd .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1944,15 +1944,15 @@ Table&nbsp;7.3
   vertical-align: middle;
 }
 
-#ypthlkyoal .gt_from_md > :first-child {
+#rcbfeutmvd .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ypthlkyoal .gt_from_md > :last-child {
+#rcbfeutmvd .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ypthlkyoal .gt_row {
+#rcbfeutmvd .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1971,7 +1971,7 @@ Table&nbsp;7.3
   overflow-x: hidden;
 }
 
-#ypthlkyoal .gt_stub {
+#rcbfeutmvd .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1984,7 +1984,7 @@ Table&nbsp;7.3
   padding-right: 5px;
 }
 
-#ypthlkyoal .gt_stub_row_group {
+#rcbfeutmvd .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1998,15 +1998,15 @@ Table&nbsp;7.3
   vertical-align: top;
 }
 
-#ypthlkyoal .gt_row_group_first td {
+#rcbfeutmvd .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ypthlkyoal .gt_row_group_first th {
+#rcbfeutmvd .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#ypthlkyoal .gt_summary_row {
+#rcbfeutmvd .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2016,16 +2016,16 @@ Table&nbsp;7.3
   padding-right: 5px;
 }
 
-#ypthlkyoal .gt_first_summary_row {
+#rcbfeutmvd .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ypthlkyoal .gt_first_summary_row.thick {
+#rcbfeutmvd .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ypthlkyoal .gt_last_summary_row {
+#rcbfeutmvd .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2035,7 +2035,7 @@ Table&nbsp;7.3
   border-bottom-color: #D3D3D3;
 }
 
-#ypthlkyoal .gt_grand_summary_row {
+#rcbfeutmvd .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2045,7 +2045,7 @@ Table&nbsp;7.3
   padding-right: 5px;
 }
 
-#ypthlkyoal .gt_first_grand_summary_row {
+#rcbfeutmvd .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2055,7 +2055,7 @@ Table&nbsp;7.3
   border-top-color: #D3D3D3;
 }
 
-#ypthlkyoal .gt_last_grand_summary_row_top {
+#rcbfeutmvd .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2065,11 +2065,11 @@ Table&nbsp;7.3
   border-bottom-color: #D3D3D3;
 }
 
-#ypthlkyoal .gt_striped {
+#rcbfeutmvd .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ypthlkyoal .gt_table_body {
+#rcbfeutmvd .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2078,7 +2078,7 @@ Table&nbsp;7.3
   border-bottom-color: #D3D3D3;
 }
 
-#ypthlkyoal .gt_footnotes {
+#rcbfeutmvd .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2092,7 +2092,7 @@ Table&nbsp;7.3
   border-right-color: #D3D3D3;
 }
 
-#ypthlkyoal .gt_footnote {
+#rcbfeutmvd .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2101,7 +2101,7 @@ Table&nbsp;7.3
   padding-right: 5px;
 }
 
-#ypthlkyoal .gt_sourcenotes {
+#rcbfeutmvd .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2115,7 +2115,7 @@ Table&nbsp;7.3
   border-right-color: #D3D3D3;
 }
 
-#ypthlkyoal .gt_sourcenote {
+#rcbfeutmvd .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2123,72 +2123,72 @@ Table&nbsp;7.3
   padding-right: 5px;
 }
 
-#ypthlkyoal .gt_left {
+#rcbfeutmvd .gt_left {
   text-align: left;
 }
 
-#ypthlkyoal .gt_center {
+#rcbfeutmvd .gt_center {
   text-align: center;
 }
 
-#ypthlkyoal .gt_right {
+#rcbfeutmvd .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ypthlkyoal .gt_font_normal {
+#rcbfeutmvd .gt_font_normal {
   font-weight: normal;
 }
 
-#ypthlkyoal .gt_font_bold {
+#rcbfeutmvd .gt_font_bold {
   font-weight: bold;
 }
 
-#ypthlkyoal .gt_font_italic {
+#rcbfeutmvd .gt_font_italic {
   font-style: italic;
 }
 
-#ypthlkyoal .gt_super {
+#rcbfeutmvd .gt_super {
   font-size: 65%;
 }
 
-#ypthlkyoal .gt_footnote_marks {
+#rcbfeutmvd .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#ypthlkyoal .gt_asterisk {
+#rcbfeutmvd .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ypthlkyoal .gt_indent_1 {
+#rcbfeutmvd .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ypthlkyoal .gt_indent_2 {
+#rcbfeutmvd .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ypthlkyoal .gt_indent_3 {
+#rcbfeutmvd .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ypthlkyoal .gt_indent_4 {
+#rcbfeutmvd .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ypthlkyoal .gt_indent_5 {
+#rcbfeutmvd .gt_indent_5 {
   text-indent: 25px;
 }
 
-#ypthlkyoal .katex-display {
+#rcbfeutmvd .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#ypthlkyoal div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#rcbfeutmvd div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -2250,7 +2250,8 @@ Adjusted
 </section>
 <section id="the-sensitivity-analysis-is-blm.cvd-a-confounder-or-a-mediator" class="level2" data-number="7.10">
 <h2 data-number="7.10" class="anchored" data-anchor-id="the-sensitivity-analysis-is-blm.cvd-a-confounder-or-a-mediator"><span class="header-section-number">7.10</span> The sensitivity analysis: is <code>blm.cvd</code> a confounder or a mediator?</h2>
-<p>The seminar raised a genuine difficulty with <code>blm.cvd</code>, baseline cardiovascular disease. The two models below are <strong>nested</strong>: one model’s predictors, <code>sed + age + gender + edu</code>, are a subset of the other’s, which adds only <code>blm.cvd</code>. Comparing a nested pair like this isolates the effect of the one variable that differs between them. It’s plausible as a confounder. Existing heart disease could make someone both less physically active and more likely to die, and adjusting for it would then remove bias. It’s equally plausible as a mediator. Sedentary behaviour could contribute to cardiovascular disease, which then contributes to death, and adjusting for it would then remove part of the total effect we’re trying to estimate. Baseline CVD and sedentary time were both measured at the same study visit, so nothing in the data itself establishes which came first. That’s not a gap in this analysis. It’s a limit on what an observational snapshot can ever tell us. The honest response is to report the estimate both ways instead of picking one.</p>
+<p>The interactive lecture raised a real difficulty with <code>blm.cvd</code>, baseline cardiovascular disease. It’s plausible as a confounder. Existing heart disease could make someone both less physically active and more likely to die, and adjusting for it would then remove bias. It’s equally plausible as a mediator. Sedentary behaviour could contribute to cardiovascular disease, which then contributes to death, and adjusting for it would then remove part of the total effect we’re trying to estimate. Baseline CVD and sedentary time were both measured at the same study visit, so nothing in the data itself establishes which came first. That’s not a gap in this analysis. It’s a limit on what an observational snapshot can ever tell us. The honest response is to report the estimate both ways instead of picking one.</p>
+<p>The two models below are <strong>nested</strong>: one model’s explanatory variables, <code>sed + age + gender + edu</code>, are a subset of the other’s, which adds only <code>blm.cvd</code>. Comparing a nested pair like this isolates the contribution of the one variable that differs between them.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>dead_cvd_complete <span class="ot">&lt;-</span> dead_complete <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(blm.cvd))</span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -2265,23 +2266,23 @@ Adjusted
 <span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a><span class="fu">tbl_merge</span>(<span class="fu">list</span>(tbl_without, tbl_with),</span>
 <span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">tab_spanner =</span> <span class="fu">c</span>(<span class="st">'Without baseline CVD'</span>, <span class="st">'With baseline CVD'</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="ugodykfbmv" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ugodykfbmv table {
+<div id="fqzlkffvuf" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#fqzlkffvuf table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#ugodykfbmv thead, #ugodykfbmv tbody, #ugodykfbmv tfoot, #ugodykfbmv tr, #ugodykfbmv td, #ugodykfbmv th {
+#fqzlkffvuf thead, #fqzlkffvuf tbody, #fqzlkffvuf tfoot, #fqzlkffvuf tr, #fqzlkffvuf td, #fqzlkffvuf th {
   border-style: none;
 }
 
-#ugodykfbmv p {
+#fqzlkffvuf p {
   margin: 0;
   padding: 0;
 }
 
-#ugodykfbmv .gt_table {
+#fqzlkffvuf .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -2307,12 +2308,12 @@ Adjusted
   border-left-color: #D3D3D3;
 }
 
-#ugodykfbmv .gt_caption {
+#fqzlkffvuf .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ugodykfbmv .gt_title {
+#fqzlkffvuf .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2324,7 +2325,7 @@ Adjusted
   border-bottom-width: 0;
 }
 
-#ugodykfbmv .gt_subtitle {
+#fqzlkffvuf .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2336,7 +2337,7 @@ Adjusted
   border-top-width: 0;
 }
 
-#ugodykfbmv .gt_heading {
+#fqzlkffvuf .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2348,13 +2349,13 @@ Adjusted
   border-right-color: #D3D3D3;
 }
 
-#ugodykfbmv .gt_bottom_border {
+#fqzlkffvuf .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ugodykfbmv .gt_col_headings {
+#fqzlkffvuf .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2369,7 +2370,7 @@ Adjusted
   border-right-color: #D3D3D3;
 }
 
-#ugodykfbmv .gt_col_heading {
+#fqzlkffvuf .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2389,7 +2390,7 @@ Adjusted
   overflow-x: hidden;
 }
 
-#ugodykfbmv .gt_column_spanner_outer {
+#fqzlkffvuf .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2401,15 +2402,15 @@ Adjusted
   padding-right: 4px;
 }
 
-#ugodykfbmv .gt_column_spanner_outer:first-child {
+#fqzlkffvuf .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ugodykfbmv .gt_column_spanner_outer:last-child {
+#fqzlkffvuf .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ugodykfbmv .gt_column_spanner {
+#fqzlkffvuf .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2421,11 +2422,11 @@ Adjusted
   width: 100%;
 }
 
-#ugodykfbmv .gt_spanner_row {
+#fqzlkffvuf .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#ugodykfbmv .gt_group_heading {
+#fqzlkffvuf .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2451,7 +2452,7 @@ Adjusted
   text-align: left;
 }
 
-#ugodykfbmv .gt_empty_group_heading {
+#fqzlkffvuf .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2466,15 +2467,15 @@ Adjusted
   vertical-align: middle;
 }
 
-#ugodykfbmv .gt_from_md > :first-child {
+#fqzlkffvuf .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ugodykfbmv .gt_from_md > :last-child {
+#fqzlkffvuf .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ugodykfbmv .gt_row {
+#fqzlkffvuf .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2493,7 +2494,7 @@ Adjusted
   overflow-x: hidden;
 }
 
-#ugodykfbmv .gt_stub {
+#fqzlkffvuf .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2506,7 +2507,7 @@ Adjusted
   padding-right: 5px;
 }
 
-#ugodykfbmv .gt_stub_row_group {
+#fqzlkffvuf .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2520,15 +2521,15 @@ Adjusted
   vertical-align: top;
 }
 
-#ugodykfbmv .gt_row_group_first td {
+#fqzlkffvuf .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ugodykfbmv .gt_row_group_first th {
+#fqzlkffvuf .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#ugodykfbmv .gt_summary_row {
+#fqzlkffvuf .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2538,16 +2539,16 @@ Adjusted
   padding-right: 5px;
 }
 
-#ugodykfbmv .gt_first_summary_row {
+#fqzlkffvuf .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ugodykfbmv .gt_first_summary_row.thick {
+#fqzlkffvuf .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ugodykfbmv .gt_last_summary_row {
+#fqzlkffvuf .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2557,7 +2558,7 @@ Adjusted
   border-bottom-color: #D3D3D3;
 }
 
-#ugodykfbmv .gt_grand_summary_row {
+#fqzlkffvuf .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2567,7 +2568,7 @@ Adjusted
   padding-right: 5px;
 }
 
-#ugodykfbmv .gt_first_grand_summary_row {
+#fqzlkffvuf .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2577,7 +2578,7 @@ Adjusted
   border-top-color: #D3D3D3;
 }
 
-#ugodykfbmv .gt_last_grand_summary_row_top {
+#fqzlkffvuf .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2587,11 +2588,11 @@ Adjusted
   border-bottom-color: #D3D3D3;
 }
 
-#ugodykfbmv .gt_striped {
+#fqzlkffvuf .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ugodykfbmv .gt_table_body {
+#fqzlkffvuf .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2600,7 +2601,7 @@ Adjusted
   border-bottom-color: #D3D3D3;
 }
 
-#ugodykfbmv .gt_footnotes {
+#fqzlkffvuf .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2614,7 +2615,7 @@ Adjusted
   border-right-color: #D3D3D3;
 }
 
-#ugodykfbmv .gt_footnote {
+#fqzlkffvuf .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2623,7 +2624,7 @@ Adjusted
   padding-right: 5px;
 }
 
-#ugodykfbmv .gt_sourcenotes {
+#fqzlkffvuf .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2637,7 +2638,7 @@ Adjusted
   border-right-color: #D3D3D3;
 }
 
-#ugodykfbmv .gt_sourcenote {
+#fqzlkffvuf .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2645,72 +2646,72 @@ Adjusted
   padding-right: 5px;
 }
 
-#ugodykfbmv .gt_left {
+#fqzlkffvuf .gt_left {
   text-align: left;
 }
 
-#ugodykfbmv .gt_center {
+#fqzlkffvuf .gt_center {
   text-align: center;
 }
 
-#ugodykfbmv .gt_right {
+#fqzlkffvuf .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ugodykfbmv .gt_font_normal {
+#fqzlkffvuf .gt_font_normal {
   font-weight: normal;
 }
 
-#ugodykfbmv .gt_font_bold {
+#fqzlkffvuf .gt_font_bold {
   font-weight: bold;
 }
 
-#ugodykfbmv .gt_font_italic {
+#fqzlkffvuf .gt_font_italic {
   font-style: italic;
 }
 
-#ugodykfbmv .gt_super {
+#fqzlkffvuf .gt_super {
   font-size: 65%;
 }
 
-#ugodykfbmv .gt_footnote_marks {
+#fqzlkffvuf .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#ugodykfbmv .gt_asterisk {
+#fqzlkffvuf .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ugodykfbmv .gt_indent_1 {
+#fqzlkffvuf .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ugodykfbmv .gt_indent_2 {
+#fqzlkffvuf .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ugodykfbmv .gt_indent_3 {
+#fqzlkffvuf .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ugodykfbmv .gt_indent_4 {
+#fqzlkffvuf .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ugodykfbmv .gt_indent_5 {
+#fqzlkffvuf .gt_indent_5 {
   text-indent: 25px;
 }
 
-#ugodykfbmv .katex-display {
+#fqzlkffvuf .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#ugodykfbmv div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#fqzlkffvuf div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -2765,7 +2766,7 @@ With baseline CVD
 </div>
 </div>
 </div>
-<p>The odds ratio for <code>sed</code> moves only a little between the two models: 1.020 (95% CI 1.013 to 1.028, p &lt; 0.001) without <code>blm.cvd</code>, and 1.019 (95% CI 1.012 to 1.026, p &lt; 0.001) with it. <code>blm.cvd</code> itself is a strong predictor of ten-year mortality, but adjusting for it changes almost nothing about the sedentary time estimate. Whichever role <code>blm.cvd</code> plays, confounder or mediator, the conclusion about sedentary time and mortality in this dataset doesn’t depend much on which one it is.</p>
+<p>The odds ratio for <code>sed</code> moves only a little between the two models: 1.020 (95% CI 1.013 to 1.028, p &lt; 0.001) without <code>blm.cvd</code>, and 1.019 (95% CI 1.012 to 1.026, p &lt; 0.001) with it. <code>blm.cvd</code> itself is strongly associated with ten-year mortality, but adjusting for it changes almost nothing about the sedentary time estimate. Whichever role <code>blm.cvd</code> plays, confounder or mediator, the conclusion about sedentary time and mortality in this dataset doesn’t depend much on which one it is.</p>
 </section>
 <section id="exercises" class="level2" data-number="7.11">
 <h2 data-number="7.11" class="anchored" data-anchor-id="exercises"><span class="header-section-number">7.11</span> Exercises</h2>
@@ -2851,23 +2852,23 @@ With baseline CVD
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tbl_regression</span>(m_vpa_t_adj, <span class="at">exponentiate =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="elkrointwo" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#elkrointwo table {
+<div id="dorjtlkaqy" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#dorjtlkaqy table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#elkrointwo thead, #elkrointwo tbody, #elkrointwo tfoot, #elkrointwo tr, #elkrointwo td, #elkrointwo th {
+#dorjtlkaqy thead, #dorjtlkaqy tbody, #dorjtlkaqy tfoot, #dorjtlkaqy tr, #dorjtlkaqy td, #dorjtlkaqy th {
   border-style: none;
 }
 
-#elkrointwo p {
+#dorjtlkaqy p {
   margin: 0;
   padding: 0;
 }
 
-#elkrointwo .gt_table {
+#dorjtlkaqy .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -2893,12 +2894,12 @@ With baseline CVD
   border-left-color: #D3D3D3;
 }
 
-#elkrointwo .gt_caption {
+#dorjtlkaqy .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#elkrointwo .gt_title {
+#dorjtlkaqy .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2910,7 +2911,7 @@ With baseline CVD
   border-bottom-width: 0;
 }
 
-#elkrointwo .gt_subtitle {
+#dorjtlkaqy .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2922,7 +2923,7 @@ With baseline CVD
   border-top-width: 0;
 }
 
-#elkrointwo .gt_heading {
+#dorjtlkaqy .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2934,13 +2935,13 @@ With baseline CVD
   border-right-color: #D3D3D3;
 }
 
-#elkrointwo .gt_bottom_border {
+#dorjtlkaqy .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#elkrointwo .gt_col_headings {
+#dorjtlkaqy .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2955,7 +2956,7 @@ With baseline CVD
   border-right-color: #D3D3D3;
 }
 
-#elkrointwo .gt_col_heading {
+#dorjtlkaqy .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2975,7 +2976,7 @@ With baseline CVD
   overflow-x: hidden;
 }
 
-#elkrointwo .gt_column_spanner_outer {
+#dorjtlkaqy .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2987,15 +2988,15 @@ With baseline CVD
   padding-right: 4px;
 }
 
-#elkrointwo .gt_column_spanner_outer:first-child {
+#dorjtlkaqy .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#elkrointwo .gt_column_spanner_outer:last-child {
+#dorjtlkaqy .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#elkrointwo .gt_column_spanner {
+#dorjtlkaqy .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -3007,11 +3008,11 @@ With baseline CVD
   width: 100%;
 }
 
-#elkrointwo .gt_spanner_row {
+#dorjtlkaqy .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#elkrointwo .gt_group_heading {
+#dorjtlkaqy .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3037,7 +3038,7 @@ With baseline CVD
   text-align: left;
 }
 
-#elkrointwo .gt_empty_group_heading {
+#dorjtlkaqy .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3052,15 +3053,15 @@ With baseline CVD
   vertical-align: middle;
 }
 
-#elkrointwo .gt_from_md > :first-child {
+#dorjtlkaqy .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#elkrointwo .gt_from_md > :last-child {
+#dorjtlkaqy .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#elkrointwo .gt_row {
+#dorjtlkaqy .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3079,7 +3080,7 @@ With baseline CVD
   overflow-x: hidden;
 }
 
-#elkrointwo .gt_stub {
+#dorjtlkaqy .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3092,7 +3093,7 @@ With baseline CVD
   padding-right: 5px;
 }
 
-#elkrointwo .gt_stub_row_group {
+#dorjtlkaqy .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3106,15 +3107,15 @@ With baseline CVD
   vertical-align: top;
 }
 
-#elkrointwo .gt_row_group_first td {
+#dorjtlkaqy .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#elkrointwo .gt_row_group_first th {
+#dorjtlkaqy .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#elkrointwo .gt_summary_row {
+#dorjtlkaqy .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3124,16 +3125,16 @@ With baseline CVD
   padding-right: 5px;
 }
 
-#elkrointwo .gt_first_summary_row {
+#dorjtlkaqy .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#elkrointwo .gt_first_summary_row.thick {
+#dorjtlkaqy .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#elkrointwo .gt_last_summary_row {
+#dorjtlkaqy .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3143,7 +3144,7 @@ With baseline CVD
   border-bottom-color: #D3D3D3;
 }
 
-#elkrointwo .gt_grand_summary_row {
+#dorjtlkaqy .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3153,7 +3154,7 @@ With baseline CVD
   padding-right: 5px;
 }
 
-#elkrointwo .gt_first_grand_summary_row {
+#dorjtlkaqy .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3163,7 +3164,7 @@ With baseline CVD
   border-top-color: #D3D3D3;
 }
 
-#elkrointwo .gt_last_grand_summary_row_top {
+#dorjtlkaqy .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3173,11 +3174,11 @@ With baseline CVD
   border-bottom-color: #D3D3D3;
 }
 
-#elkrointwo .gt_striped {
+#dorjtlkaqy .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#elkrointwo .gt_table_body {
+#dorjtlkaqy .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3186,7 +3187,7 @@ With baseline CVD
   border-bottom-color: #D3D3D3;
 }
 
-#elkrointwo .gt_footnotes {
+#dorjtlkaqy .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3200,7 +3201,7 @@ With baseline CVD
   border-right-color: #D3D3D3;
 }
 
-#elkrointwo .gt_footnote {
+#dorjtlkaqy .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -3209,7 +3210,7 @@ With baseline CVD
   padding-right: 5px;
 }
 
-#elkrointwo .gt_sourcenotes {
+#dorjtlkaqy .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3223,7 +3224,7 @@ With baseline CVD
   border-right-color: #D3D3D3;
 }
 
-#elkrointwo .gt_sourcenote {
+#dorjtlkaqy .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3231,72 +3232,72 @@ With baseline CVD
   padding-right: 5px;
 }
 
-#elkrointwo .gt_left {
+#dorjtlkaqy .gt_left {
   text-align: left;
 }
 
-#elkrointwo .gt_center {
+#dorjtlkaqy .gt_center {
   text-align: center;
 }
 
-#elkrointwo .gt_right {
+#dorjtlkaqy .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#elkrointwo .gt_font_normal {
+#dorjtlkaqy .gt_font_normal {
   font-weight: normal;
 }
 
-#elkrointwo .gt_font_bold {
+#dorjtlkaqy .gt_font_bold {
   font-weight: bold;
 }
 
-#elkrointwo .gt_font_italic {
+#dorjtlkaqy .gt_font_italic {
   font-style: italic;
 }
 
-#elkrointwo .gt_super {
+#dorjtlkaqy .gt_super {
   font-size: 65%;
 }
 
-#elkrointwo .gt_footnote_marks {
+#dorjtlkaqy .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#elkrointwo .gt_asterisk {
+#dorjtlkaqy .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#elkrointwo .gt_indent_1 {
+#dorjtlkaqy .gt_indent_1 {
   text-indent: 5px;
 }
 
-#elkrointwo .gt_indent_2 {
+#dorjtlkaqy .gt_indent_2 {
   text-indent: 10px;
 }
 
-#elkrointwo .gt_indent_3 {
+#dorjtlkaqy .gt_indent_3 {
   text-indent: 15px;
 }
 
-#elkrointwo .gt_indent_4 {
+#dorjtlkaqy .gt_indent_4 {
   text-indent: 20px;
 }
 
-#elkrointwo .gt_indent_5 {
+#dorjtlkaqy .gt_indent_5 {
   text-indent: 25px;
 }
 
-#elkrointwo .katex-display {
+#dorjtlkaqy .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#elkrointwo div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#dorjtlkaqy div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -3391,7 +3392,7 @@ With baseline CVD
 </div>
 </div>
 <p>Adjusted for age, gender, and education, each additional hour/day of vigorous activity overall is associated with an odds ratio of about 0.871 for ten-year mortality (95% CI: 0.817 to 0.926, p &lt; 0.001): participants reporting more vigorous activity had lower odds of dying within ten years, holding age, gender, and education constant.</p>
-<p>Now compare that with the crude model. Crude, the odds ratio is 0.623, which would say that an extra hour a day of vigorous activity cuts the odds of dying by something like 38%. Adjusted, it’s 0.871: still a real association, but noticeably weaker. Part of that gap is age. Older participants do less vigorous activity overall, and are more likely to die within ten years, for reasons that have nothing to do with the activity itself. So a crude comparison of the active against the inactive is partly a comparison of the young against the old. This is the same confounding story the chapter told with <code>sed</code>, moving the estimate the same way, toward the null: there the adjusted odds ratio moved from 1.040 to 1.020, closer to 1; here it moves from 0.623 to 0.871, also closer to 1, from further below it. Reporting the crude figure on its own would overstate what vigorous activity does.</p>
+<p>Now compare that with the crude model. Crude, the odds ratio is 0.623, which would say that an extra hour a day of vigorous activity cuts the odds of dying by something like 38%. Adjusted, it’s 0.871: still a real association, but noticeably weaker. Part of that gap is age. Older participants do less vigorous activity overall, and are more likely to die within ten years, for reasons that have nothing to do with the activity itself. So a crude comparison of the active against the inactive is partly a comparison of the young against the old. This is the same confounding story the chapter told with <code>sed</code>, moving the estimate the same way, toward the null: there the adjusted odds ratio moved from 1.040 to 1.020, closer to 1; here it moves from 0.623 to 0.871, also closer to 1, from further below it. Reporting the crude figure on its own would overstate the association with vigorous activity.</p>
 <p><strong>Exercise 3</strong></p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>vpa_t_cvd_complete <span class="ot">&lt;-</span> vpa_t_dead_complete <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(blm.cvd))</span>
@@ -3407,23 +3408,23 @@ With baseline CVD
 <span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a><span class="fu">tbl_merge</span>(<span class="fu">list</span>(tbl_vpa_without, tbl_vpa_with),</span>
 <span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">tab_spanner =</span> <span class="fu">c</span>(<span class="st">'Without baseline CVD'</span>, <span class="st">'With baseline CVD'</span>), <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="gltaalixcx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#gltaalixcx table {
+<div id="oxwamqrjbk" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#oxwamqrjbk table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#gltaalixcx thead, #gltaalixcx tbody, #gltaalixcx tfoot, #gltaalixcx tr, #gltaalixcx td, #gltaalixcx th {
+#oxwamqrjbk thead, #oxwamqrjbk tbody, #oxwamqrjbk tfoot, #oxwamqrjbk tr, #oxwamqrjbk td, #oxwamqrjbk th {
   border-style: none;
 }
 
-#gltaalixcx p {
+#oxwamqrjbk p {
   margin: 0;
   padding: 0;
 }
 
-#gltaalixcx .gt_table {
+#oxwamqrjbk .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -3449,12 +3450,12 @@ With baseline CVD
   border-left-color: #D3D3D3;
 }
 
-#gltaalixcx .gt_caption {
+#oxwamqrjbk .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#gltaalixcx .gt_title {
+#oxwamqrjbk .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -3466,7 +3467,7 @@ With baseline CVD
   border-bottom-width: 0;
 }
 
-#gltaalixcx .gt_subtitle {
+#oxwamqrjbk .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -3478,7 +3479,7 @@ With baseline CVD
   border-top-width: 0;
 }
 
-#gltaalixcx .gt_heading {
+#oxwamqrjbk .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -3490,13 +3491,13 @@ With baseline CVD
   border-right-color: #D3D3D3;
 }
 
-#gltaalixcx .gt_bottom_border {
+#oxwamqrjbk .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#gltaalixcx .gt_col_headings {
+#oxwamqrjbk .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3511,7 +3512,7 @@ With baseline CVD
   border-right-color: #D3D3D3;
 }
 
-#gltaalixcx .gt_col_heading {
+#oxwamqrjbk .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3531,7 +3532,7 @@ With baseline CVD
   overflow-x: hidden;
 }
 
-#gltaalixcx .gt_column_spanner_outer {
+#oxwamqrjbk .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3543,15 +3544,15 @@ With baseline CVD
   padding-right: 4px;
 }
 
-#gltaalixcx .gt_column_spanner_outer:first-child {
+#oxwamqrjbk .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#gltaalixcx .gt_column_spanner_outer:last-child {
+#oxwamqrjbk .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#gltaalixcx .gt_column_spanner {
+#oxwamqrjbk .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -3563,11 +3564,11 @@ With baseline CVD
   width: 100%;
 }
 
-#gltaalixcx .gt_spanner_row {
+#oxwamqrjbk .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#gltaalixcx .gt_group_heading {
+#oxwamqrjbk .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3593,7 +3594,7 @@ With baseline CVD
   text-align: left;
 }
 
-#gltaalixcx .gt_empty_group_heading {
+#oxwamqrjbk .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3608,15 +3609,15 @@ With baseline CVD
   vertical-align: middle;
 }
 
-#gltaalixcx .gt_from_md > :first-child {
+#oxwamqrjbk .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#gltaalixcx .gt_from_md > :last-child {
+#oxwamqrjbk .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#gltaalixcx .gt_row {
+#oxwamqrjbk .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3635,7 +3636,7 @@ With baseline CVD
   overflow-x: hidden;
 }
 
-#gltaalixcx .gt_stub {
+#oxwamqrjbk .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3648,7 +3649,7 @@ With baseline CVD
   padding-right: 5px;
 }
 
-#gltaalixcx .gt_stub_row_group {
+#oxwamqrjbk .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3662,15 +3663,15 @@ With baseline CVD
   vertical-align: top;
 }
 
-#gltaalixcx .gt_row_group_first td {
+#oxwamqrjbk .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#gltaalixcx .gt_row_group_first th {
+#oxwamqrjbk .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#gltaalixcx .gt_summary_row {
+#oxwamqrjbk .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3680,16 +3681,16 @@ With baseline CVD
   padding-right: 5px;
 }
 
-#gltaalixcx .gt_first_summary_row {
+#oxwamqrjbk .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#gltaalixcx .gt_first_summary_row.thick {
+#oxwamqrjbk .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#gltaalixcx .gt_last_summary_row {
+#oxwamqrjbk .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3699,7 +3700,7 @@ With baseline CVD
   border-bottom-color: #D3D3D3;
 }
 
-#gltaalixcx .gt_grand_summary_row {
+#oxwamqrjbk .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3709,7 +3710,7 @@ With baseline CVD
   padding-right: 5px;
 }
 
-#gltaalixcx .gt_first_grand_summary_row {
+#oxwamqrjbk .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3719,7 +3720,7 @@ With baseline CVD
   border-top-color: #D3D3D3;
 }
 
-#gltaalixcx .gt_last_grand_summary_row_top {
+#oxwamqrjbk .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3729,11 +3730,11 @@ With baseline CVD
   border-bottom-color: #D3D3D3;
 }
 
-#gltaalixcx .gt_striped {
+#oxwamqrjbk .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#gltaalixcx .gt_table_body {
+#oxwamqrjbk .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3742,7 +3743,7 @@ With baseline CVD
   border-bottom-color: #D3D3D3;
 }
 
-#gltaalixcx .gt_footnotes {
+#oxwamqrjbk .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3756,7 +3757,7 @@ With baseline CVD
   border-right-color: #D3D3D3;
 }
 
-#gltaalixcx .gt_footnote {
+#oxwamqrjbk .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -3765,7 +3766,7 @@ With baseline CVD
   padding-right: 5px;
 }
 
-#gltaalixcx .gt_sourcenotes {
+#oxwamqrjbk .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3779,7 +3780,7 @@ With baseline CVD
   border-right-color: #D3D3D3;
 }
 
-#gltaalixcx .gt_sourcenote {
+#oxwamqrjbk .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3787,72 +3788,72 @@ With baseline CVD
   padding-right: 5px;
 }
 
-#gltaalixcx .gt_left {
+#oxwamqrjbk .gt_left {
   text-align: left;
 }
 
-#gltaalixcx .gt_center {
+#oxwamqrjbk .gt_center {
   text-align: center;
 }
 
-#gltaalixcx .gt_right {
+#oxwamqrjbk .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#gltaalixcx .gt_font_normal {
+#oxwamqrjbk .gt_font_normal {
   font-weight: normal;
 }
 
-#gltaalixcx .gt_font_bold {
+#oxwamqrjbk .gt_font_bold {
   font-weight: bold;
 }
 
-#gltaalixcx .gt_font_italic {
+#oxwamqrjbk .gt_font_italic {
   font-style: italic;
 }
 
-#gltaalixcx .gt_super {
+#oxwamqrjbk .gt_super {
   font-size: 65%;
 }
 
-#gltaalixcx .gt_footnote_marks {
+#oxwamqrjbk .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#gltaalixcx .gt_asterisk {
+#oxwamqrjbk .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#gltaalixcx .gt_indent_1 {
+#oxwamqrjbk .gt_indent_1 {
   text-indent: 5px;
 }
 
-#gltaalixcx .gt_indent_2 {
+#oxwamqrjbk .gt_indent_2 {
   text-indent: 10px;
 }
 
-#gltaalixcx .gt_indent_3 {
+#oxwamqrjbk .gt_indent_3 {
   text-indent: 15px;
 }
 
-#gltaalixcx .gt_indent_4 {
+#oxwamqrjbk .gt_indent_4 {
   text-indent: 20px;
 }
 
-#gltaalixcx .gt_indent_5 {
+#oxwamqrjbk .gt_indent_5 {
   text-indent: 25px;
 }
 
-#gltaalixcx .katex-display {
+#oxwamqrjbk .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#gltaalixcx div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#oxwamqrjbk div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -4035,7 +4036,7 @@ With baseline CVD
 </div>
 </div>
 </div>
-<p>The odds ratio for <code>vpa_t</code> moves a little between the two models: 0.871 (95% CI 0.817 to 0.926, p &lt; 0.001) without <code>blm.cvd</code>, and 0.887 (95% CI 0.831 to 0.942, p &lt; 0.001) with it. That’s a smaller shift than the main adjustment step but still a real one. Without <code>blm.cvd</code>, the model assumes that any relationship between baseline CVD and mortality operates entirely through the predictors already in the model; with it, the model assumes <code>blm.cvd</code> is a separate cause of death, worth adjusting for directly. Both are defensible readings of a single measurement taken at one study visit, and nothing in this dataset can say which one is correct.</p>
+<p>The odds ratio for <code>vpa_t</code> moves a little between the two models: 0.871 (95% CI 0.817 to 0.926, p &lt; 0.001) without <code>blm.cvd</code>, and 0.887 (95% CI 0.831 to 0.942, p &lt; 0.001) with it. That’s a smaller shift than the main adjustment step but still a real one. Without <code>blm.cvd</code>, the model assumes that any relationship between baseline CVD and mortality operates entirely through the explanatory variables already in the model; with it, the model assumes <code>blm.cvd</code> is a separate cause of death, worth adjusting for directly. Both are defensible readings of a single measurement taken at one study visit, and nothing in this dataset can say which one is correct.</p>
 <p><strong>Writing exercise (sample answer)</strong></p>
 <p>Sedentary time was associated with total cholesterol after adjustment for age, gender, and education (slope -0.00113 mmol/L per hour/day, 95% CI -0.00224 to -0.00002 mmol/L per hour/day, p = 0.047), and with higher odds of ten-year all-cause mortality (adjusted odds ratio 1.020, 95% CI 1.013 to 1.028, p &lt; 0.001). Both estimates adjust only for the variables included in this model; they cannot rule out confounding by factors that were never measured, such as overall frailty or comorbidity not captured here.</p>
 <p>In a sensitivity analysis, the adjusted odds ratio for sedentary time and ten-year mortality was 1.020 (95% CI 1.013 to 1.028, p &lt; 0.001) without baseline cardiovascular disease in the model, and 1.019 (95% CI 1.012 to 1.026, p &lt; 0.001) with it included. The first model assumes baseline CVD’s influence on mortality runs entirely through the other adjustment variables; the second treats it as an independent contributor to mortality risk worth adjusting for directly. Because sedentary behaviour and baseline CVD were both measured at the same study visit, this dataset cannot establish which assumption is correct, and both estimates are reported for that reason.</p>

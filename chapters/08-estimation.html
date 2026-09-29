@@ -238,13 +238,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#the-standard-error-of-a-proportion-by-hand" id="toc-the-standard-error-of-a-proportion-by-hand" class="nav-link" data-scroll-target="#the-standard-error-of-a-proportion-by-hand"><span class="header-section-number">4.5.1</span> The standard error of a proportion, by hand</a></li>
   <li><a href="#the-same-ci-from-prop.test" id="toc-the-same-ci-from-prop.test" class="nav-link" data-scroll-target="#the-same-ci-from-prop.test"><span class="header-section-number">4.5.2</span> The same CI from <code>prop.test()</code></a></li>
   </ul></li>
-  <li><a href="#confidence-ci-for-a-difference-in-means" id="toc-confidence-ci-for-a-difference-in-means" class="nav-link" data-scroll-target="#confidence-ci-for-a-difference-in-means"><span class="header-section-number">4.6</span> Confidence CI for a difference in means</a>
+  <li><a href="#a-ci-for-a-difference-in-means" id="toc-a-ci-for-a-difference-in-means" class="nav-link" data-scroll-target="#a-ci-for-a-difference-in-means"><span class="header-section-number">4.6</span> A CI for a difference in means</a>
   <ul class="collapse">
   <li><a href="#which-way-round-is-the-difference" id="toc-which-way-round-is-the-difference" class="nav-link" data-scroll-target="#which-way-round-is-the-difference"><span class="header-section-number">4.6.1</span> Which way round is the difference?</a></li>
   </ul></li>
-  <li><a href="#confidence-ci-for-a-difference-in-proportions" id="toc-confidence-ci-for-a-difference-in-proportions" class="nav-link" data-scroll-target="#confidence-ci-for-a-difference-in-proportions"><span class="header-section-number">4.7</span> Confidence CI for a difference in proportions</a></li>
+  <li><a href="#a-ci-for-a-difference-in-proportions" id="toc-a-ci-for-a-difference-in-proportions" class="nav-link" data-scroll-target="#a-ci-for-a-difference-in-proportions"><span class="header-section-number">4.7</span> A CI for a difference in proportions</a></li>
   <li><a href="#width-and-sample-size-without-programming" id="toc-width-and-sample-size-without-programming" class="nav-link" data-scroll-target="#width-and-sample-size-without-programming"><span class="header-section-number">4.8</span> Width and sample size, without programming</a></li>
-  <li><a href="#sample-size-and-power" id="toc-sample-size-and-power" class="nav-link" data-scroll-target="#sample-size-and-power"><span class="header-section-number">4.9</span> Sample size and power</a></li>
+  <li><a href="#sample-size-and-the-margin-of-error" id="toc-sample-size-and-the-margin-of-error" class="nav-link" data-scroll-target="#sample-size-and-the-margin-of-error"><span class="header-section-number">4.9</span> Sample size and the margin of error</a></li>
   <li><a href="#worked-example-a-ci-for-age" id="toc-worked-example-a-ci-for-age" class="nav-link" data-scroll-target="#worked-example-a-ci-for-age"><span class="header-section-number">4.10</span> Worked example: a CI for age</a></li>
   <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">4.11</span> Exercises</a></li>
   <li><a href="#writing-exercise" id="toc-writing-exercise" class="nav-link" data-scroll-target="#writing-exercise"><span class="header-section-number">4.12</span> Writing exercise</a></li>
@@ -273,23 +273,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Chapter 3 taught us to describe a variable with a mean and a standard deviation. Take a different sample from the same population and both numbers come out different. That wobble isn’t a flaw in the method and it isn’t something to apologise for in a write-up. It’s measurable, and measuring it is what turns a number into an estimate we can defend. Sampling variability and the central limit theorem, from this week’s seminar, are what make it predictable enough to measure.</p>
-<p>Two terms that sound alike carry the whole chapter, and they aren’t interchangeable. The standard deviation describes the spread of the <em>data</em>. The standard error describes the precision of an <em>estimate</em>. Out of the second comes the confidence interval, or CI, which we calculate by hand before checking it against R’s own functions, since a formula met once from the inside is harder to misread later. The same CIs cover the difference between two groups as well as a single mean, and each one has to be stated in the units of the problem: a CI nobody can put into a sentence hasn’t really been interpreted. The machinery also runs backwards. A CI narrows as the sample grows, so fixing the width we want tells us the sample we need, which is how a study gets sized before anyone has collected anything.</p>
+<p>Chapter 3 taught us to describe a variable with a mean and a standard deviation. Take a different sample from the same population and both numbers come out different. That wobble isn’t a flaw in the method and it isn’t something to apologise for in a write-up. It’s measurable, and measuring it is what turns a number into an estimate we can defend. Sampling variability and the central limit theorem, from this week’s interactive lecture, are what make it predictable enough to measure.</p>
+<p>Two terms that sound alike carry the whole chapter, and they aren’t interchangeable. The standard deviation describes the spread of the <em>data</em>. The standard error describes the precision of an <em>estimate</em>. Out of the second comes the confidence interval, or CI, which we calculate by hand before checking it against R’s own functions, since a formula met once from the inside is harder to misread later. The same CIs cover the difference between two groups as well as a single mean, and each one has to be stated in the units of the problem: a CI nobody can put into a sentence hasn’t been interpreted. The machinery also runs backwards. A CI narrows as the sample grows, so fixing the width we want tells us the sample we need, which is how a study gets sized before anyone has collected anything.</p>
 <section id="chapter-intended-learning-outcomes" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="chapter-intended-learning-outcomes"><span class="header-section-number">4.1</span> Chapter intended learning outcomes</h2>
-<p>By the end of this chapter you will be able to:</p>
+<p>By the end of this week you will be able to:</p>
 <ol type="1">
-<li>Calculate a standard error and construct a confidence interval by formula for a mean and for a proportion from first principle, and reproduce each using <code>t.test()</code> and <code>prop.test()</code></li>
-<li>Construct confidence intervals for a difference in means and a difference in proportions</li>
-<li>Interpret each interval in the units and context of the problem, in writing</li>
-<li>Compare how an interval’s width responds to sample size</li>
-<li>Calculate a sample size for a two-group comparison using <code>power.prop.test()</code> and <code>power.t.test()</code>, and explain why the requirement changes with the assumed effect size</li>
+<li>Understand the difference between population and sample, and why statistical inference focuses on the population</li>
+<li>Explain why a sample estimate varies from sample to sample, and state the practical consequence of the central limit theorem for the shape of that variation</li>
+<li>Distinguish the standard deviation from the standard error, and calculate the standard error of a mean and of a proportion, using <code>sd()</code> and <code>sqrt()</code></li>
+<li>Construct a 95% confidence interval for a mean, a proportion, a difference in means, and a difference in proportions, by formula and with <code>t.test()</code> and <code>prop.test()</code></li>
+<li>Interpret a confidence interval correctly, and identify the common misinterpretation</li>
+<li>Explain how sample size and variability jointly determine an estimate’s precision, and calculate the sample size a target margin of error requires</li>
 </ol>
 </section>
 <section id="setup" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="setup"><span class="header-section-number">4.2</span> Setup</h2>
 <p>As in Chapter 3, we read the data with <code>read_csv()</code> and turn the six coded variables into factors against the dictionary. This chapter also brings in a second dataset for the first time: <code>strep_tb</code>. Unlike <code>nhanes_mph</code>, <code>strep_tb</code> is built into the <code>medicaldata</code> package.</p>
-<p><code>medicaldata</code> is the first package this book uses that doesn’t come with the tidyverse, so it almost certainly isn’t on your machine yet. It has to be installed before it can be loaded. Run <code>install.packages('medicaldata')</code> once in the console. Once it’s installed, <code>library(medicaldata)</code> below works for this session, exactly like every other package we load.</p>
+<p><code>medicaldata</code> is the first package this book uses that doesn’t come with the tidyverse, so it almost certainly isn’t on your machine yet. It has to be installed before it can be loaded. Run <code>install.packages('medicaldata')</code> once in the console. Once it’s installed, <code>library(medicaldata)</code> below works for this session, like every other package we load.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
@@ -327,7 +328,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="point-estimate-and-standard-error-by-hand" class="level2" data-number="4.3">
 <h2 data-number="4.3" class="anchored" data-anchor-id="point-estimate-and-standard-error-by-hand"><span class="header-section-number">4.3</span> Point estimate and standard error, by hand</h2>
-<p>A mean handed to a health board with no sense of how precise it is invites a decision the data may not support. A point estimate is our ‘best guess’ from the data, most commonly the mean, and on its own it says nothing about how precise it is. The standard error attaches that precision, calculated from two quantities already familiar from Chapter 3: the standard deviation, <code>sd()</code>, and the sample size, <code>n()</code>. Let’s apply this to sedentary time (<code>sed</code>):</p>
+<p>A mean handed to a health board with no sense of how precise it is invites a decision the data may not support. A point estimate is our ‘best guess’ from the data, most commonly the mean, and on its own it says nothing about how precise it is. The standard error (SE) attaches that precision, calculated from two quantities already familiar from Chapter 3: the standard deviation, <code>sd()</code>, and the sample size, <code>n()</code>. Let’s apply this to sedentary time (<code>sed</code>):</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>sed_stats <span class="ot">&lt;-</span> nhanes <span class="sc">|&gt;</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(sed)) <span class="sc">|&gt;</span></span>
@@ -346,8 +347,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 1     6.56   10.9 34434 0.0588</code></pre>
 </div>
 </div>
-<p><code>sqrt()</code> is base R’s square root function. The standard error of a mean is the standard deviation divided by the square root of the sample size, the algebra behind the seminar’s precision argument: as <code>n</code> grows, the denominator grows and the standard error shrinks.</p>
-<p><code>sed</code> was shown in Chapter 3 to be right-skewed, with a long tail of participants reporting many sedentary hours. That skew doesn’t disqualify it from a CI on its <em>mean</em>, because of the Central Limit Theorem. As the sample size grows, the <em>sampling distribution</em> gets closer to a bell-shaped normal distribution.</p>
+<p><code>sqrt()</code> is base R’s square root function. The standard error of a mean is the standard deviation divided by the square root of the sample size, the algebra behind the lecture’s precision argument: as <code>n</code> grows, the denominator grows and the standard error shrinks.</p>
+<p><code>sed</code> was shown in Chapter 3 to be right-skewed, with a long tail of participants reporting many sedentary hours. That skew doesn’t disqualify it from a CI on its <em>mean</em>, because of the central limit theorem. Picture drawing sample after sample from the same population and working out the mean each time: those means vary, and the pattern they make is the <em>sampling distribution</em> of the mean. The standard error is its spread. The theorem says that as the sample size grows, the sampling distribution gets closer to a bell-shaped normal distribution, whatever shape the data themselves have.</p>
 </section>
 <section id="from-standard-error-to-a-ci" class="level2" data-number="4.4">
 <h2 data-number="4.4" class="anchored" data-anchor-id="from-standard-error-to-a-ci"><span class="header-section-number">4.4</span> From standard error to a CI</h2>
@@ -367,7 +368,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 1     6.56   10.9 34434 0.0588     6.45     6.68</code></pre>
 </div>
 </div>
-<p>R has a function that does this directly. <code>t.test()</code> expects a single numeric vector, not a data frame, so we pull <code>sed</code> out of <code>nhanes</code> with <code>$</code>. <code>nhanes$sed</code> reads as ‘the <code>sed</code> column, inside <code>nhanes</code>’, and it returns that column on its own, as a plain vector of numbers, rather than a data frame containing it. That’s different from <code>select(sed)</code>, which keeps a one-column data frame instead of pulling the column out. <code>t.test()</code> then returns the mean and its 95% CI without any of the arithmetic above:</p>
+<p>R has a function that does this directly. <code>t.test()</code> expects a single numeric vector, not a data frame, so we pull <code>sed</code> out of <code>nhanes</code> with <code>$</code>. <code>nhanes$sed</code> reads as ‘the <code>sed</code> column, inside <code>nhanes</code>’, and it returns that column on its own, as a plain vector of numbers, not a data frame containing it. That’s different from <code>select(sed)</code>, which keeps a one-column data frame instead of pulling the column out. <code>t.test()</code> then returns the mean and its 95% CI without any of the arithmetic above:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(nhanes<span class="sc">$</span>sed)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -385,11 +386,11 @@ mean of x
 </div>
 </div>
 <p><code>t.test()</code> also reports a test statistic, degrees of freedom, and a p-value. These belong to a hypothesis test, which is Chapter 5’s subject. For now, look only at the CI, and check that it closely matches the CI we calculated by hand above.</p>
-<p>One thing <code>t.test()</code> does quietly is it ignores all missing values. We passed it <code>nhanes$sed</code> whole, missing values and all, with no <code>filter()</code> and no <code>na.rm = TRUE</code>, and it ran anyway. It drops missing values itself, before calculating. The evidence is in the output: the degrees of freedom are 34,433, one less than the 34,434 participants we filtered down to by hand, which is why the two CIs agree at all. So whenever we run a <code>t.test()</code> in R, we should count the missing values ourselves.</p>
-<p>The two CIs are close but not identical, because <code>t.test()</code> doesn’t use a fixed multiplier of 1.96. It uses a value from the t-distribution, which is usually a better match to the actual sampling distribution, since it depends on the sample size through its degrees of freedom (<code>n - 1</code>). For a sample size this large, the normal and t-distributions are very similar and shouldn’t make a material difference. In practice, we’d use <code>t.test()</code> rather than working this out by hand every time, but the formula above is exactly what it’s doing underneath.</p>
+<p>One thing <code>t.test()</code> does without telling us is ignore all missing values. We passed it <code>nhanes$sed</code> whole, missing values and all, with no <code>filter()</code> and no <code>na.rm = TRUE</code>, and it ran anyway. It drops missing values itself, before calculating. The evidence is in the output: the degrees of freedom are 34,433, one less than the 34,434 participants we filtered down to by hand, which is why the two CIs agree at all. So whenever we run a <code>t.test()</code> in R, we should count the missing values ourselves.</p>
+<p>The two CIs are close but not identical, because <code>t.test()</code> doesn’t use a fixed multiplier of 1.96. It uses a value from the t-distribution, which is usually a better match to the actual sampling distribution, since it depends on the sample size through its degrees of freedom (<code>n - 1</code>). For a sample size this large, the normal and t-distributions are very similar and shouldn’t make a material difference. In practice, we’d use <code>t.test()</code> instead of working this out by hand every time, but the formula above is what it calculates.</p>
 <section id="saying-what-the-ci-means-and-what-it-doesnt" class="level3" data-number="4.4.1">
 <h3 data-number="4.4.1" class="anchored" data-anchor-id="saying-what-the-ci-means-and-what-it-doesnt"><span class="header-section-number">4.4.1</span> Saying what the CI means, and what it doesn’t</h3>
-<p>We now have a CI. Writing it down correctly is a separate skill from calculating it, and it’s the one the seminar spent time on, contrasting the right sentence with the wrong one. Here is the right one, for the CI we just built:</p>
+<p>We now have a CI. Writing it down correctly is a separate skill from calculating it, and it’s the one the lecture spent time on, contrasting the right sentence with the wrong one. Here is the right one, for the CI we just built:</p>
 <blockquote class="blockquote">
 <p>Mean sedentary time was 6.56 hours/day (95% CI: 6.45 to 6.68 hours/day).</p>
 </blockquote>
@@ -461,7 +462,7 @@ FALSE  TRUE
 1         55     107      0.514      0.0483</code></pre>
 </div>
 </div>
-<p>The CI is then built exactly the way it was for a mean: the estimate, plus or minus 1.96 standard errors.</p>
+<p>The CI is then built the same way it was for a mean: the estimate, plus or minus 1.96 standard errors.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>tb_stats<span class="sc">$</span>p_improved <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> tb_stats<span class="sc">$</span>se_improved</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -493,12 +494,12 @@ sample estimates:
 </div>
 </div>
 <p>The two CIs are close but not identical, and for the same kind of reason the hand-built and <code>t.test()</code> CIs differed earlier. The ± 1.96 version above is the textbook approximation, and it works well when n is large and p isn’t near 0 or 1. <code>prop.test()</code> uses a better method that behaves more sensibly in small samples and never runs past 0 or 1, which the approximation happily will if pushed too far. With 107 patients and a proportion near a half, both are perfectly reasonable and they agree to within a small margin of error.</p>
-<p>Giving <code>prop.test()</code> the count and total directly, rather than a cross-tabulated table, avoids any doubt about which of the two categories we’re counting. A table of <code>improved</code> alone would still show both proportions, but a table fed straight into <code>prop.test()</code> reports the proportion for only whichever category comes first, which is not necessarily the one we want.</p>
+<p>Giving <code>prop.test()</code> the count and total directly, instead of a cross-tabulated table, avoids any doubt about which of the two categories we’re counting. A table of <code>improved</code> alone would still show both proportions, but a table fed straight into <code>prop.test()</code> reports the proportion for only whichever category comes first, which is not necessarily the one we want.</p>
 <p>By default, <code>prop.test()</code> also tests whether this proportion differs from 50%. That default comparison isn’t of interest here, and it isn’t the subject of this chapter. The 95% CI it reports alongside is what we want.</p>
 </section>
 </section>
-<section id="confidence-ci-for-a-difference-in-means" class="level2" data-number="4.6">
-<h2 data-number="4.6" class="anchored" data-anchor-id="confidence-ci-for-a-difference-in-means"><span class="header-section-number">4.6</span> Confidence CI for a difference in means</h2>
+<section id="a-ci-for-a-difference-in-means" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="a-ci-for-a-difference-in-means"><span class="header-section-number">4.6</span> A CI for a difference in means</h2>
 <p><code>t.test()</code> also compares two groups directly, using <strong>formula syntax</strong>. <code>chol ~ gender</code> reads as ‘<code>chol</code>, modelled by <code>gender</code>’. R splits <code>chol</code> into the groups defined by <code>gender</code> and compares them:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(chol <span class="sc">~</span> gender, <span class="at">data =</span> nhanes <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(gender)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -517,7 +518,7 @@ sample estimates:
 </div>
 </div>
 <p>Notice there’s no <code>$</code> anywhere in that call, even though <code>chol</code> and <code>gender</code> both are only found inside <code>nhanes</code>. The <code>data =</code> argument tells <code>t.test()</code> which data frame to search for names like <code>chol</code> and <code>gender</code>, so it looks them up there itself instead of us pulling each one out by hand first with <code>$</code>. <code>$</code> is still the right tool for getting a single column on its own, the way <code>nhanes$sed</code> was above; a formula’s <code>data =</code> argument does that lookup for every variable named in the formula at once.</p>
-<p>This is the same pairing we showed descriptively in Chapter 3’s boxplot and Table 1: cholesterol by gender. Now it’s attached to a CI for the <em>difference</em> in means between the two groups. By default, <code>t.test()</code> doesn’t assume the two groups have equal variance, i.e.&nbsp;<em>Welch’s t-test</em>. That’s a sensible default and not something we need to adjust here.</p>
+<p>This is the same pairing we showed descriptively in Chapter 3’s boxplot and Table 1: cholesterol by gender. Now it’s attached to a CI for the <em>difference</em> in means between the two groups. By default, <code>t.test()</code> doesn’t assume the two groups have equal variance, that is, the same spread (the variance is the SD squared). This version is called <em>Welch’s t-test</em>. That’s a sensible default and not something we need to adjust here.</p>
 <section id="which-way-round-is-the-difference" class="level3" data-number="4.6.1">
 <h3 data-number="4.6.1" class="anchored" data-anchor-id="which-way-round-is-the-difference"><span class="header-section-number">4.6.1</span> Which way round is the difference?</h3>
 <p>Both ends of that CI are negative, and a negative difference in cholesterol isn’t obviously meaningful until we know what has been subtracted from what. R tells us, on the line beginning ‘alternative hypothesis’: <em>true difference in means between group Male and group Female</em>. So it has taken the men’s mean and subtracted the women’s.</p>
@@ -529,11 +530,11 @@ sample estimates:
 </div>
 </div>
 <p><code>'Male'</code> is first, so men are group 1 and women are group 2, and the difference runs first minus second. A negative CI therefore says the first group is <em>lower</em>: mean cholesterol is lower in men than in women, by somewhere between 0.15 and 0.19 mmol/L.</p>
-<p>It is useful to check the alternative-hypothesis line before reading any two-group CI. If we’d rather write the comparison the other way round, which is often more natural to read, we flip the whole thing together. ‘Cholesterol was 0.17 mmol/L higher in women than in men (95% CI: 0.15 to 0.19 mmol/L)’ says exactly the same as R’s output, with every sign reversed. What we must never do is flip the words and leave the numbers, or flip one end of the CI and not the other. The direction of the estimate and the direction of the CI have to agree.</p>
+<p>It is useful to check the alternative-hypothesis line before reading any two-group CI. If we’d rather write the comparison the other way round, which is often more natural to read, we flip the whole thing together. ‘Cholesterol was 0.17 mmol/L higher in women than in men (95% CI: 0.15 to 0.19 mmol/L)’ says the same as R’s output, with every sign reversed. What we must never do is flip the words and leave the numbers, or flip one end of the CI and not the other. The direction of the estimate and the direction of the CI have to agree.</p>
 </section>
 </section>
-<section id="confidence-ci-for-a-difference-in-proportions" class="level2" data-number="4.7">
-<h2 data-number="4.7" class="anchored" data-anchor-id="confidence-ci-for-a-difference-in-proportions"><span class="header-section-number">4.7</span> Confidence CI for a difference in proportions</h2>
+<section id="a-ci-for-a-difference-in-proportions" class="level2" data-number="4.7">
+<h2 data-number="4.7" class="anchored" data-anchor-id="a-ci-for-a-difference-in-proportions"><span class="header-section-number">4.7</span> A CI for a difference in proportions</h2>
 <p>The same idea extends to two proportions: how many improved in each trial arm. <code>group_by()</code> and <code>summarise()</code>, already familiar from Chapter 3, give us the count and the number improved in each arm:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>strep_arm_summary <span class="ot">&lt;-</span> strep_tb <span class="sc">|&gt;</span></span>
@@ -553,8 +554,8 @@ sample estimates:
 2 Control         52         17         0.327</code></pre>
 </div>
 </div>
-<p><code>prop_improved</code> here is exactly what <code>mean(improved)</code> would give directly. <code>mean()</code> of a logical vector is a shortcut worth knowing: R treats <code>TRUE</code> as 1 and <code>FALSE</code> as 0, so the mean of a column of <code>TRUE</code>/<code>FALSE</code> values is the proportion that are <code>TRUE</code>.</p>
-<p>If we pass the two counts and the two totals to <code>prop.test()</code>, rather than a cross-tabulated table, it compares the two proportions unambiguously. <code>prop 1</code> and <code>prop 2</code> below correspond, in order, to the two rows of <code>strep_arm_summary</code> above:</p>
+<p><code>prop_improved</code> here is what <code>mean(improved)</code> would give directly. <code>mean()</code> of a logical vector is a shortcut worth knowing: R treats <code>TRUE</code> as 1 and <code>FALSE</code> as 0, so the mean of a column of <code>TRUE</code>/<code>FALSE</code> values is the proportion that are <code>TRUE</code>.</p>
+<p>If we pass the two counts and the two totals to <code>prop.test()</code>, instead of a cross-tabulated table, it compares the two proportions unambiguously. <code>prop 1</code> and <code>prop 2</code> below correspond, in order, to the two rows of <code>strep_arm_summary</code> above:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.test</span>(<span class="at">x =</span> strep_arm_summary<span class="sc">$</span>n_improved, <span class="at">n =</span> strep_arm_summary<span class="sc">$</span>n_arm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -572,20 +573,20 @@ sample estimates:
 0.6909091 0.3269231 </code></pre>
 </div>
 </div>
-<p>The CI is for the difference in the proportion improved between the two arms. Before reading it, check the direction, exactly as we did for the difference in means above. The same rule applies: R takes the first group and subtracts the second, and the order comes from the factor’s levels.</p>
+<p>The CI is for the difference in the proportion improved between the two arms. Before reading it, check the direction, as we did for the difference in means above. The same rule applies: R takes the first group and subtracts the second, and the order comes from the factor’s levels.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(strep_tb<span class="sc">$</span>arm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Streptomycin" "Control"     </code></pre>
 </div>
 </div>
-<p><code>'Streptomycin'</code> is first, so <code>prop 1</code> is the streptomycin arm and <code>prop 2</code> is the control arm, and the difference runs streptomycin minus control. Both ends of the CI are positive, which therefore says the streptomycin arm improved <em>more</em>. Had the two levels been the other way round, every number in that CI would have carried a minus sign and meant exactly the same thing. Chapter 5 puts this same factor the other way round on purpose, which is why checking the levels here first matters.</p>
-<p>The heading says ‘with continuity correction’: <code>prop.test()</code> applies a small adjustment by default that nudges the p-value up and the CI slightly wider. Chapter 5 explains what it does, so leave it for now, but notice that the p-value printed here, 0.0004, is the one that adjustment produces. That p-value itself belongs to a hypothesis test, which is still Chapter 5’s subject.</p>
-<p>Because <code>strep_tb</code> is a randomised trial rather than an observational study, a difference this large and this precisely estimated supports a causal reading in a way that an association in <code>nhanes_mph</code> would not. We can quite safely conclude, from the findings, that streptomycin improved the proportion of patients with X-ray improvement by about 36 percentage points (95% CI: 17 to 56 percentage points, p = 0.0004), compared with bed rest alone. We say percentage points rather than percent here: percent would describe how much bigger one proportion is relative to the other, not the size of the gap between them, which is what this CI estimates.</p>
+<p><code>'Streptomycin'</code> is first, so <code>prop 1</code> is the streptomycin arm and <code>prop 2</code> is the control arm, and the difference runs streptomycin minus control. Both ends of the CI are positive, which therefore says the streptomycin arm improved <em>more</em>. Had the two levels been the other way round, every number in that CI would have carried a minus sign and meant the same thing. Chapter 5 puts this same factor the other way round on purpose, which is why checking the levels here first matters.</p>
+<p>The heading says ‘with continuity correction’: <code>prop.test()</code> applies a small adjustment by default that makes the CI slightly wider. Chapter 5 explains what it does, so leave it for now. The p-value printed alongside belongs to a hypothesis test, which is still Chapter 5’s subject.</p>
+<p>Because <code>strep_tb</code> is a randomised trial, not an observational study, a difference this large and this precisely estimated supports a causal reading in a way that an association in <code>nhanes_mph</code> would not. We can quite safely conclude, from the findings, that streptomycin improved the proportion of patients with X-ray improvement by about 36 percentage points (95% CI: 17 to 56 percentage points), compared with bed rest alone. We say percentage points rather than percent here: percent would describe how much bigger one proportion is relative to the other, not the size of the gap between them, which is what this CI estimates.</p>
 </section>
 <section id="width-and-sample-size-without-programming" class="level2" data-number="4.8">
 <h2 data-number="4.8" class="anchored" data-anchor-id="width-and-sample-size-without-programming"><span class="header-section-number">4.8</span> Width and sample size, without programming</h2>
-<p>The seminar’s rule was that a CI narrows as sample size grows. We can show this directly, by computing the same CI on the full sample and on two smaller subsets of it. <code>slice_sample()</code>, from <code>dplyr</code>, keeps a random fraction of the rows. <code>set.seed()</code>, from base R, fixes the sequence of ‘random’ numbers R uses, so the same subset gets drawn every time this code is run, rather than a different one each time.</p>
+<p>The lecture’s rule was that a CI narrows as sample size grows. We can show this directly, by computing the same CI on the full sample and on two smaller subsets of it. <code>slice_sample()</code>, from <code>dplyr</code>, keeps a random fraction of the rows. <code>set.seed()</code>, from base R, fixes the sequence of ‘random’ numbers R uses, so the same subset gets drawn every time this code is run, instead of a different one each time.</p>
 <p>The full sample. This time we save the result into an object with <code>&lt;-</code> as well as printing it, because we want to reuse its numbers in a moment:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>tt_full <span class="ot">&lt;-</span> <span class="fu">t.test</span>(nhanes<span class="sc">$</span>chol)</span>
@@ -651,7 +652,7 @@ mean of x
 </div>
 </div>
 <p>The point estimates are similar across all three, because all three are samples from the same population. But the CI widens as the sample size drops.</p>
-<p>That’s hard to see across three blocks of output, so let’s put the three CIs in one small table. A <code>t.test()</code> result isn’t a data frame, but <code>$</code> still works on it, pulling out one named piece at a time exactly as it pulls one column out of a data frame. <code>tt_full$conf.int</code> is the pair of numbers at the ends of the CI, and <code>[1]</code> and <code>[2]</code> take the lower and the upper one, the same square-bracket indexing we used in Chapter 2. <code>data.frame()</code>, from Chapter 1, builds the table out of them, and <code>mutate()</code> adds the column we care about:</p>
+<p>That’s hard to see across three blocks of output, so let’s put the three CIs in one small table. A <code>t.test()</code> result isn’t a data frame, but <code>$</code> still works on it, pulling out one named piece at a time, as it pulls one column out of a data frame. <code>tt_full$conf.int</code> is the pair of numbers at the ends of the CI, and <code>[1]</code> and <code>[2]</code> take the lower and the upper one, the same square-bracket indexing we used in Chapter 2. <code>data.frame()</code>, from Chapter 1, builds the table out of them, and <code>mutate()</code> adds the column we care about:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>widths <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">sample =</span> <span class="fu">c</span>(<span class="st">'Full'</span>, <span class="st">'50% subset'</span>, <span class="st">'10% subset'</span>),</span>
@@ -669,96 +670,57 @@ mean of x
 3 10% subset  3917 4.933782 5.001132 0.06734956</code></pre>
 </div>
 </div>
-<p>Now the pattern is one column instead of six numbers on three screens. Cut the sample in half and the CI gets about 40% wider; cut it to a tenth and it’s roughly three times wider than we started. That last number is the useful one to hold onto. Ten times less data did not make the CI ten times wider, it made it about three times wider, and three is roughly the square root of ten. That’s the SE = s/√n formula showing up in an actual result. Precision improves with the square root of the sample size, not with the sample size itself. That’s why doubling a study’s size buys much less than it feels like it should.</p>
+<p>Now the pattern is one column instead of six numbers on three screens. Cut the sample in half and the CI gets about 40% wider; cut it to a tenth and it’s roughly three times wider than we started. That last number is the useful one to hold onto. Ten times less data did not make the CI ten times wider, it made it about three times wider, and three is roughly the square root of ten. That’s the SE = SD/√n formula showing up in an actual result. Precision improves with the square root of the sample size, not with the sample size itself. That’s why doubling a study’s size buys much less than it feels like it should.</p>
 </section>
-<section id="sample-size-and-power" class="level2" data-number="4.9">
-<h2 data-number="4.9" class="anchored" data-anchor-id="sample-size-and-power"><span class="header-section-number">4.9</span> Sample size and power</h2>
-<p>The same logic runs in reverse. Instead of asking how precise an estimate from a given sample size will be, we can size a study in advance to detect a given effect. <code>strep_tb</code> supplies the natural example, since it’s a trial with a binary outcome, and <code>strep_arm_summary</code> above already has the proportion improved in each arm: roughly 33% in the control arm and 69% in the streptomycin arm.</p>
-<p><code>power.prop.test()</code>, from base R, answers a practical question: how large would a two-arm trial need to be to reliably detect a gap this size? We give it the two proportions, a significance level, and a target power:</p>
+<section id="sample-size-and-the-margin-of-error" class="level2" data-number="4.9">
+<h2 data-number="4.9" class="anchored" data-anchor-id="sample-size-and-the-margin-of-error"><span class="header-section-number">4.9</span> Sample size and the margin of error</h2>
+<p>The same logic runs in reverse. Instead of asking how precise an estimate from a given sample size will be, we can choose the precision we want first and work out the sample size that delivers it. The lecture called that precision the <strong>margin of error</strong>: the ± part of estimate ± 1.96 × SE, which is half the CI’s width.</p>
+<p>For a proportion, the SE is the square root of p × (1 − p) ÷ n, so the margin of error m is 1.96 times that. Rearranged to give n instead:</p>
+<p>n = 1.96² × p × (1 − p) ÷ m²</p>
+<p>Here p is the proportion we expect to find and m is the margin we want. A survey expecting about half of people to answer yes, and wanting a margin of 3 percentage points either side:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">power.prop.test</span>(<span class="at">p1 =</span> <span class="fl">0.33</span>, <span class="at">p2 =</span> <span class="fl">0.69</span>, <span class="at">sig.level =</span> <span class="fl">0.05</span>, <span class="at">power =</span> <span class="fl">0.8</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fl">1.96</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="fl">0.5</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fl">0.5</span>) <span class="sc">/</span> <span class="fl">0.03</span><span class="sc">^</span><span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>
-     Two-sample comparison of proportions power calculation 
-
-              n = 29.0615
-             p1 = 0.33
-             p2 = 0.69
-      sig.level = 0.05
-          power = 0.8
-    alternative = two.sided
-
-NOTE: n is number in *each* group</code></pre>
+<pre><code>[1] 1067.111</code></pre>
 </div>
 </div>
-<p><code>sig.level = 0.05</code> sets the Type I error rate: the chance we’re willing to accept of concluding there’s an effect when there really isn’t one. 0.05 is the conventional choice, the same five per cent threshold Chapter 5 uses for every test in this book. Next week’s seminar names it properly alongside Type II error and defines power itself. <code>power = 0.8</code> is the conventional target: an 80% chance of detecting the effect if it’s really there. <code>n</code> is the number <strong>per group</strong> required. The gap observed in the original trial was unusually large. A smaller assumed gap needs a correspondingly larger trial:</p>
+<p><code>^</code> raises a number to a power, as in Chapter 1’s BMI exercise, so <code>0.03^2</code> is 0.03 squared. We can’t recruit part of a person, so a sample size always rounds up: 1,068 people. Now halve the margin, to 1.5 percentage points:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">power.prop.test</span>(<span class="at">p1 =</span> <span class="fl">0.33</span>, <span class="at">p2 =</span> <span class="fl">0.45</span>, <span class="at">sig.level =</span> <span class="fl">0.05</span>, <span class="at">power =</span> <span class="fl">0.8</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fl">1.96</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="fl">0.5</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fl">0.5</span>) <span class="sc">/</span> <span class="fl">0.015</span><span class="sc">^</span><span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>
-     Two-sample comparison of proportions power calculation 
-
-              n = 258.158
-             p1 = 0.33
-             p2 = 0.45
-      sig.level = 0.05
-          power = 0.8
-    alternative = two.sided
-
-NOTE: n is number in *each* group</code></pre>
+<pre><code>[1] 4268.444</code></pre>
 </div>
 </div>
-<p>The same function, <code>power.t.test()</code>, sizes a study around a continuous outcome instead, using the variability of <code>chol</code>:</p>
+<p>About four times as many people. m is squared in the formula, so halving it quadruples n.&nbsp;That’s the square-root relationship from the widths table above, read the other way round.</p>
+<p>A mean works the same way, with the SD taking the place of p × (1 − p): the margin of error is 1.96 × SD ÷ √n, so n = (1.96 × SD ÷ m)². We need an SD to plug in, and a planned study would take it from earlier data. Here we take it from <code>chol</code>:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>chol_sd <span class="ot">&lt;-</span> nhanes <span class="sc">|&gt;</span></span>
 <span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(chol)) <span class="sc">|&gt;</span></span>
 <span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">sd_chol =</span> <span class="fu">sd</span>(chol)) <span class="sc">|&gt;</span></span>
 <span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(sd_chol)</span>
 <span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a><span class="fu">power.t.test</span>(<span class="at">delta =</span> <span class="fl">0.5</span>, <span class="at">sd =</span> chol_sd, <span class="at">sig.level =</span> <span class="fl">0.05</span>, <span class="at">power =</span> <span class="fl">0.8</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>chol_sd</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>
-     Two-sample t test power calculation 
-
-              n = 75.72811
-          delta = 0.5
-             sd = 1.091122
-      sig.level = 0.05
-          power = 0.8
-    alternative = two.sided
-
-NOTE: n is number in *each* group</code></pre>
+<pre><code>[1] 1.091122</code></pre>
 </div>
-</div>
-<p><code>pull()</code>, from <code>dplyr</code>, extracts a single column as a plain vector instead of a one-column tibble. We need this because <code>power.t.test()</code> expects a single number for <code>sd</code>, not a table containing one. <code>delta</code> is the assumed difference in means the study is being sized to detect. As with the proportions above, a smaller assumed difference requires a larger sample:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">power.t.test</span>(<span class="at">delta =</span> <span class="fl">0.2</span>, <span class="at">sd =</span> chol_sd, <span class="at">sig.level =</span> <span class="fl">0.05</span>, <span class="at">power =</span> <span class="fl">0.8</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>(<span class="fl">1.96</span> <span class="sc">*</span> chol_sd <span class="sc">/</span> <span class="fl">0.05</span>)<span class="sc">^</span><span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>
-     Two-sample t test power calculation 
-
-              n = 468.1853
-          delta = 0.2
-             sd = 1.091122
-      sig.level = 0.05
-          power = 0.8
-    alternative = two.sided
-
-NOTE: n is number in *each* group</code></pre>
+<pre><code>[1] 1829.442</code></pre>
 </div>
 </div>
-<p>Both functions size a study <em>before</em> it is run, from an assumed effect. Power calculated after the fact, from a result already in hand, only re-expresses the p-value already obtained and adds nothing: this applies to both <code>power.prop.test()</code> and <code>power.t.test()</code> equally, and next week’s seminar explains why.</p>
+<p><code>pull()</code>, from <code>dplyr</code>, extracts a single column as a plain vector instead of a one-column tibble. We need that because the formula wants a single number for the SD, not a table containing one. Estimating mean cholesterol to within 0.05 mmol/L either side takes about 1,830 people. A noisier measurement, with a larger SD, would need more.</p>
+<p>This sizes a study to estimate one quantity to a chosen precision, which is what a descriptive study or a survey needs. Sizing a trial to <em>detect a difference</em> between two groups rests on a different idea, statistical power, which Chapter 5 introduces alongside the hypothesis tests it depends on.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Try it yourself: assumed effect size
+<span class="screen-reader-only">Note</span>Try it yourself: the margin you ask for
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Re-run <code>power.prop.test()</code> with <code>p2</code> set closer and closer to <code>p1</code> (for example 0.40, then 0.35), keeping <code>power = 0.8</code>. Watch what happens to <code>n</code>, and say in one sentence what it means for a researcher planning a trial to detect a genuinely small effect.</p>
+<p>Re-run the cholesterol calculation with a margin of 0.1 mmol/L, then 0.025 mmol/L. Watch what happens to n each time, and say in one sentence what it means for a researcher who wants a very precise estimate.</p>
 </div>
 </div>
 </section>
@@ -807,11 +769,11 @@ mean of x
 </section>
 <section id="exercises" class="level2" data-number="4.11">
 <h2 data-number="4.11" class="anchored" data-anchor-id="exercises"><span class="header-section-number">4.11</span> Exercises</h2>
-<p><strong>Exercise 1</strong> (ILOs 1, 2, 3). Calculate the mean and standard error of total cholesterol (<code>chol</code>), construct a 95% CI by hand, and confirm it with <code>t.test()</code>. Report the result the way a results section would state it, in one sentence.</p>
+<p><strong>Exercise 1</strong> (ILOs 3, 4, 5). Calculate the mean and standard error of total cholesterol (<code>chol</code>), construct a 95% CI by hand, and confirm it with <code>t.test()</code>. Report the result the way a results section would state it, in one sentence.</p>
 <p>Then use <code>t.test()</code> with formula syntax to obtain a 95% CI for the <em>difference</em> in mean cholesterol between smoking groups, comparing current smokers with those who have never smoked. You’ll need <code>filter()</code> to restrict <code>smoking</code> to those two categories first, since <code>t.test()</code> compares exactly two groups. Write one sentence interpreting that CI, and one sentence saying how it differs in meaning from the CI you built in the first half of this exercise.</p>
-<p><strong>Exercise 2</strong> (ILOs 1, 2, 3). In <code>strep_tb</code>, find the proportion of patients with baseline cavitation present (<code>baseline_cavitation</code>) and calculate its standard error by hand, then build a 95% CI from it and check the result against <code>prop.test()</code>. Then construct a 95% CI for the difference in the proportion improved between men and women (<code>gender</code>). Write one interpretive sentence for each CI.</p>
-<p><strong>Exercise 3</strong> (ILOs 3, 4). Repeat the width exploration above (full sample, 50% subset, 10% subset) using <code>sed</code> instead of <code>chol</code>, and collect the three CIs into one table the way the chapter did, so their widths sit side by side. Describe what changes and what stays about the same as the sample size drops.</p>
-<p><strong>Exercise 4</strong> (ILOs 3, 5). Using <code>power.t.test()</code>, find the sample size needed to detect a difference in <code>chol</code> of 0.3 mmol/L, and again for a difference of 0.8 mmol/L, both at <code>power = 0.8</code>. Write one sentence explaining why the two required sample sizes differ so much.</p>
+<p><strong>Exercise 2</strong> (ILOs 3, 4, 5). In <code>strep_tb</code>, find the proportion of patients with baseline cavitation present (<code>baseline_cavitation</code>) and calculate its standard error by hand, then build a 95% CI from it and check the result against <code>prop.test()</code>. Then construct a 95% CI for the difference in the proportion improved between men and women (<code>gender</code>). Write one interpretive sentence for each CI.</p>
+<p><strong>Exercise 3</strong> (ILO 6). Repeat the width exploration above (full sample, 50% subset, 10% subset) using <code>sed</code> instead of <code>chol</code>, and collect the three CIs into one table the way the chapter did, so their widths sit side by side. Describe what changes and what stays about the same as the sample size drops.</p>
+<p><strong>Exercise 4</strong> (ILO 6). A health board wants to estimate the proportion of adults who currently smoke, and expects it to be about 20%. Find the sample size needed for a 95% CI with a margin of error of 2 percentage points, then 1 percentage point. Then find the sample size needed to estimate mean sedentary time (<code>sed</code>) to within 0.5 hours/day, using the SD of <code>sed</code> in <code>nhanes</code>. Write one sentence explaining why the two smoking sample sizes differ so much.</p>
 </section>
 <section id="writing-exercise" class="level2" data-number="4.12">
 <h2 data-number="4.12" class="anchored" data-anchor-id="writing-exercise"><span class="header-section-number">4.12</span> Writing exercise</h2>
@@ -959,7 +921,7 @@ sample estimates:
 </div>
 </div>
 <p>The hand-built CI and the one from <code>prop.test()</code> agree closely, as they did for the proportion improved earlier in the chapter.</p>
-<p>Just over half of patients (58%) had cavitation present on their baseline chest X-ray (95% CI: 48% to 67%, p = 0.122). The CI includes 50%, so these data don’t rule out the true proportion being exactly one half. The CI for the difference in improvement between women (<code>prop 1</code>) and men (<code>prop 2</code>) runs from -0.3 to 0.12 (p = 0.477): it includes zero, consistent with little or no difference in outcome by gender in this trial.</p>
+<p>Just over half of patients (58%) had cavitation present on their baseline chest X-ray (95% CI: 48% to 67%). The CI includes 50%, so these data don’t rule out the true proportion being exactly one half. The CI for the difference in improvement between women (<code>prop 1</code>) and men (<code>prop 2</code>) runs from -0.3 to 0.12: it includes zero, consistent with little or no difference in improvement by gender in this trial.</p>
 <p><strong>Exercise 3</strong></p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>tt_sed_full <span class="ot">&lt;-</span> <span class="fu">t.test</span>(nhanes<span class="sc">$</span>sed)</span>
@@ -992,41 +954,30 @@ sample estimates:
 3 10% subset  3443 6.219105 6.983209 0.7641046</code></pre>
 </div>
 </div>
-<p>As with <code>chol</code>, the point estimate is broadly similar across all three samples, but the CI widens substantially in the 10% subset, and by almost exactly the same factor of about three. The same pattern holds for a skewed variable as for a symmetric one, because it’s the <em>sample size</em>, not the shape of the raw data, that governs the width of the CI on the mean.</p>
+<p>As with <code>chol</code>, the point estimate is broadly similar across all three samples, but the CI widens substantially in the 10% subset, and by about the same factor of three. The same pattern holds for a skewed variable as for a symmetric one, because it’s the <em>sample size</em>, not the shape of the raw data, that governs the width of the CI on the mean.</p>
 <p><strong>Exercise 4</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fu">power.t.test</span>(<span class="at">delta =</span> <span class="fl">0.3</span>, <span class="at">sd =</span> chol_stats<span class="sc">$</span>sd_chol, <span class="at">sig.level =</span> <span class="fl">0.05</span>, <span class="at">power =</span> <span class="fl">0.8</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fl">1.96</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="fl">0.2</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fl">0.2</span>) <span class="sc">/</span> <span class="fl">0.02</span><span class="sc">^</span><span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>
-     Two-sample t test power calculation 
-
-              n = 208.6194
-          delta = 0.3
-             sd = 1.091122
-      sig.level = 0.05
-          power = 0.8
-    alternative = two.sided
-
-NOTE: n is number in *each* group</code></pre>
+<pre><code>[1] 1536.64</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">power.t.test</span>(<span class="at">delta =</span> <span class="fl">0.8</span>, <span class="at">sd =</span> chol_stats<span class="sc">$</span>sd_chol, <span class="at">sig.level =</span> <span class="fl">0.05</span>, <span class="at">power =</span> <span class="fl">0.8</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fl">1.96</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="fl">0.2</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fl">0.2</span>) <span class="sc">/</span> <span class="fl">0.01</span><span class="sc">^</span><span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>
-     Two-sample t test power calculation 
-
-              n = 30.19253
-          delta = 0.8
-             sd = 1.091122
-      sig.level = 0.05
-          power = 0.8
-    alternative = two.sided
-
-NOTE: n is number in *each* group</code></pre>
+<pre><code>[1] 6146.56</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>sed_sd <span class="ot">&lt;-</span> nhanes <span class="sc">|&gt;</span></span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(sed)) <span class="sc">|&gt;</span></span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">sd_sed =</span> <span class="fu">sd</span>(sed)) <span class="sc">|&gt;</span></span>
+<span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(sd_sed)</span>
+<span id="cb77-5"><a href="#cb77-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb77-6"><a href="#cb77-6" aria-hidden="true" tabindex="-1"></a>(<span class="fl">1.96</span> <span class="sc">*</span> sed_sd <span class="sc">/</span> <span class="fl">0.5</span>)<span class="sc">^</span><span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1826.342</code></pre>
 </div>
 </div>
-<p>Detecting the smaller difference (0.3 mmol/L) needs a much larger sample than detecting the larger difference (0.8 mmol/L). Smaller effects are harder to distinguish from chance variation, so we need more participants to have the same 80% chance of detecting them.</p>
+<p>Rounded up, a margin of 2 percentage points needs 1,537 adults, and a margin of 1 percentage point needs 6,147, four times as many. The margin is squared in the formula, so halving it quadruples the sample size: precision is bought with the square root of n.&nbsp;Estimating mean sedentary time to within 0.5 hours/day needs about 1,827 people. <code>sed</code>’s SD, about 10.9 hours/day, is large next to a margin of half an hour, and the SD enters the formula squared.</p>
 <p><strong>Writing exercise (sample answer)</strong></p>
-<p>Mean total cholesterol was 4.97 mmol/L (95% CI: 4.96 to 4.98 mmol/L). In the streptomycin trial, the proportion of patients improved was about 36 percentage points higher in the streptomycin arm than in the control arm (95% CI: 17 to 56 percentage points, p = 0.0004). The CI excludes zero, consistent with a real difference in improvement between the two arms, rather than one attributable to chance alone.</p>
+<p>Mean total cholesterol was 4.97 mmol/L (95% CI: 4.96 to 4.98 mmol/L). In the streptomycin trial, the proportion of patients improved was about 36 percentage points higher in the streptomycin arm than in the control arm (95% CI: 17 to 56 percentage points). The CI sits entirely above zero, so the data are compatible only with more improvement in the streptomycin arm than in the control arm.</p>
 </div>
 </div>
 </div>

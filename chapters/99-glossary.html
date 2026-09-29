@@ -522,7 +522,7 @@ ul.task-list li input[type="checkbox"] {
 <tbody>
 <tr class="odd">
 <td><code>t.test()</code></td>
-<td>A t-test: a confidence interval and p-value for a mean, or for the difference between two means. <code>paired = TRUE</code> runs a paired test; <code>var.equal = TRUE</code> assumes the two groups share one variance, the same assumption <code>lm()</code> makes of a binary predictor.</td>
+<td>A t-test: a confidence interval and p-value for a mean, or for the difference between two means. <code>paired = TRUE</code> runs a paired test; <code>var.equal = TRUE</code> assumes the two groups share one variance, the same assumption <code>lm()</code> makes of a binary explanatory variable.</td>
 <td>Chapter 4</td>
 </tr>
 <tr class="even">
@@ -533,16 +533,16 @@ ul.task-list li input[type="checkbox"] {
 <tr class="odd">
 <td><code>power.t.test()</code></td>
 <td>Calculates the sample size needed to detect a given difference in means, or the power a given sample size has.</td>
-<td>Chapter 4</td>
+<td>Chapter 5</td>
 </tr>
 <tr class="even">
 <td><code>power.prop.test()</code></td>
 <td>The same calculation as <code>power.t.test()</code>, for a difference in proportions.</td>
-<td>Chapter 4</td>
+<td>Chapter 5</td>
 </tr>
 <tr class="odd">
 <td><code>wilcox.test()</code></td>
-<td>The Wilcoxon signed-rank test, a non-parametric alternative to a one-sample or paired t-test. <code>mu</code> sets the reference value for a one-sample test; <code>paired = TRUE</code> runs the paired version.</td>
+<td>The Wilcoxon signed-rank test, a non-parametric alternative to a one-sample or paired t-test, and, given a formula with a two-group factor, the Mann-Whitney (Wilcoxon rank-sum) test, the alternative to an independent-samples t-test. <code>mu</code> sets the reference value for a one-sample test; <code>paired = TRUE</code> runs the paired version.</td>
 <td>Chapter 5</td>
 </tr>
 <tr class="even">
@@ -577,7 +577,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td><code>confint()</code></td>
-<td>Pulls a fitted model’s confidence intervals. For <code>glm()</code>, this refits the model repeatedly (‘profiling’) rather than using a shortcut formula.</td>
+<td>Pulls a fitted model’s confidence intervals. For <code>glm()</code>, this refits the model repeatedly (‘profiling’) instead of using a shortcut formula.</td>
 <td>Chapter 6</td>
 </tr>
 <tr class="odd">
@@ -587,7 +587,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td><code>glm()</code></td>
-<td>Fits a generalised linear model. <code>family = binomial</code> fits a logistic regression, for a 0/1 outcome.</td>
+<td>Fits a generalised linear model. <code>family = binomial</code> fits a logistic regression, for a 0/1 response.</td>
 <td>Chapter 7</td>
 </tr>
 </tbody>
@@ -670,7 +670,7 @@ ul.task-list li input[type="checkbox"] {
 <tr class="even">
 <td><code>glimpse()</code></td>
 <td>Prints every column of a data frame, its type, and a preview of its values, one row per column.</td>
-<td>Chapter 3</td>
+<td>Chapter 2</td>
 </tr>
 <tr class="odd">
 <td><code>filter()</code></td>
@@ -719,7 +719,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td><code>pull()</code></td>
-<td>Extracts one column as a plain vector, rather than a one-column data frame.</td>
+<td>Extracts one column as a plain vector, not a one-column data frame.</td>
 <td>Chapter 4</td>
 </tr>
 <tr class="odd">
@@ -1019,13 +1019,18 @@ ul.task-list li input[type="checkbox"] {
 <td>Chapter 1</td>
 </tr>
 <tr class="odd">
+<td><code>/</code> <code>^</code></td>
+<td>Divide, and raise to a power: <code>x^2</code> is <code>x</code> squared.</td>
+<td>Chapter 1</td>
+</tr>
+<tr class="even">
 <td><code>+</code></td>
 <td>Inside <code>ggplot2</code>, joins plot layers together, not arithmetic addition.</td>
 <td>Chapter 2</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>~</code></td>
-<td>A formula: separates an outcome (left) from a predictor (right), as in <code>t.test(chol ~ gender)</code>.</td>
+<td>A formula: separates a response (left) from an explanatory variable (right), as in <code>t.test(chol ~ gender)</code>.</td>
 <td>Chapter 4</td>
 </tr>
 </tbody>
@@ -1149,28 +1154,28 @@ ul.task-list li input[type="checkbox"] {
 <td>Chapter 4</td>
 </tr>
 <tr class="odd">
+<td>Variance</td>
+<td>The SD squared. ‘Equal variance’ between two groups means the same spread in each.</td>
+<td>Chapter 4</td>
+</tr>
+<tr class="even">
 <td>Central limit theorem (CLT)</td>
 <td>The rule stating that if our sample size is large enough, the sampling distribution of the mean will be approximately normal, regardless of the underlying population’s shape.</td>
 <td>Chapter 4</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Confidence interval (CI)</td>
 <td>A range of values, built around a point estimate and based on the standard error, that quantifies our uncertainty about the true population parameter. Also known as an ‘interval estimate’.</td>
 <td>Chapter 4</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>95% CI</td>
 <td>If we repeated our sampling process indefinitely, 95% of the calculated CIs would contain the true population value. It is incorrect to say ‘there is a 95% chance our specific CI holds the true value’.</td>
 <td>Chapter 4</td>
 </tr>
-<tr class="even">
-<td>Power, sample size calculation</td>
-<td>The chance a study detects a real effect of a given size, and the calculation that sizes a study to hit a target power.</td>
-<td>Chapter 4</td>
-</tr>
 <tr class="odd">
-<td>Type I error rate</td>
-<td>The chance we’re willing to accept of concluding there’s an effect when there really isn’t one. <code>sig.level</code> sets it, conventionally at 0.05.</td>
+<td>Margin of error</td>
+<td>The ± part of a CI, half its width. Fixing the margin we want, and the expected SD or proportion, gives the sample size needed to reach it.</td>
 <td>Chapter 4</td>
 </tr>
 </tbody>
@@ -1233,6 +1238,26 @@ ul.task-list li input[type="checkbox"] {
 <td>Chapter 5</td>
 </tr>
 <tr class="odd">
+<td>Significance level, statistically significant</td>
+<td>The cut-off a p-value is compared with, conventionally 0.05. A result with a p-value below it is called statistically significant.</td>
+<td>Chapter 5</td>
+</tr>
+<tr class="even">
+<td>Type I error, Type II error</td>
+<td>A Type I error rejects a null hypothesis that is true (a false positive); its rate is the significance level. A Type II error fails to reject a null hypothesis that is false (a false negative).</td>
+<td>Chapter 5</td>
+</tr>
+<tr class="odd">
+<td>Power, sample size calculation</td>
+<td>One minus the Type II error rate: the chance a study detects a real effect of a given size. A sample size calculation sizes a study to reach a target power.</td>
+<td>Chapter 5</td>
+</tr>
+<tr class="even">
+<td>Multiple testing</td>
+<td>Running many tests in one study: at 0.05 each, about one in twenty true null hypotheses comes out significant by chance alone.</td>
+<td>Chapter 5</td>
+</tr>
+<tr class="odd">
 <td>Null value</td>
 <td>The mathematical value representing the null hypothesis. For differences (e.g.&nbsp;risk difference), the null is 0. For ratios (e.g.&nbsp;RR, OR), the null is 1.</td>
 <td>Chapter 5</td>
@@ -1268,12 +1293,12 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="odd">
 <td>Spearman’s rho</td>
-<td>A non-parametric measure of the degree of a monotonic relationship, where the variables move in the same direction but not necessarily at a constant rate. It is rank-based and more robust to outliers.</td>
+<td>A non-parametric measure of the degree of a monotonic relationship, where the variables move in the same direction but not necessarily at a constant rate. It is rank-based and less affected by outliers.</td>
 <td>Chapter 6</td>
 </tr>
 <tr class="even">
-<td>Outcome, predictor</td>
-<td>What a regression model explains (the outcome, also called the dependent variable), and what it explains it with (a predictor, also called an independent variable).</td>
+<td>Response, explanatory variable</td>
+<td>What a regression model explains (the response, also called the dependent variable), and what it explains it with (an explanatory variable, also called an independent variable or a predictor). In epidemiological terms, the outcome is the response and the exposure is an explanatory variable.</td>
 <td>Chapter 6</td>
 </tr>
 <tr class="odd">
@@ -1283,7 +1308,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td>Slope</td>
-<td>How much the outcome changes per unit of a predictor.</td>
+<td>How much the response changes per unit of an explanatory variable.</td>
 <td>Chapter 6</td>
 </tr>
 <tr class="odd">
@@ -1294,6 +1319,16 @@ ul.task-list li input[type="checkbox"] {
 <tr class="even">
 <td>Residual</td>
 <td>The vertical distance between an observed value and the model’s fitted line.</td>
+<td>Chapter 6</td>
+</tr>
+<tr class="odd">
+<td>Residual standard error</td>
+<td>The typical size of a residual, in the response’s units: how far the points sit from the line, not how precise the line is.</td>
+<td>Chapter 6</td>
+</tr>
+<tr class="even">
+<td>F-statistic</td>
+<td>A test of a regression model as a whole. With one explanatory variable it answers the same question as the slope’s own test.</td>
 <td>Chapter 6</td>
 </tr>
 <tr class="odd">
@@ -1308,7 +1343,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="odd">
 <td>Multivariable</td>
-<td>Several predictors, one outcome. Some writers say ‘multiple regression’ for the same thing. ‘Multivariate regression’ is a different, formal term for several outcomes modelled together, not used in this course.</td>
+<td>Several explanatory variables, one response. Some writers say ‘multiple regression’ for the same thing. ‘Multivariate regression’ is a different, formal term for several responses modelled together, not used in this course.</td>
 <td>Summary</td>
 </tr>
 <tr class="even">
@@ -1342,7 +1377,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td>Mediator</td>
-<td>A variable that sits on the causal path between an exposure and an outcome. Adjusting for one, unlike a confounder, removes part of the real effect rather than a distortion, which is why the same variable can’t be treated both ways.</td>
+<td>A variable that sits on the causal path between an exposure and an outcome. Adjusting for one, unlike a confounder, removes part of the effect itself, not a distortion, which is why the same variable can’t be treated both ways.</td>
 <td>Chapter 7</td>
 </tr>
 <tr class="odd">
@@ -1357,7 +1392,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="odd">
 <td>Collider bias</td>
-<td>Distortion introduced by adjusting for a variable that’s a common <em>effect</em> of the exposure and the outcome, rather than a common cause.</td>
+<td>Distortion introduced by adjusting for a variable that’s a common <em>effect</em> of the exposure and the outcome, not a common cause.</td>
 <td>Chapter 7</td>
 </tr>
 <tr class="even">

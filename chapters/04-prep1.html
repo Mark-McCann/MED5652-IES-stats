@@ -283,7 +283,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>We need somewhere to save R, RStudio, and our clinic record on the computer, so an installation and a project folder come first. After that, the chapter is mostly about learning R’s vocabulary: objects hold values, values have types, functions act on them, and an error message tells us which of the three we got wrong. Running underneath all of it is one habit that matters more than any of the vocabulary. A saved script can be run again; a line typed into the console is lost and cannot be run again. Reproducibility, replicability, and transparency are key scientific principles, and saving scripts is how we keep our public health science true to them. Everything we learn goes into a small clinic visit log, built one column at a time until it’s a dataset we can ask questions of. Nothing in this chapter is statistics yet; all of it is learning the language we will use to run statistics.</p>
 <section id="chapter-intended-learning-outcomes" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="chapter-intended-learning-outcomes"><span class="header-section-number">1.1</span> Chapter intended learning outcomes</h2>
-<p>By the end of this chapter you will be able to:</p>
+<p>By the end of this week you will be able to:</p>
 <ol type="1">
 <li>Install R and RStudio on your own device, and verify the installation by running code and loading a package</li>
 <li>Use an RStudio Project and a saved script, and justify scripting instead of working in the console</li>
@@ -329,7 +329,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="creating-an-rstudio-project" class="level3" data-number="1.4.3">
 <h3 data-number="1.4.3" class="anchored" data-anchor-id="creating-an-rstudio-project"><span class="header-section-number">1.4.3</span> Creating an RStudio Project</h3>
-<p>An RStudio Project turns your folder into something RStudio understands directly. RStudio will consider all folders and files relative to the specific project folder, rather than all the folders on the computer. This allows you to reach files using relative paths rather than having to type a full path every time (we will cover this later) and is also helpful when working across multiple projects, and when working as part of a team of analysts on a project.</p>
+<p>An RStudio Project turns your folder into something RStudio understands directly. RStudio will consider all folders and files relative to the specific project folder, not all the folders on the computer. This allows you to reach files using relative paths rather than having to type a full path every time (we will cover this later) and is also helpful when working across multiple projects, and when working as part of a team of analysts on a project.</p>
 <ol type="1">
 <li>In RStudio’s menu, go to <strong>File → New Project…</strong></li>
 <li>Choose <strong>Existing Directory</strong>, since the folder already exists.</li>
@@ -416,7 +416,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="vectors-and-a-first-look-at-data-frames" class="level2" data-number="1.7">
 <h2 data-number="1.7" class="anchored" data-anchor-id="vectors-and-a-first-look-at-data-frames"><span class="header-section-number">1.7</span> Vectors and a first look at data frames</h2>
-<p>Most of what we do with data in this course means handling many values of the same variable at once, everyone’s age in a sample, say, not just one person’s. <code>c()</code> combines several values into one object like that, called a <strong>vector</strong>. The single <code>age</code> we assigned a moment ago only records one patient; the log needs all four. The code below combines all four ages and assigns the result to <code>age</code>, overwriting the single value from before, exactly the way the Objects and assignment section said an object could be overwritten:</p>
+<p>Most of what we do with data in this course means handling many values of the same variable at once, everyone’s age in a sample, say, not just one person’s. <code>c()</code> combines several values into one object like that, called a <strong>vector</strong>. The single <code>age</code> we assigned a moment ago only records one patient; the log needs all four. The code below combines all four ages and assigns the result to <code>age</code>, overwriting the single value from before, the way the Objects and assignment section said an object could be overwritten:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>age <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">34</span>, <span class="dv">61</span>, <span class="dv">45</span>, <span class="dv">29</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>age</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -518,7 +518,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>[1] 5.366667</code></pre>
 </div>
 </div>
-<p><code>chol</code> has one missing value, <code>NA</code>, for P03. <code>mean()</code>’s <code>na.rm</code> argument defaults to <code>FALSE</code>, so by default a single missing value makes the whole result <code>NA</code>, exactly as the first line shows. Setting <code>na.rm = TRUE</code> tells <code>mean()</code> to drop that one missing value first, then average the three that remain. We’ll meet <code>na.rm</code> constantly from here on, and it always means the same thing: drop the missing values before calculating, and be clear about how many were dropped. <code>chol</code> joins the log the same way <code>weight_kg</code> just did:</p>
+<p><code>chol</code> has one missing value, <code>NA</code>, for P03. <code>mean()</code>’s <code>na.rm</code> argument defaults to <code>FALSE</code>, so by default a single missing value makes the whole result <code>NA</code>, as the first line shows. Setting <code>na.rm = TRUE</code> tells <code>mean()</code> to drop that one missing value first, then average the three that remain. We’ll meet <code>na.rm</code> constantly from here on, and it always means the same thing: drop the missing values before calculating, and be clear about how many were dropped. <code>chol</code> joins the log the same way <code>weight_kg</code> just did:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>visits <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(visits, chol)</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>visits</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -614,7 +614,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>[1] "numeric"</code></pre>
 </div>
 </div>
-<p><code>'P01'</code> is text. <code>34</code> is a number, and <code>class()</code> treats them completely differently. The same logic applies to object and column names: writing <code>age</code> refers to the vector we created earlier, but writing <code>'age'</code> is just the three-letter word.</p>
+<p><code>'P01'</code> is text. <code>34</code> is a number, and <code>class()</code> treats them completely differently. The same logic applies to object and column names: writing <code>age</code> refers to the vector we created earlier, but writing <code>'age'</code> is only the three-letter word.</p>
 <p>A column name containing a space needs a different kind of quoting mark entirely: backticks, not quotation marks.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>toy <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="st">`</span><span class="at">patient id</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">check.names =</span> <span class="cn">FALSE</span>)</span>
@@ -641,7 +641,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="reading-errors" class="level2" data-number="1.15">
 <h2 data-number="1.15" class="anchored" data-anchor-id="reading-errors"><span class="header-section-number">1.15</span> Reading errors</h2>
-<p>The errors below are R telling us our <em>code</em> is wrong: a typo, a missing bracket, the wrong function name. That’s a different job from checking whether the <em>data</em> are wrong, which is Chapter 2’s problem once we’re reading in a real file rather than typing values ourselves. Even a very experienced R user encounters errors constantly. The skill is reading what the message says, not reacting to the fact that something went wrong. R usually formats errors as a short heading followed by a line starting with <code>!</code> stating what went wrong. Five kinds of failure account for nearly everything we’ll see in this course.</p>
+<p>The errors below are R telling us our <em>code</em> is wrong: a typo, a missing bracket, the wrong function name. That’s a different job from checking whether the <em>data</em> are wrong, which is Chapter 2’s problem once we’re reading in a real file instead of typing values ourselves. Even a very experienced R user encounters errors constantly. The skill is reading what the message says, not reacting to the fact that something went wrong. R usually formats errors as a short heading followed by a line starting with <code>!</code> stating what went wrong. Five kinds of failure account for nearly everything we’ll see in this course.</p>
 <p><strong>Object not found.</strong> R can’t find something by that name, usually a typo or a variable that was never created:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(agee)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -685,7 +685,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>[1] 34 61 45 29</code></pre>
 </div>
 </div>
-<p>Notice the fix is just <code>age</code> written out longhand: a missing comma between two calls that were meant to be one is exactly the mistake that would have split our own age vector in two.</p>
+<p>The fix is <code>age</code> written out longhand: a missing comma between two calls that were meant to be one is the same mistake that would have split our own age vector in two.</p>
 <p><strong>Unexpected end of input.</strong> A bracket was opened and never closed, so R keeps waiting for the rest of the expression that never arrives. In the console this shows up as a <code>+</code> prompt instead of the usual <code>&gt;</code>, waiting for us to finish the line; here, where the code has to run to completion on its own, it shows as an error instead:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(weight_kg</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -717,7 +717,7 @@ such file or directory</code></pre>
 </section>
 <section id="getting-help" class="level2" data-number="1.16">
 <h2 data-number="1.16" class="anchored" data-anchor-id="getting-help"><span class="header-section-number">1.16</span> Getting help</h2>
-<p>Every function used in this course has a help page. Typing <code>?mean</code> in the console and pressing Enter opens <code>mean()</code>’s help page in the Help pane, bottom-right, showing exactly what arguments it takes and what it returns. It’s usually faster than searching online, and it’s always correct for the version of R installed. RStudio also keeps a set of cheat sheets under <strong>Help → Cheatsheets</strong>, one per major package. Beyond that, this book itself stays the main reference for the rest of the course.</p>
+<p>Every function used in this course has a help page. Typing <code>?mean</code> in the console and pressing Enter opens <code>mean()</code>’s help page in the Help pane, bottom-right, which shows what arguments it takes and what it returns. It’s usually faster than searching online, and it’s always correct for the version of R installed. RStudio also keeps a set of cheat sheets under <strong>Help → Cheatsheets</strong>, one per major package. Beyond that, this book itself stays the main reference for the rest of the course.</p>
 </section>
 <section id="the-finished-log" class="level2" data-number="1.17">
 <h2 data-number="1.17" class="anchored" data-anchor-id="the-finished-log"><span class="header-section-number">1.17</span> The finished log</h2>
@@ -732,7 +732,7 @@ such file or directory</code></pre>
 4        P04  29    Yes        59  4.8</code></pre>
 </div>
 </div>
-<p>We can check what type each piece is, exactly the way the Data types section did partway through:</p>
+<p>We can check what type each piece is, the same way the Data types section did partway through:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(visits)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -786,17 +786,17 @@ such file or directory</code></pre>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb95"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(visits, <span class="st">'visits.csv'</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>Left out, <code>write.csv()</code> adds an extra column at the front of the file, numbering the rows 1 to 4. That’s not part of our data, just R’s own internal row labels leaking into the file, and it would show up as a stray, unlabelled column the moment the file is opened. <code>FALSE</code> tells <code>write.csv()</code> to leave it out and write only the columns we built.</p>
-<p>That line just wrote a real file, <code>visits.csv</code>, sitting on disk the moment this page rendered, independent of R and of this book. In our own project, following the <code>data</code>/<code>scripts</code>/<code>outputs</code> structure from earlier in this chapter, this is what the <code>outputs</code> subfolder is for: a file we saved out, not one we’re about to read back in. Opening it, in a spreadsheet application or a plain text editor, shows exactly what <code>visits</code> held in R: patient IDs, ages, smoking status, weight, and cholesterol, one row per patient, values separated by commas, no formatting or formulas hidden behind them. Chapter 2 explains why that matters, the moment we start reading files back in instead of writing them out.</p>
-<p>Every idea used to build this log, a vector, a data frame, <code>$</code>, a comparison, loading a package, the pipe, comes back constantly from Chapter 2 onward. Only the data changes: Chapter 2 brings in this same clinic’s real log, all eight patients, kept exactly as messily as real logs are.</p>
+<p>Left out, <code>write.csv()</code> adds an extra column at the front of the file, numbering the rows 1 to 4. That’s not part of our data, only R’s own internal row labels leaking into the file, and it would show up as a stray, unlabelled column the moment the file is opened. <code>FALSE</code> tells <code>write.csv()</code> to leave it out and write only the columns we built.</p>
+<p>That line just wrote a real file, <code>visits.csv</code>, sitting on disk the moment this page rendered, independent of R and of this book. In our own project, following the <code>data</code>/<code>scripts</code>/<code>outputs</code> structure from earlier in this chapter, this is what the <code>outputs</code> subfolder is for: a file we saved out, not one we’re about to read back in. Opening it, in a spreadsheet application or a plain text editor, shows what <code>visits</code> held in R: patient IDs, ages, smoking status, weight, and cholesterol, one row per patient, values separated by commas, no formatting or formulas hidden behind them. Chapter 2 explains why that matters, the moment we start reading files back in instead of writing them out.</p>
+<p>Every idea used to build this log, a vector, a data frame, <code>$</code>, a comparison, loading a package, the pipe, comes back constantly from Chapter 2 onward. Only the data changes: Chapter 2 brings in this same clinic’s real log, all eight patients, kept as messy as real logs are.</p>
 </section>
 </section>
 <section id="exercises" class="level2" data-number="1.18">
 <h2 data-number="1.18" class="anchored" data-anchor-id="exercises"><span class="header-section-number">1.18</span> Exercises</h2>
 <p><strong>Exercise 1</strong> (ILO 3). Create a vector called <code>height_cm</code> holding the values of 177, 155, 168, 181, using <code>c()</code> and <code>&lt;-</code>. Check its class with <code>class()</code>, and confirm <code>height_cm</code> appears in the Environment pane after you run your code.</p>
-<p><strong>Exercise 2</strong> (ILOs 4, 5). Using <code>visits$chol</code>, round the values to the nearest whole number, naming the <code>digits</code> argument explicitly rather than relying on position. Then build a logical condition that identifies which patients have a cholesterol reading above 5 and are smokers, combining a comparison operator with <code>&amp;</code>.</p>
+<p><strong>Exercise 2</strong> (ILOs 4, 5). Using <code>visits$chol</code>, round the values to the nearest whole number, naming the <code>digits</code> argument explicitly instead of relying on position. Then build a logical condition that identifies which patients have a cholesterol reading above 5 and are smokers, combining a comparison operator with <code>&amp;</code>.</p>
 <p>Then open <code>round()</code>’s help page by typing <code>?round</code> in the console. Find the <strong>Usage</strong> section at the top, and write down what value <code>digits</code> takes when you don’t supply one. Check your answer by running <code>round()</code> on the same values with the <code>digits</code> argument left out entirely.</p>
-<p><strong>Exercise 3</strong> (ILOs 4, 5). Update the data frame <code>visits</code> to include the new <code>height_cm</code> variable. Calculate the BMI (weight in kg divided by height in metres, squared) of all the patients by using the <code>$</code> sign.</p>
+<p><strong>Exercise 3</strong> (ILOs 4, 5). Update the data frame <code>visits</code> to include the new <code>height_cm</code> variable. Calculate the BMI (weight in kg divided by height in metres, squared) of all the patients by using the <code>$</code> sign. In R, <code>/</code> divides and <code>^</code> raises to a power, so <code>x^2</code> is <code>x</code> squared.</p>
 <p><strong>Exercise 4</strong> (ILO 5). Write a piped sequence, using <code>|&gt;</code>, that takes <code>visits$age</code>, finds its mean, and rounds the result to zero decimal places. Then use <code>select()</code> to keep just <code>patient_id</code> and <code>smoker</code> from <code>visits</code>, and write one sentence stating how the result differs from <code>visits$smoker</code>.</p>
 </section>
 <section id="self-check" class="level2" data-number="1.19">
@@ -908,7 +908,7 @@ such file or directory</code></pre>
 4        P04    Yes</code></pre>
 </div>
 </div>
-<p><code>select(visits, patient_id, smoker)</code> returns a data frame with two columns and four rows. <code>visits$smoker</code> returns just the smoker column, on its own, as a bare vector with no <code>patient_id</code> alongside it and no data frame structure around it.</p>
+<p><code>select(visits, patient_id, smoker)</code> returns a data frame with two columns and four rows. <code>visits$smoker</code> returns only the smoker column, on its own, as a bare vector with no <code>patient_id</code> alongside it and no data frame structure around it.</p>
 <p><strong>Self-check answers</strong></p>
 <ol type="1">
 <li><strong>b.</strong> <code>&lt;-</code> creates or updates an object. <code>=</code> inside a function call only names which argument a value belongs to; it never creates an object there.</li>
