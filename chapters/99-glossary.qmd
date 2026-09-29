@@ -64,20 +64,20 @@ This appendix is a reference: packages, functions, R syntax, and statistical ter
 
 | Function | What it does | First appearance |
 |---|---|---|
-| `t.test()` | A t-test: a confidence interval and p-value for a mean, or for the difference between two means. `paired = TRUE` runs a paired test; `var.equal = TRUE` assumes the two groups share one variance, the same assumption `lm()` makes of a binary predictor. | Chapter 4 |
+| `t.test()` | A t-test: a confidence interval and p-value for a mean, or for the difference between two means. `paired = TRUE` runs a paired test; `var.equal = TRUE` assumes the two groups share one variance, the same assumption `lm()` makes of a binary explanatory variable. | Chapter 4 |
 | `prop.test()` | A confidence interval and p-value for a proportion, or for the difference between two proportions. Uses a continuity correction by default; `correct = FALSE` switches it off. | Chapter 4 |
-| `power.t.test()` | Calculates the sample size needed to detect a given difference in means, or the power a given sample size has. | Chapter 4 |
-| `power.prop.test()` | The same calculation as `power.t.test()`, for a difference in proportions. | Chapter 4 |
-| `wilcox.test()` | The Wilcoxon signed-rank test, a non-parametric alternative to a one-sample or paired t-test. `mu` sets the reference value for a one-sample test; `paired = TRUE` runs the paired version. | Chapter 5 |
+| `power.t.test()` | Calculates the sample size needed to detect a given difference in means, or the power a given sample size has. | Chapter 5 |
+| `power.prop.test()` | The same calculation as `power.t.test()`, for a difference in proportions. | Chapter 5 |
+| `wilcox.test()` | The Wilcoxon signed-rank test, a non-parametric alternative to a one-sample or paired t-test, and, given a formula with a two-group factor, the Mann-Whitney (Wilcoxon rank-sum) test, the alternative to an independent-samples t-test. `mu` sets the reference value for a one-sample test; `paired = TRUE` runs the paired version. | Chapter 5 |
 | `chisq.test()` | The chi-squared test of association between two categorical variables. `correct = FALSE` switches off its default continuity correction. | Chapter 5 |
 | `fisher.test()` | Fisher's exact test. | Chapter 5 |
 | `cor()` | Calculates a correlation coefficient. | Chapter 6 |
 | `cor.test()` | A correlation coefficient with a confidence interval and p-value attached. | Chapter 6 |
 | `lm()` | Fits a linear regression model. | Chapter 6 |
 | `coef()` | Pulls a fitted model's coefficients. | Chapter 6 |
-| `confint()` | Pulls a fitted model's confidence intervals. For `glm()`, this refits the model repeatedly ('profiling') rather than using a shortcut formula. | Chapter 6 |
+| `confint()` | Pulls a fitted model's confidence intervals. For `glm()`, this refits the model repeatedly ('profiling') instead of using a shortcut formula. | Chapter 6 |
 | `predict()` | Uses a fitted model to generate a predicted value for a new set of inputs, supplied as a data frame. | Chapter 6 |
-| `glm()` | Fits a generalised linear model. `family = binomial` fits a logistic regression, for a 0/1 outcome. | Chapter 7 |
+| `glm()` | Fits a generalised linear model. `family = binomial` fits a logistic regression, for a 0/1 response. | Chapter 7 |
 
 ### `readr`
 
@@ -97,7 +97,7 @@ This appendix is a reference: packages, functions, R syntax, and statistical ter
 | Function | What it does | First appearance |
 |---|---|---|
 | `select()` | Keeps only the named columns. Another package, `MASS`, defines a different function with the same name; this book never loads `MASS`, so `select()` always means `dplyr`'s version. | Chapter 1 |
-| `glimpse()` | Prints every column of a data frame, its type, and a preview of its values, one row per column. | Chapter 3 |
+| `glimpse()` | Prints every column of a data frame, its type, and a preview of its values, one row per column. | Chapter 2 |
 | `filter()` | Keeps only the rows that match a condition. | Chapter 3 |
 | `mutate()` | Adds a new column, or changes an existing one. | Chapter 3 |
 | `arrange()` | Sorts rows by one or more columns. `desc()` reverses the order. | Chapter 3 |
@@ -107,7 +107,7 @@ This appendix is a reference: packages, functions, R syntax, and statistical ter
 | `summarise()` | Collapses each group (or the whole data frame, if ungrouped) into a row of summary statistics. | Chapter 3 |
 | `n()` | Counts rows, used inside `summarise()`. | Chapter 3 |
 | `slice_sample()` | Keeps a random subset of rows. `prop =` states the fraction to keep. | Chapter 4 |
-| `pull()` | Extracts one column as a plain vector, rather than a one-column data frame. | Chapter 4 |
+| `pull()` | Extracts one column as a plain vector, not a one-column data frame. | Chapter 4 |
 | `case_when()` | Builds a new column from a list of conditions, checked in order. | Chapter 7 |
 
 ### `ggplot2`
@@ -173,8 +173,9 @@ This appendix is a reference: packages, functions, R syntax, and statistical ter
 | `&` | Combines two conditions, both must be true. `TRUE & TRUE` is `TRUE`; `TRUE & FALSE` is `FALSE`. | Chapter 1 |
 | `|` | Combines two conditions, either must be true. `TRUE | TRUE` is `TRUE`; `TRUE | FALSE` is `TRUE`. | Chapter 1 |
 | `::` | Calls a function from a named package directly, without loading the whole package with `library()` first, as in `dplyr::select()`. | Chapter 1 |
+| `/` `^` | Divide, and raise to a power: `x^2` is `x` squared. | Chapter 1 |
 | `+` | Inside `ggplot2`, joins plot layers together, not arithmetic addition. | Chapter 2 |
-| `~` | A formula: separates an outcome (left) from a predictor (right), as in `t.test(chol ~ gender)`. | Chapter 4 |
+| `~` | A formula: separates a response (left) from an explanatory variable (right), as in `t.test(chol ~ gender)`. | Chapter 4 |
 
 ## Statistical terms
 
@@ -203,11 +204,11 @@ This appendix is a reference: packages, functions, R syntax, and statistical ter
 | Point estimate | A single number calculated from a sample (e.g. a sample mean or proportion), used as our best guess for the unknown population value. | Chapter 4 |
 | Sampling distribution | The theoretical distribution of point estimates we would get if we took infinite independent samples of the exact same size from the population. | Chapter 4 |
 | Standard error (SE) | The standard deviation of the sampling distribution. It measures the precision of our point estimate, smaller SE means more precise, and does not describe the variability of individuals in the population, which is what the standard deviation is for. | Chapter 4 |
+| Variance | The SD squared. 'Equal variance' between two groups means the same spread in each. | Chapter 4 |
 | Central limit theorem (CLT) | The rule stating that if our sample size is large enough, the sampling distribution of the mean will be approximately normal, regardless of the underlying population's shape. | Chapter 4 |
 | Confidence interval (CI) | A range of values, built around a point estimate and based on the standard error, that quantifies our uncertainty about the true population parameter. Also known as an 'interval estimate'. | Chapter 4 |
 | 95% CI | If we repeated our sampling process indefinitely, 95% of the calculated CIs would contain the true population value. It is incorrect to say 'there is a 95% chance our specific CI holds the true value'. | Chapter 4 |
-| Power, sample size calculation | The chance a study detects a real effect of a given size, and the calculation that sizes a study to hit a target power. | Chapter 4 |
-| Type I error rate | The chance we're willing to accept of concluding there's an effect when there really isn't one. `sig.level` sets it, conventionally at 0.05. | Chapter 4 |
+| Margin of error | The ± part of a CI, half its width. Fixing the margin we want, and the expected SD or proportion, gives the sample size needed to reach it. | Chapter 4 |
 
 ### Hypothesis tests and measures of association
 
@@ -221,6 +222,10 @@ This appendix is a reference: packages, functions, R syntax, and statistical ter
 | 2x2 (contingency) table | A table summarising the relationship between two binary variables. In epidemiology, exposure is typically on the rows and the disease/outcome is on the columns. | Chapter 5 |
 | Risk, risk ratio | Risk is the probability of an event occurring: the number of cases divided by the total group. The risk ratio (or relative risk) divides the risk in the exposed group by the risk in the unexposed group. | Chapter 5 |
 | Odds, odds ratio | Odds compare the probability of an event happening to it not happening: the probability divided by 1 minus the probability. The odds ratio divides the odds of the outcome in the exposed group by the odds in the unexposed group. | Chapter 5 |
+| Significance level, statistically significant | The cut-off a p-value is compared with, conventionally 0.05. A result with a p-value below it is called statistically significant. | Chapter 5 |
+| Type I error, Type II error | A Type I error rejects a null hypothesis that is true (a false positive); its rate is the significance level. A Type II error fails to reject a null hypothesis that is false (a false negative). | Chapter 5 |
+| Power, sample size calculation | One minus the Type II error rate: the chance a study detects a real effect of a given size. A sample size calculation sizes a study to reach a target power. | Chapter 5 |
+| Multiple testing | Running many tests in one study: at 0.05 each, about one in twenty true null hypotheses comes out significant by chance alone. | Chapter 5 |
 | Null value | The mathematical value representing the null hypothesis. For differences (e.g. risk difference), the null is 0. For ratios (e.g. RR, OR), the null is 1. | Chapter 5 |
 
 ### Regression
@@ -229,15 +234,17 @@ This appendix is a reference: packages, functions, R syntax, and statistical ter
 |---|---|---|
 | Correlation | A statistic ranging from -1 to +1 that measures the strength and direction of association between two continuous variables. | Chapter 6 |
 | Pearson's r | A parametric measure of the degree of a strictly linear relationship between two continuous variables. It is highly sensitive to outliers. | Chapter 6 |
-| Spearman's rho | A non-parametric measure of the degree of a monotonic relationship, where the variables move in the same direction but not necessarily at a constant rate. It is rank-based and more robust to outliers. | Chapter 6 |
-| Outcome, predictor | What a regression model explains (the outcome, also called the dependent variable), and what it explains it with (a predictor, also called an independent variable). | Chapter 6 |
+| Spearman's rho | A non-parametric measure of the degree of a monotonic relationship, where the variables move in the same direction but not necessarily at a constant rate. It is rank-based and less affected by outliers. | Chapter 6 |
+| Response, explanatory variable | What a regression model explains (the response, also called the dependent variable), and what it explains it with (an explanatory variable, also called an independent variable or a predictor). In epidemiological terms, the outcome is the response and the exposure is an explanatory variable. | Chapter 6 |
 | Intercept | The fitted line's value at zero. | Chapter 6 |
-| Slope | How much the outcome changes per unit of a predictor. | Chapter 6 |
+| Slope | How much the response changes per unit of an explanatory variable. | Chapter 6 |
 | Coefficient | The general name for intercept and slope. | Chapter 6 |
 | Residual | The vertical distance between an observed value and the model's fitted line. | Chapter 6 |
+| Residual standard error | The typical size of a residual, in the response's units: how far the points sit from the line, not how precise the line is. | Chapter 6 |
+| F-statistic | A test of a regression model as a whole. With one explanatory variable it answers the same question as the slope's own test. | Chapter 6 |
 | Linearity, constant variance, normally distributed residuals | The three assumptions a fitted line's trustworthiness rests on, checked with diagnostic plots. | Chapter 6 |
 | Extrapolation | Using a model to predict outside the range of data it was fitted on. | Chapter 6 |
-| Multivariable | Several predictors, one outcome. Some writers say 'multiple regression' for the same thing. 'Multivariate regression' is a different, formal term for several outcomes modelled together, not used in this course. | Summary |
+| Multivariable | Several explanatory variables, one response. Some writers say 'multiple regression' for the same thing. 'Multivariate regression' is a different, formal term for several responses modelled together, not used in this course. | Summary |
 | Crude, adjusted | An association estimated on its own (crude), against one estimated alongside other variables that might confound it (adjusted). | Chapter 7 |
 
 ### Study design and causal language
@@ -245,10 +252,10 @@ This appendix is a reference: packages, functions, R syntax, and statistical ter
 | Term | What it means | First appearance |
 |---|---|---|
 | Confounder | A variable that's a common cause of both the exposure and the outcome, distorting the crude association between them unless properly adjusted for. | Chapter 7 |
-| Mediator | A variable that sits on the causal path between an exposure and an outcome. Adjusting for one, unlike a confounder, removes part of the real effect rather than a distortion, which is why the same variable can't be treated both ways. | Chapter 7 |
+| Mediator | A variable that sits on the causal path between an exposure and an outcome. Adjusting for one, unlike a confounder, removes part of the effect itself, not a distortion, which is why the same variable can't be treated both ways. | Chapter 7 |
 | Adjustment set | The variables chosen, before fitting a model, to adjust an association for. | Chapter 7 |
 | Sensitivity analysis | Fitting a model more than one way, on purpose, to see how much a result depends on an assumption that can't be settled from the data. | Chapter 7 |
-| Collider bias | Distortion introduced by adjusting for a variable that's a common *effect* of the exposure and the outcome, rather than a common cause. | Chapter 7 |
+| Collider bias | Distortion introduced by adjusting for a variable that's a common *effect* of the exposure and the outcome, not a common cause. | Chapter 7 |
 | Table 2 fallacy | Reading every coefficient in an adjusted regression table as if it had the same interpretation as the one the model was built to estimate. | Chapter 7 |
 
 ## Where to look things up

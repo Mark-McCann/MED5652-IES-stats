@@ -1,19 +1,17 @@
 # Correlation and simple linear regression (Week 10) {#sec-10-regression}
 
-Chapter 5 compared two groups directly against each other, with cholesterol sorted into one of two buckets. Age and hours of sedentary time don't come in buckets: they're continuous, and the question about them isn't whether a group differs but whether the outcome moves as they move. Establishing that a straight line is a fair way to describe that movement, and not just a shape imposed on the data, is what this chapter builds toward.
+Chapter 5 compared two groups directly against each other, with cholesterol sorted into one of two buckets. Age and hours of sedentary time don't come in buckets: they're continuous, and the question about them isn't whether a group differs but whether cholesterol moves as they move. Establishing that a straight line is a fair way to describe that movement, and not just a shape imposed on the data, is what this chapter builds toward.
 
-We describe the relationship before modelling it, with a scatterplot and Pearson's correlation coefficient, plus Spearman's rank correlation for the case where one variable is ordered categories rather than a measurement. The model itself is a simple linear regression, Y = α + βX + ε: an outcome Y as an intercept α plus a slope β times a predictor X, with ε standing for the error the line doesn't capture, giving us an intercept, a slope with a confidence interval, and an R² saying how much of the outcome's variation was accounted for. Fitting that same model with a two-category predictor instead of a continuous one shows that Chapter 5's independent-samples t-test was this model all along, seen from a different angle. Residual and QQ plots check whether the assumptions behind the line hold up, and once we trust it, the model can predict: ask it about an input like the ones it was built on and the prediction means something, ask it about one far outside that range and it will still answer, just not reliably.
+We describe the relationship before modelling it, with a scatterplot and Pearson's correlation coefficient, plus Spearman's rank correlation for when one variable is ordered categories, not a measurement, or the relationship is curved but keeps going the same way. The model itself is a simple linear regression, Y = α + βX + ε: a response Y as an intercept α plus a slope β times an explanatory variable X, with ε standing for the error the line doesn't capture, giving us an intercept, a slope with a confidence interval, or CI, and an R² saying how much of the response's variation was accounted for. Residual and QQ plots then check whether the assumptions behind the line hold up. Fitting that same model with a two-category explanatory variable instead of a continuous one shows that Chapter 5's independent-samples t-test was this model all along, seen from a different angle. And once we trust a model, it can predict: ask it about an input like the ones it was built on and the prediction means something, ask it about one far outside that range and it will still answer, just not reliably.
 
 ## Chapter intended learning outcomes
 
-By the end of this chapter you will be able to:
+By the end of this week you will be able to:
 
-1. Produce and interpret a scatterplot with a fitted regression line using `ggplot2`
-2. Fit a simple linear regression with `lm()`, using a continuous, binary, or multi-category predictor
-3. Explain why an independent-samples t-test and a simple linear regression on a binary predictor give equivalent results
-4. Generate and interpret standard diagnostic plots
-5. Generate predictions and identify when a prediction constitutes extrapolation
-6. Extract coefficients and confidence intervals, and report a simple regression result in an appropriate academic style
+1. Select an appropriate correlation measure and interpret the findings, using `cor.test()`
+2. Apply the simple linear regression model, and assess its assumptions using residual diagnostics, with `lm()`, `broom::augment()`, and `ggplot2`
+3. Interpret the intercept and slope with confidence intervals and p-values, using `broom::tidy()`
+4. Use a fitted model for prediction, and explain the danger of extrapolation, using `predict()`
 
 ## Setup
 
@@ -71,7 +69,7 @@ This is the same recode we introduced in Chapter 3 and repeated in Chapters 4 an
 
 ## Correlation: Pearson's r and Spearman's rho
 
-A correlation coefficient examines whether and to what extent two variables move together proportionally. The two variables are symmetric in a correlation: neither is assumed to be an 'outcome'.
+A correlation coefficient examines whether and to what extent two variables move together proportionally. The two variables are symmetric in a correlation: neither is treated as the one being explained.
 
 `cor()`, from base R, calculates a correlation coefficient between two continuous variables. Its default method is Pearson's r, which measures the strength of a linear, or straight-line, association. We'll use the pairing this chapter's first model uses, `age` and `chol`:
 
@@ -93,7 +91,7 @@ cor.test(nhanes$age, nhanes$chol)
 
 Pearson's r here is about 0.094 (95% CI 0.084 to 0.104, p < 0.001): a weak but non-zero positive correlation between age and cholesterol.
 
-Pearson's r assumes both variables sit on a scale where equal units of increase or decrease mean the same thing throughout, i.e. an interval or ratio scale. `phq.c` doesn't fit with this assumption as 'Possible depression' isn't a fixed distance from 'Mild symptoms' the way one extra year of age is from another, it's an ordered category, not a measurement. Spearman's rank correlation is the alternative, correlating ranks rather than raw values, so it only needs observations put in order, not a distance measured between them. `phq.c` is already an ordered factor, so `as.numeric()` from base R turns it into the numbers 1, 2, and 3 in the order the factor was built, the ranking Spearman's correlation needs.
+Pearson's r assumes both variables sit on a scale where equal steps mean the same thing throughout: one extra year of age is the same step at 30 as at 60. `phq.c` doesn't fit that assumption. 'Possible depression' isn't a fixed distance from 'Mild symptoms' the way one extra year of age is from another; it's an ordered category, not a measurement. Spearman's rank correlation is the alternative, correlating ranks instead of raw values, so it only needs observations put in order, not a distance measured between them. Working on ranks also means it measures a **monotonic** relationship, one that keeps going the same way, up or down, without having to follow a straight line, which is why it's also the choice for a relationship that's curved but never changes direction. `phq.c` is already an ordered factor, so `as.numeric()` from base R turns it into the numbers 1, 2, and 3 in the order the factor was built, the ranking Spearman's correlation needs.
 
 **Null hypothesis.** In the population, the true rank correlation between age and depression symptom category is zero.
 
@@ -109,7 +107,7 @@ Spearman's rho here is about 0.005, p = 0.37: close enough to zero, and far from
 
 ## A scatterplot with a fitted line: cholesterol by age
 
-Chapter 3 plotted total cholesterol (`chol`, in mmol/L) against age (in years) as a plain scatterplot, with no line through it. `geom_smooth()`, from `ggplot2`, adds one. With `method = 'lm'`, it fits exactly the simple linear regression this chapter is about, and draws the result:
+Chapter 3 plotted total cholesterol (`chol`, in mmol/L) against age (in years) as a plain scatterplot, with no line through it. `geom_smooth()`, from `ggplot2`, adds one. With `method = 'lm'`, it fits the simple linear regression this chapter is about, and draws the result:
 
 ```{r}
 #| label: scatter-age
@@ -119,9 +117,9 @@ ggplot(nhanes |> filter(!is.na(age), !is.na(chol)), aes(x = age, y = chol)) +
   labs(x = 'Age (years)', y = 'Total cholesterol (mmol/L)')
 ```
 
-Above the plot, `ggplot2` printed `` `geom_smooth()` using formula = 'y ~ x' ``. That's a message, not a warning: it's just reporting which formula it fitted, since `geom_smooth()` picks one for us if we don't say. Here it chose a straight line in `x`, exactly the simple linear regression we asked for with `method = 'lm'`.
+Above the plot, `ggplot2` printed `` `geom_smooth()` using formula = 'y ~ x' ``. That's a message, not a warning: it's reporting which formula it fitted, since `geom_smooth()` picks one for us if we don't say. Here it chose a straight line in `x`, the simple linear regression we asked for with `method = 'lm'`.
 
-The shaded band around the line is a 95% CI for the line itself, the same idea as every other CI in this course, just drawn as a band rather than printed as two numbers. The line slopes gently upward: cholesterol tends to be a little higher in older participants. The cloud of points around it is wide, though. Age doesn't determine cholesterol on its own, and the next section puts a number on exactly how much of the variation in cholesterol age can explain.
+The shaded band around the line is a 95% CI for the line itself, the same idea as every other CI in this course, drawn as a band instead of printed as two numbers. The line slopes gently upward: cholesterol tends to be a little higher in older participants. The cloud of points around it is wide, though. Age doesn't determine cholesterol on its own, and the next section puts a number on how much of the variation in cholesterol age can explain.
 
 ::: {.callout-note}
 ## Try it yourself: what the band shows
@@ -131,7 +129,7 @@ Re-run the plot above with `geom_smooth(method = 'lm', se = FALSE)`. Then try `g
 
 ## Fitting the model with `lm()`
 
-`lm()`, from base R, fits a linear model. Its first argument is a formula, in the same `y ~ x` form `t.test()` used in Chapter 4: the variable on the left is what we're modelling, and the variable on the right is what we're modelling it with. We drop the rows where either variable is missing first, the same habit we've used for every model and test so far.
+`lm()`, from base R, fits a linear model. Its first argument is a formula, in the same `y ~ x` form `t.test()` used in Chapter 4: the variable on the left is what we're modelling, and the variable on the right is what we're modelling it with. The one on the left is the **response**, the variable being explained, and the one on the right is the **explanatory variable**, the one doing the explaining. In epidemiology's terms, the outcome is the response and the exposure is an explanatory variable. We drop the rows where either variable is missing first, the same habit we've used for every model and test so far.
 
 **Null hypothesis.** In the population, the slope of cholesterol on age is zero: age carries no linear association with cholesterol.
 
@@ -146,13 +144,15 @@ summary(m_age)
 
 As with `t.test()` in Chapter 4, there's no `$` anywhere in that call. `lm()`'s `data = ` argument tells it to look for `chol` and `age` inside `age_complete`, so it finds them there directly instead of us pulling either one out by hand first. Every model in this course, `lm()` and `glm()` alike, follows this same pattern: name the variables bare in the formula, and point `data = ` at wherever they live.
 
-`summary()` prints a lot at once. The `Coefficients` table has the two numbers that define the fitted line: the `(Intercept)`, the model's predicted cholesterol at age zero, and the slope on `age`, the predicted change in cholesterol for each additional year of age. Each has a standard error, a t-value, and a p-value attached, exactly the reporting standard from Chapter 5. The slope here is small but non-zero: cholesterol tends to be about 0.0056 mmol/L higher for every extra year of age, and the p-value is far below 0.001.
+`summary()` prints a lot at once. The `Coefficients` table has the two numbers that define the fitted line: the `(Intercept)`, the model's predicted cholesterol at age zero, and the slope on `age`, the predicted change in cholesterol for each additional year of age. Each has a standard error, a t-value, and a p-value attached, the reporting standard from Chapter 5. The slope here is small but non-zero: cholesterol tends to be about 0.0056 mmol/L higher for every extra year of age, and the p-value is far below 0.001.
 
-`Multiple R-squared`, R², says what fraction of the variation in cholesterol this model accounts for. Here it's under 0.01: age explains under 1% of the variation in cholesterol between participants. That isn't a contradiction of the significant slope above. A relationship can be real, precisely estimated, and still leave most of the variation in the outcome unexplained. For a simple regression like this one, with a single predictor, the square of Pearson's r is exactly the same number as the R² above, and the hypothesis test for Pearson's r is equivalent to the test of the slope coefficient.
+`Multiple R-squared`, R², says what fraction of the variation in cholesterol this model accounts for. Here it's under 0.01: age explains under 1% of the variation in cholesterol between participants. That isn't a contradiction of the significant slope above. A relationship can be real, precisely estimated, and still leave most of the variation in the response unexplained. For a simple regression like this one, with a single explanatory variable, the square of Pearson's r is the same number as the R² above, and the hypothesis test for Pearson's r is equivalent to the test of the slope coefficient.
 
-A low R² would mean a poorer explanation or prediction of the variation of the outcome. However, that isn't our goal here. Instead, we're estimating how cholesterol varies with age, as precisely as the data allow. Chapter 7 returns to this distinction, between explaining an association and predicting an outcome, when it looks at what a regression model can and can't claim to establish.
+A low R² would mean a poorer explanation or prediction of the variation of the response. However, that isn't our goal here. Instead, we're estimating how cholesterol varies with age, as precisely as the data allow. Chapter 7 returns to this distinction, between explaining an association and predicting a response, when it looks at what a regression model can and can't claim to establish.
 
-`coef()` and `confint()`, both base R, pull out just the coefficients and just their CIs, without the rest of the printout:
+Two more lines near the bottom of that printout come up again in this chapter. `Residual standard error` is the typical distance, in mmol/L, between a participant's cholesterol and the fitted line. Each of those vertical distances is called a **residual**, and the diagnostics section below looks at them properly. The residual standard error describes how far the points sit from the line, not how precise the line itself is. The `F-statistic` tests the model as a whole. With one explanatory variable that's the same question the slope's own test answers, which is why its p-value matches the slope's; it becomes more useful once a model has several explanatory variables.
+
+`coef()` and `confint()`, both base R, pull out only the coefficients and their CIs, without the rest of the printout:
 
 ```{r}
 #| label: coef-confint-age
@@ -169,81 +169,9 @@ tidy(m_age, conf.int = TRUE)
 
 Reported in full, that reads: total cholesterol was on average 0.0056 mmol/L higher for each additional year of age (95% CI: 0.0050 to 0.0061 mmol/L, p < 0.001), although age accounted for less than 1% of the variation in cholesterol between participants.
 
-## A binary predictor: cholesterol by gender
-
-`age` is a continuous predictor, taking any value across a range. `lm()` doesn't need that. A predictor on the right of the formula can be a two-category factor instead, and Chapter 5 already asked exactly this question with a t-test: does mean total cholesterol differ between men and women? Let's fit it as a regression and put the two answers side by side.
-
-**Null hypothesis.** In the population, mean total cholesterol is the same in men and women.
-
-**Alternative hypothesis.** Mean total cholesterol differs between men and women.
-
-```{r}
-#| label: lm-gender
-gender_chol_complete <- nhanes |> filter(!is.na(gender), !is.na(chol))
-m_gender <- lm(chol ~ gender, data = gender_chol_complete)
-summary(m_gender)
-confint(m_gender)
-```
-
-With a continuous predictor like `age`, the `(Intercept)` was an abstract number, cholesterol at age zero, nobody's actual cholesterol. With a two-category predictor it's concrete: `gender`'s first level is `'Male'`, so `(Intercept)`, 4.8859 mmol/L, is mean cholesterol in men. This is the reference level again, the same idea Chapter 3 introduced and Chapter 5's `relevel()` work used a second time: whichever category is listed first becomes the one everything else in the model is compared against, and here that comparison is the whole model.
-
-The slope, on `genderFemale`, is the difference between the two group means: 0.1685 mmol/L, women minus men, with its own standard error, t-value, and p-value, and a 95% CI of 0.1470 to 0.1901 mmol/L. Chapter 5 reported the same comparison as 0.17 mmol/L higher in women (95% CI: 0.15 to 0.19 mmol/L), but only after reversing the signs on what `t.test()` printed, because `t.test()` reports Male minus Female by default. `lm()` reports the comparison the other way round, reference category first, so the sign comes out already the way we want to read it: the same underlying result, with no sign-flipping needed here.
-
-The two results agree this closely because they're close to the same calculation, but not identically the same one. `t.test()`'s default doesn't assume the two groups share one variance, as Chapter 5's independent-samples section said explicitly; `lm()` does assume it, one shared residual variance for the whole model. Telling `t.test()` to make that same assumption, with `var.equal = TRUE`, closes the gap completely:
-
-```{r}
-#| label: ttest-var-equal
-t.test(chol ~ gender, data = nhanes |> filter(!is.na(gender)), var.equal = TRUE)
-```
-
-`t = -15.323` on 39174 degrees of freedom, the same degrees of freedom `summary(m_gender)` reported for the regression, and a CI of -0.1901 to -0.1470, the exact mirror of `lm()`'s 0.1470 to 0.1901. `var.equal = TRUE` isn't a better version of the default. Chapter 5's default, unequal-variance form is the safer everyday choice, since it stays valid whether or not the two groups' spreads match. Setting `var.equal = TRUE` here is only to show that a t-test *is* this regression, once both make the same assumption.
-
-An independent-samples t-test on cholesterol by gender, and a simple linear regression of cholesterol on the two-category factor `gender`, are the same model, read two ways. The diagnostic plots in the next section apply here too, and are worth trying on `m_gender`: with only two possible fitted values, the residuals-vs-fitted plot collapses into two vertical columns of points instead of the scattered cloud `m_age` produced, which is exactly what a two-category predictor should look like, not a sign that something has gone wrong.
-
-## A multi-level categorical predictor: cholesterol by education
-
-`gender` has two categories, so `lm()` needed one extra row to describe it. A factor with more categories just needs more rows, one per non-reference level. `edu` has three: does mean cholesterol differ by education?
-
-**Null hypothesis.** In the population, a non-reference education category's mean cholesterol equals the reference category's.
-
-**Alternative hypothesis.** It differs. Each non-reference row in the coefficients table tests this comparison separately, one category against the reference.
-
-```{r}
-#| label: lm-edu
-edu_chol_complete <- nhanes |> filter(!is.na(edu), !is.na(chol))
-m_edu <- lm(chol ~ edu, data = edu_chol_complete)
-summary(m_edu)
-confint(m_edu)
-```
-
-```{r}
-#| label: lm-edu-numbers
-#| include: false
-edu_tidy <- tidy(m_edu, conf.int = TRUE)
-edu_hs <- edu_tidy |> filter(term == 'eduHigh school graduate')
-edu_above <- edu_tidy |> filter(term == 'eduAbove high school')
-```
-
-Two rows this time, `eduHigh school graduate` and `eduAbove high school`, each a difference from whichever category is first in `levels(edu_chol_complete$edu)`. Compared with 'Less than high school', high school graduates' cholesterol is about `r round(edu_hs$estimate, 3)` mmol/L lower (95% CI: `r round(edu_hs$conf.low, 3)` to `r round(edu_hs$conf.high, 3)` mmol/L, p = `r round(edu_hs$p.value, 3)`), and those with more than high school are about `r round(abs(edu_above$estimate), 3)` mmol/L lower (95% CI: `r round(edu_above$conf.low, 3)` to `r round(edu_above$conf.high, 3)` mmol/L, p = `r round(edu_above$p.value, 3)`). Both CIs sit close to, and comfortably include, zero: these data are consistent with little or no difference in cholesterol by education level in this sample, and they don't rule one out either.
-
-`levels()` confirms the reference is `'Less than high school'`. `relevel()`, already met in Chapter 3, moves a different category to the front. This time we write the releveled factor back into a data frame, rather than working on a standalone copy the way Chapter 3 did: `lm()` needs to find `edu` already releveled inside whatever `data =` points at, so it goes into a new object, `edu_relevelled`, leaving `edu_chol_complete` and the model fitted on it untouched:
-
-```{r}
-#| label: relevel-edu
-edu_relevelled <- edu_chol_complete |>
-  mutate(edu = relevel(edu, ref = 'Above high school'))
-m_edu_relevel <- lm(chol ~ edu, data = edu_relevelled)
-summary(m_edu_relevel)
-confint(m_edu_relevel)
-```
-
-Both rows changed, since they're now contrasts against a different category. But look at `Multiple R-squared` and `Residual standard error` in the two printouts: identical, 2.988e-05 and 1.09, to every digit. So is the F-statistic. Releveling didn't change what the model fits, only which comparisons it prints. The fitted values are the same for every participant either way; relabelling the reference category just changes which category each row is measured against, nothing about the cholesterol the model predicts for anyone.
-
-Keep that distinct from a different invariant met again later, in Chapter 7: there, releveling one predictor inside a multivariable model doesn't move a *different* predictor's own coefficient. Both are true, and neither licenses reading a releveled row as if it were a causal effect on its own; a coefficient's meaning still depends on what it's being compared against and what else is in the model.
-
 ## Checking assumptions: diagnostic plots
 
-A fitted line is only trustworthy if the model's assumptions hold: linearity (a straight line is the right shape), constant variance (the scatter around the line doesn't change as we move along it), and normally distributed residuals (the vertical distances between the points and the line). A fourth assumption, independence between observations, isn't something a plot from one fitted model can check. It's a property of how the data were collected, and NHANES's sampling design is what would need inspecting for that, not this model's output.
+A fitted line is only trustworthy if the model's assumptions hold: linearity (a straight line is the right shape), constant variance (the scatter around the line doesn't change as we move along it), and normally distributed residuals. A fourth assumption, independence between observations, isn't something a plot from one fitted model can check. It's a property of how the data were collected, and NHANES's sampling design is what would need inspecting for that, not this model's output.
 
 `broom::augment()` adds each observation's fitted value and residual back onto the original data, in columns named `.fitted` and `.resid`:
 
@@ -275,9 +203,81 @@ ggplot(age_aug, aes(sample = .std.resid)) +
 
 Points that fall on the line are consistent with normally distributed residuals. Here, the middle of the distribution sits close to the line, but the upper tail pulls away from it. That's the same small group of participants with unusually high cholesterol showing up again: the residuals are a little more heavy-tailed than a normal distribution would predict. With a sample this large, the model's estimates are still reliable despite this. With a much smaller sample, tail behaviour like this would be more of a concern.
 
+## A binary explanatory variable: cholesterol by gender
+
+`age` is a continuous explanatory variable, taking any value across a range. `lm()` doesn't need that. An explanatory variable on the right of the formula can be a two-category factor instead, and Chapter 5 already asked this question with a t-test: does mean total cholesterol differ between men and women? Let's fit it as a regression and put the two answers side by side.
+
+**Null hypothesis.** In the population, mean total cholesterol is the same in men and women.
+
+**Alternative hypothesis.** Mean total cholesterol differs between men and women.
+
+```{r}
+#| label: lm-gender
+gender_chol_complete <- nhanes |> filter(!is.na(gender), !is.na(chol))
+m_gender <- lm(chol ~ gender, data = gender_chol_complete)
+summary(m_gender)
+confint(m_gender)
+```
+
+With a continuous explanatory variable like `age`, the `(Intercept)` was an abstract number, cholesterol at age zero, nobody's actual cholesterol. With a two-category explanatory variable it's concrete: `gender`'s first level is `'Male'`, so `(Intercept)`, 4.8859 mmol/L, is mean cholesterol in men. This is the reference level again, the same idea Chapter 3 introduced and Chapter 5's `relevel()` work used a second time: whichever category is listed first becomes the one everything else in the model is compared against, and here that comparison is the whole model.
+
+The slope, on `genderFemale`, is the difference between the two group means: 0.1685 mmol/L, women minus men, with its own standard error, t-value, and p-value, and a 95% CI of 0.1470 to 0.1901 mmol/L. Chapter 5 reported the same comparison as 0.17 mmol/L higher in women (95% CI: 0.15 to 0.19 mmol/L), but only after reversing the signs on what `t.test()` printed, because `t.test()` reports Male minus Female by default. `lm()` reports the comparison the other way round, reference category first, so the sign comes out already the way we want to read it: the same underlying result, with no sign-flipping needed here.
+
+The two results agree this closely because they're close to the same calculation, but not identically the same one. `t.test()`'s default doesn't assume the two groups share one variance, as Chapter 5's independent-samples section said explicitly; `lm()` does assume it, with one shared spread of the residuals for the whole model. Telling `t.test()` to make that same assumption, with `var.equal = TRUE`, closes the gap completely:
+
+```{r}
+#| label: ttest-var-equal
+t.test(chol ~ gender, data = nhanes |> filter(!is.na(gender)), var.equal = TRUE)
+```
+
+`t = -15.323` on 39174 degrees of freedom, the same degrees of freedom `summary(m_gender)` reported for the regression, and a CI of -0.1901 to -0.1470, the exact mirror of `lm()`'s 0.1470 to 0.1901. `var.equal = TRUE` isn't a better version of the default. Chapter 5's default, unequal-variance form is the safer everyday choice, since it stays valid whether or not the two groups' spreads match. Setting `var.equal = TRUE` here is only to show that a t-test *is* this regression, once both make the same assumption.
+
+An independent-samples t-test on cholesterol by gender, and a simple linear regression of cholesterol on the two-category factor `gender`, are the same model, read two ways. The diagnostic plots from earlier in this chapter apply here too, and are worth trying on `m_gender`: with only two possible fitted values, the residuals-vs-fitted plot collapses into two vertical columns of points instead of the scattered cloud `m_age` produced, which is what a two-category explanatory variable should look like, not a sign that something has gone wrong.
+
+## A multi-level categorical explanatory variable: cholesterol by education
+
+`gender` has two categories, so `lm()` needed one extra row to describe it. A factor with more categories needs more rows, one per non-reference level. `edu` has three: does mean cholesterol differ by education?
+
+**Null hypothesis.** In the population, a non-reference education category's mean cholesterol equals the reference category's.
+
+**Alternative hypothesis.** It differs. Each non-reference row in the coefficients table tests this comparison separately, one category against the reference.
+
+```{r}
+#| label: lm-edu
+edu_chol_complete <- nhanes |> filter(!is.na(edu), !is.na(chol))
+m_edu <- lm(chol ~ edu, data = edu_chol_complete)
+summary(m_edu)
+confint(m_edu)
+```
+
+```{r}
+#| label: lm-edu-numbers
+#| include: false
+edu_tidy <- tidy(m_edu, conf.int = TRUE)
+edu_hs <- edu_tidy |> filter(term == 'eduHigh school graduate')
+edu_above <- edu_tidy |> filter(term == 'eduAbove high school')
+```
+
+Two rows this time, `eduHigh school graduate` and `eduAbove high school`, each a difference from whichever category is first in `levels(edu_chol_complete$edu)`. Compared with 'Less than high school', high school graduates' cholesterol is about `r round(edu_hs$estimate, 3)` mmol/L lower (95% CI: `r round(edu_hs$conf.low, 3)` to `r round(edu_hs$conf.high, 3)` mmol/L, p = `r round(edu_hs$p.value, 3)`), and those with more than high school are about `r round(abs(edu_above$estimate), 3)` mmol/L lower (95% CI: `r round(edu_above$conf.low, 3)` to `r round(edu_above$conf.high, 3)` mmol/L, p = `r round(edu_above$p.value, 3)`). Both CIs sit close to, and comfortably include, zero: these data are consistent with little or no difference in cholesterol by education level in this sample, and they don't rule one out either.
+
+`levels()` confirms the reference is `'Less than high school'`. `relevel()`, already met in Chapter 3, moves a different category to the front. This time we write the releveled factor back into a data frame, instead of working on a standalone copy the way Chapter 3 did: `lm()` needs to find `edu` already releveled inside whatever `data =` points at, so it goes into a new object, `edu_relevelled`, leaving `edu_chol_complete` and the model fitted on it untouched:
+
+```{r}
+#| label: relevel-edu
+edu_relevelled <- edu_chol_complete |>
+  mutate(edu = relevel(edu, ref = 'Above high school'))
+m_edu_relevel <- lm(chol ~ edu, data = edu_relevelled)
+summary(m_edu_relevel)
+confint(m_edu_relevel)
+```
+
+Both rows changed, since they're now contrasts against a different category. But look at `Multiple R-squared` and `Residual standard error` in the two printouts: identical, 2.988e-05 and 1.09, to every digit. So is the F-statistic. Releveling didn't change what the model fits, only which comparisons it prints. The fitted values are the same for every participant either way; relabelling the reference category changes which category each row is measured against, nothing about the cholesterol the model predicts for anyone.
+
+Keep that distinct from a different invariant met again later, in Chapter 7: there, releveling one explanatory variable inside a multivariable model doesn't move a *different* explanatory variable's own coefficient. Both are true, and neither licenses reading a releveled row as if it were a causal effect on its own; a coefficient's meaning still depends on what it's being compared against and what else is in the model.
+
 ## Prediction and extrapolation from the model
 
-`predict()`, from base R, uses a fitted model to generate a predicted value for a new set of inputs. Those inputs need to arrive as a data frame, with a column named to match each predictor in the model. `data.frame()`, also from base R, builds one directly from the values we supply, instead of reading one in from a file:
+`predict()`, from base R, uses a fitted model to generate a predicted value for a new set of inputs. Those inputs need to arrive as a data frame, with a column named to match each explanatory variable in the model. `data.frame()`, also from base R, builds one directly from the values we supply, instead of reading one in from a file:
 
 ```{r}
 #| label: predict-age
@@ -286,7 +286,7 @@ predict(m_age, newdata = data.frame(age = c(45, 150)), interval = 'confidence')
 
 `interval = 'confidence'` adds a CI around each prediction. This CI describes the precision of the predicted **mean** value, not the precision for an **individual**. The precision around an individual prediction is called a **prediction interval**, a different quantity from a CI, not an abbreviated form of it. It's always wider than the CI around the mean, since predicting one person's value is less certain than predicting the average across many. A prediction interval can be requested by stating `interval = 'prediction'` instead.
 
-The first row, age 45, sits comfortably inside the range of ages observed in this sample (18 to 85), so this prediction is supported by data the model was fitted on. The second row, age 150, is not. Nobody in this dataset, or in any verified human population, is 150 years old. The model has no information about what happens at that age, and fitting a straight line through the data we do have says nothing reliable about what lies far outside it. The predicted value it returns looks like an ordinary number, which is exactly what makes extrapolation dangerous: a plausible-looking output doesn't mean the input that produced it was reasonable. Always check a prediction's input against the range the model was fitted on before trusting its output.
+The first row, age 45, sits comfortably inside the range of ages observed in this sample (18 to 85), so this prediction is supported by data the model was fitted on. The second row, age 150, is not. Nobody in this dataset, or in any verified human population, is 150 years old. The model has no information about what happens at that age, and fitting a straight line through the data we do have says nothing reliable about what lies far outside it. The predicted value it returns looks like an ordinary number, which is what makes extrapolation dangerous: a plausible-looking output doesn't mean the input that produced it was reasonable. Always check a prediction's input against the range the model was fitted on before trusting its output.
 
 ## Worked example: cholesterol by sedentary time
 
@@ -336,21 +336,21 @@ ggplot(sed_aug, aes(sample = .std.resid)) +
   labs(x = 'Theoretical quantiles', y = 'Standardised residuals')
 ```
 
-The same pattern from the age model shows up again, more visibly. A handful of participants sit far from the fitted line, and `sed` itself carries a long right tail. Some participants recorded well over 24 hours of sedentary time a day, which cannot be literally true, and points to some noise in how this variable was recorded or reported. None of this overturns the conclusion above. It's a reason to hold the result loosely rather than to distrust the direction of the estimate.
+The same pattern from the age model shows up again, more visibly. A handful of participants sit far from the fitted line, and `sed` itself carries a long right tail. Some participants recorded well over 24 hours of sedentary time a day, which cannot be literally true, and points to some noise in how this variable was recorded or reported. None of this overturns the conclusion above. It's a reason to hold the result loosely, not to distrust the direction of the estimate.
 
 In an academic report this becomes: sedentary time was not associated with total cholesterol in this sample (slope -0.0010 mmol/L per hour/day, 95% CI: -0.0021 to 0.0001 mmol/L, p = 0.073). But it would be a mistake to conclude from this alone that sedentary time has no bearing on cholesterol. This model adjusts for nothing else: age, gender, and other characteristics could still be masking a real association. Chapter 7 revisits this same pairing with those factors added back in.
 
 ## Exercises
 
-**Exercise 1** (ILOs 1, 2, 6). State the null and alternative hypotheses for the slope. Using `vpa_r`, vigorous physical activity outside work (hours/day), produce a scatterplot of `chol` against `vpa_r` with a fitted regression line. Fit the model with `lm()`, and extract its coefficients and their 95% CIs with `confint()` and `broom::tidy()`. Report the slope in one sentence, in the same style used above.
+**Exercise 1** (ILOs 2, 3). State the null and alternative hypotheses for the slope. Using `vpa_r`, vigorous physical activity outside work (hours/day), produce a scatterplot of `chol` against `vpa_r` with a fitted regression line. Fit the model with `lm()`, and extract its coefficients and their 95% CIs with `confint()` and `broom::tidy()`. Report the slope in one sentence, in the same style used above.
 
-**Exercise 2** (ILO 4). For the model fitted in Exercise 1, produce a residuals-vs-fitted plot and a QQ plot. Write one sentence describing what each plot shows, and one sentence commenting on anything the plots reveal about the shape of `vpa_r` itself.
+**Exercise 2** (ILO 2). For the model fitted in Exercise 1, produce a residuals-vs-fitted plot and a QQ plot. Write one sentence describing what each plot shows, and one sentence commenting on anything the plots reveal about the shape of `vpa_r` itself.
 
-**Exercise 3** (ILO 5). Using the model fitted in Exercise 1, predict total cholesterol at `vpa_r` = 1 hour/day and at `vpa_r` = 24 hours/day. Write one sentence stating which of the two predictions can be trusted, and one sentence explaining why the other cannot, referring to the range of `vpa_r` observed in the data.
+**Exercise 3** (ILO 4). Using the model fitted in Exercise 1, predict total cholesterol at `vpa_r` = 1 hour/day and at `vpa_r` = 24 hours/day. Write one sentence stating which of the two predictions can be trusted, and one sentence explaining why the other cannot, referring to the range of `vpa_r` observed in the data.
 
 **Exercise 4** (ILOs 2, 3). State the null and alternative hypotheses, then reproduce Chapter 5's worked example, sedentary time (`sed`) by gender, with `lm()` instead of `t.test()`. Compare the CI `lm()` gives you to the one Chapter 5 reported. Write one sentence on what you find, and a second sentence explaining it, using `var.equal = TRUE` to check your explanation.
 
-**Exercise 5** (ILOs 2, 6). State the null and alternative hypotheses, then fit `chol ~ smoking`. Use `levels()` to check which category of `smoking` the model used as its reference, then refit with `relevel()` using `'Current'` as the reference instead. Report the first model's coefficients in one sentence, then write a second sentence stating what changed between the two model fits and a third stating what stayed exactly the same, and why.
+**Exercise 5** (ILOs 2, 3). State the null and alternative hypotheses, then fit `chol ~ smoking`. Use `levels()` to check which category of `smoking` the model used as its reference, then refit with `relevel()` using `'Current'` as the reference instead. Report the first model's coefficients in one sentence, then write a second sentence stating what changed between the two model fits and a third stating what stayed exactly the same, and why.
 
 ## Writing exercise
 
@@ -399,7 +399,7 @@ ggplot(vpa_r_aug, aes(sample = .std.resid)) +
   labs(x = 'Theoretical quantiles', y = 'Standardised residuals')
 ```
 
-The residuals-vs-fitted plot checks linearity and constant variance; the QQ plot checks whether the residuals are approximately normally distributed. Most points in the residual plot fall into a small number of vertical strips rather than scattering freely. That's because `vpa_r` itself only takes a small number of distinct values: most participants report exactly zero hours/day of vigorous activity outside work. Their fitted value and residual pattern is shared, not spread out. This is a feature of the predictor's own distribution, not a sign that the model is wrongly specified.
+The residuals-vs-fitted plot checks linearity and constant variance; the QQ plot checks whether the residuals are approximately normally distributed. Most points in the residual plot fall into a small number of vertical strips instead of scattering freely. That's because `vpa_r` itself only takes a small number of distinct values: most participants report exactly zero hours/day of vigorous activity outside work. Their fitted value and residual pattern is shared, not spread out. This is a feature of the explanatory variable's own distribution, not a sign that the model is wrongly specified.
 
 **Exercise 3**
 
@@ -425,14 +425,14 @@ summary(m_sed_gender)
 confint(m_sed_gender)
 ```
 
-`lm()` gives a slope of 0.259 hours/day (95% CI: 0.029 to 0.490 hours/day, p = 0.027), close to Chapter 5's t-test result but not identical: Chapter 5 reported a mean difference of about 0.26 hours/day (95% CI: 0.03 to 0.49 hours/day, p = 0.026). The gap is small, but it's real, in the third decimal of the p-value. It happens because `t.test()`'s default doesn't assume the two groups share one variance and `lm()` does, and here that assumption isn't quite free: `sed`'s spread genuinely differs by gender, a standard deviation of about 9.75 hours/day in men against about 11.9 hours/day in women. Setting `var.equal = TRUE` on the t-test confirms it:
+`lm()` gives a slope of 0.259 hours/day (95% CI: 0.029 to 0.490 hours/day, p = 0.027), close to Chapter 5's t-test result but not identical: Chapter 5 reported a mean difference of about 0.26 hours/day (95% CI: 0.03 to 0.49 hours/day, p = 0.026). The gap is small, but it's real, in the third decimal of the p-value. It happens because `t.test()`'s default doesn't assume the two groups share one variance and `lm()` does, and here that assumption isn't quite free: `sed`'s spread differs by gender, a standard deviation of about 9.75 hours/day in men against about 11.9 hours/day in women. Setting `var.equal = TRUE` on the t-test confirms it:
 
 ```{r}
 #| label: sol-ex4-varequal
 t.test(sed ~ gender, data = sed_gender_complete, var.equal = TRUE)
 ```
 
-With `var.equal = TRUE`, the t-test's p-value becomes 0.027 and its CI 0.029 to 0.490 once the sign is reversed, matching `lm()` exactly. The `chol` model earlier in this chapter agreed with its t-test to four decimal places because the two groups' spreads there were nearly equal; here they aren't, so the equal-variance assumption `lm()` makes actually changes the answer, by a small amount.
+With `var.equal = TRUE`, the t-test's p-value becomes 0.027 and its CI 0.029 to 0.490 once the sign is reversed, matching `lm()` exactly. The `chol` model earlier in this chapter agreed with its t-test to four decimal places because the two groups' spreads there were nearly equal; here they aren't, so the equal-variance assumption `lm()` makes changes the answer, by a small amount.
 
 **Exercise 5**
 

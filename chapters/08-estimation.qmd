@@ -1,24 +1,25 @@
 # Estimation, precision, and sample size (Week 8) {#sec-08-estimation}
 
-Chapter 3 taught us to describe a variable with a mean and a standard deviation. Take a different sample from the same population and both numbers come out different. That wobble isn't a flaw in the method and it isn't something to apologise for in a write-up. It's measurable, and measuring it is what turns a number into an estimate we can defend. Sampling variability and the central limit theorem, from this week's seminar, are what make it predictable enough to measure.
+Chapter 3 taught us to describe a variable with a mean and a standard deviation. Take a different sample from the same population and both numbers come out different. That wobble isn't a flaw in the method and it isn't something to apologise for in a write-up. It's measurable, and measuring it is what turns a number into an estimate we can defend. Sampling variability and the central limit theorem, from this week's interactive lecture, are what make it predictable enough to measure.
 
-Two terms that sound alike carry the whole chapter, and they aren't interchangeable. The standard deviation describes the spread of the *data*. The standard error describes the precision of an *estimate*. Out of the second comes the confidence interval, or CI, which we calculate by hand before checking it against R's own functions, since a formula met once from the inside is harder to misread later. The same CIs cover the difference between two groups as well as a single mean, and each one has to be stated in the units of the problem: a CI nobody can put into a sentence hasn't really been interpreted. The machinery also runs backwards. A CI narrows as the sample grows, so fixing the width we want tells us the sample we need, which is how a study gets sized before anyone has collected anything.
+Two terms that sound alike carry the whole chapter, and they aren't interchangeable. The standard deviation describes the spread of the *data*. The standard error describes the precision of an *estimate*. Out of the second comes the confidence interval, or CI, which we calculate by hand before checking it against R's own functions, since a formula met once from the inside is harder to misread later. The same CIs cover the difference between two groups as well as a single mean, and each one has to be stated in the units of the problem: a CI nobody can put into a sentence hasn't been interpreted. The machinery also runs backwards. A CI narrows as the sample grows, so fixing the width we want tells us the sample we need, which is how a study gets sized before anyone has collected anything.
 
 ## Chapter intended learning outcomes
 
-By the end of this chapter you will be able to:
+By the end of this week you will be able to:
 
-1. Calculate a standard error and construct a confidence interval by formula for a mean and for a proportion from first principle, and reproduce each using `t.test()` and `prop.test()`
-2. Construct confidence intervals for a difference in means and a difference in proportions
-3. Interpret each interval in the units and context of the problem, in writing
-4. Compare how an interval's width responds to sample size
-5. Calculate a sample size for a two-group comparison using `power.prop.test()` and `power.t.test()`, and explain why the requirement changes with the assumed effect size
+1. Understand the difference between population and sample, and why statistical inference focuses on the population
+2. Explain why a sample estimate varies from sample to sample, and state the practical consequence of the central limit theorem for the shape of that variation
+3. Distinguish the standard deviation from the standard error, and calculate the standard error of a mean and of a proportion, using `sd()` and `sqrt()`
+4. Construct a 95% confidence interval for a mean, a proportion, a difference in means, and a difference in proportions, by formula and with `t.test()` and `prop.test()`
+5. Interpret a confidence interval correctly, and identify the common misinterpretation
+6. Explain how sample size and variability jointly determine an estimate's precision, and calculate the sample size a target margin of error requires
 
 ## Setup
 
 As in Chapter 3, we read the data with `read_csv()` and turn the six coded variables into factors against the dictionary. This chapter also brings in a second dataset for the first time: `strep_tb`. Unlike `nhanes_mph`, `strep_tb` is built into the `medicaldata` package.
 
-`medicaldata` is the first package this book uses that doesn't come with the tidyverse, so it almost certainly isn't on your machine yet. It has to be installed before it can be loaded. Run `install.packages('medicaldata')` once in the console. Once it's installed, `library(medicaldata)` below works for this session, exactly like every other package we load.
+`medicaldata` is the first package this book uses that doesn't come with the tidyverse, so it almost certainly isn't on your machine yet. It has to be installed before it can be loaded. Run `install.packages('medicaldata')` once in the console. Once it's installed, `library(medicaldata)` below works for this session, like every other package we load.
 
 ```{r}
 #| label: setup
@@ -71,7 +72,7 @@ This is the same recode we introduced in Chapter 3. See Chapter 3 for the reason
 
 ## Point estimate and standard error, by hand
 
-A mean handed to a health board with no sense of how precise it is invites a decision the data may not support. A point estimate is our 'best guess' from the data, most commonly the mean, and on its own it says nothing about how precise it is. The standard error attaches that precision, calculated from two quantities already familiar from Chapter 3: the standard deviation, `sd()`, and the sample size, `n()`. Let's apply this to sedentary time (`sed`):
+A mean handed to a health board with no sense of how precise it is invites a decision the data may not support. A point estimate is our 'best guess' from the data, most commonly the mean, and on its own it says nothing about how precise it is. The standard error (SE) attaches that precision, calculated from two quantities already familiar from Chapter 3: the standard deviation, `sd()`, and the sample size, `n()`. Let's apply this to sedentary time (`sed`):
 
 ```{r}
 #| label: se-by-hand
@@ -87,9 +88,9 @@ sed_stats <- nhanes |>
 sed_stats
 ```
 
-`sqrt()` is base R's square root function. The standard error of a mean is the standard deviation divided by the square root of the sample size, the algebra behind the seminar's precision argument: as `n` grows, the denominator grows and the standard error shrinks.
+`sqrt()` is base R's square root function. The standard error of a mean is the standard deviation divided by the square root of the sample size, the algebra behind the lecture's precision argument: as `n` grows, the denominator grows and the standard error shrinks.
 
-`sed` was shown in Chapter 3 to be right-skewed, with a long tail of participants reporting many sedentary hours. That skew doesn't disqualify it from a CI on its *mean*, because of the Central Limit Theorem. As the sample size grows, the *sampling distribution* gets closer to a bell-shaped normal distribution.
+`sed` was shown in Chapter 3 to be right-skewed, with a long tail of participants reporting many sedentary hours. That skew doesn't disqualify it from a CI on its *mean*, because of the central limit theorem. Picture drawing sample after sample from the same population and working out the mean each time: those means vary, and the pattern they make is the *sampling distribution* of the mean. The standard error is its spread. The theorem says that as the sample size grows, the sampling distribution gets closer to a bell-shaped normal distribution, whatever shape the data themselves have.
 
 ## From standard error to a CI
 
@@ -106,7 +107,7 @@ sed_stats <- sed_stats |>
 sed_stats
 ```
 
-R has a function that does this directly. `t.test()` expects a single numeric vector, not a data frame, so we pull `sed` out of `nhanes` with `$`. `nhanes$sed` reads as 'the `sed` column, inside `nhanes`', and it returns that column on its own, as a plain vector of numbers, rather than a data frame containing it. That's different from `select(sed)`, which keeps a one-column data frame instead of pulling the column out. `t.test()` then returns the mean and its 95% CI without any of the arithmetic above:
+R has a function that does this directly. `t.test()` expects a single numeric vector, not a data frame, so we pull `sed` out of `nhanes` with `$`. `nhanes$sed` reads as 'the `sed` column, inside `nhanes`', and it returns that column on its own, as a plain vector of numbers, not a data frame containing it. That's different from `select(sed)`, which keeps a one-column data frame instead of pulling the column out. `t.test()` then returns the mean and its 95% CI without any of the arithmetic above:
 
 ```{r}
 #| label: ci-ttest
@@ -115,13 +116,13 @@ t.test(nhanes$sed)
 
 `t.test()` also reports a test statistic, degrees of freedom, and a p-value. These belong to a hypothesis test, which is Chapter 5's subject. For now, look only at the CI, and check that it closely matches the CI we calculated by hand above.
 
-One thing `t.test()` does quietly is it ignores all missing values. We passed it `nhanes$sed` whole, missing values and all, with no `filter()` and no `na.rm = TRUE`, and it ran anyway. It drops missing values itself, before calculating. The evidence is in the output: the degrees of freedom are `r format(sum(!is.na(nhanes$sed)) - 1, big.mark = ',')`, one less than the `r format(sum(!is.na(nhanes$sed)), big.mark = ',')` participants we filtered down to by hand, which is why the two CIs agree at all. So whenever we run a `t.test()` in R, we should count the missing values ourselves.
+One thing `t.test()` does without telling us is ignore all missing values. We passed it `nhanes$sed` whole, missing values and all, with no `filter()` and no `na.rm = TRUE`, and it ran anyway. It drops missing values itself, before calculating. The evidence is in the output: the degrees of freedom are `r format(sum(!is.na(nhanes$sed)) - 1, big.mark = ',')`, one less than the `r format(sum(!is.na(nhanes$sed)), big.mark = ',')` participants we filtered down to by hand, which is why the two CIs agree at all. So whenever we run a `t.test()` in R, we should count the missing values ourselves.
 
-The two CIs are close but not identical, because `t.test()` doesn't use a fixed multiplier of 1.96. It uses a value from the t-distribution, which is usually a better match to the actual sampling distribution, since it depends on the sample size through its degrees of freedom (`n - 1`). For a sample size this large, the normal and t-distributions are very similar and shouldn't make a material difference. In practice, we'd use `t.test()` rather than working this out by hand every time, but the formula above is exactly what it's doing underneath.
+The two CIs are close but not identical, because `t.test()` doesn't use a fixed multiplier of 1.96. It uses a value from the t-distribution, which is usually a better match to the actual sampling distribution, since it depends on the sample size through its degrees of freedom (`n - 1`). For a sample size this large, the normal and t-distributions are very similar and shouldn't make a material difference. In practice, we'd use `t.test()` instead of working this out by hand every time, but the formula above is what it calculates.
 
 ### Saying what the CI means, and what it doesn't
 
-We now have a CI. Writing it down correctly is a separate skill from calculating it, and it's the one the seminar spent time on, contrasting the right sentence with the wrong one. Here is the right one, for the CI we just built:
+We now have a CI. Writing it down correctly is a separate skill from calculating it, and it's the one the lecture spent time on, contrasting the right sentence with the wrong one. Here is the right one, for the CI we just built:
 
 > Mean sedentary time was `r round(sed_stats$mean_sed, 2)` hours/day (95%
 > CI: `r round(sed_stats$ci_lower, 2)` to `r round(sed_stats$ci_upper, 2)`
@@ -175,7 +176,7 @@ tb_stats <- strep_tb |>
 tb_stats
 ```
 
-The CI is then built exactly the way it was for a mean: the estimate, plus or minus 1.96 standard errors.
+The CI is then built the same way it was for a mean: the estimate, plus or minus 1.96 standard errors.
 
 ```{r}
 #| label: ci-proportion-hand
@@ -194,11 +195,11 @@ prop.test(x = tb_stats$n_improved, n = tb_stats$n_total)
 
 The two CIs are close but not identical, and for the same kind of reason the hand-built and `t.test()` CIs differed earlier. The ± 1.96 version above is the textbook approximation, and it works well when n is large and p isn't near 0 or 1. `prop.test()` uses a better method that behaves more sensibly in small samples and never runs past 0 or 1, which the approximation happily will if pushed too far. With 107 patients and a proportion near a half, both are perfectly reasonable and they agree to within a small margin of error.
 
-Giving `prop.test()` the count and total directly, rather than a cross-tabulated table, avoids any doubt about which of the two categories we're counting. A table of `improved` alone would still show both proportions, but a table fed straight into `prop.test()` reports the proportion for only whichever category comes first, which is not necessarily the one we want.
+Giving `prop.test()` the count and total directly, instead of a cross-tabulated table, avoids any doubt about which of the two categories we're counting. A table of `improved` alone would still show both proportions, but a table fed straight into `prop.test()` reports the proportion for only whichever category comes first, which is not necessarily the one we want.
 
 By default, `prop.test()` also tests whether this proportion differs from 50%. That default comparison isn't of interest here, and it isn't the subject of this chapter. The 95% CI it reports alongside is what we want.
 
-## Confidence CI for a difference in means
+## A CI for a difference in means
 
 `t.test()` also compares two groups directly, using **formula syntax**. `chol ~ gender` reads as '`chol`, modelled by `gender`'. R splits `chol` into the groups defined by `gender` and compares them:
 
@@ -209,7 +210,7 @@ t.test(chol ~ gender, data = nhanes |> filter(!is.na(gender)))
 
 Notice there's no `$` anywhere in that call, even though `chol` and `gender` both are only found inside `nhanes`. The `data = ` argument tells `t.test()` which data frame to search for names like `chol` and `gender`, so it looks them up there itself instead of us pulling each one out by hand first with `$`. `$` is still the right tool for getting a single column on its own, the way `nhanes$sed` was above; a formula's `data = ` argument does that lookup for every variable named in the formula at once.
 
-This is the same pairing we showed descriptively in Chapter 3's boxplot and Table 1: cholesterol by gender. Now it's attached to a CI for the *difference* in means between the two groups. By default, `t.test()` doesn't assume the two groups have equal variance, i.e. *Welch's t-test*. That's a sensible default and not something we need to adjust here.
+This is the same pairing we showed descriptively in Chapter 3's boxplot and Table 1: cholesterol by gender. Now it's attached to a CI for the *difference* in means between the two groups. By default, `t.test()` doesn't assume the two groups have equal variance, that is, the same spread (the variance is the SD squared). This version is called *Welch's t-test*. That's a sensible default and not something we need to adjust here.
 
 ### Which way round is the difference?
 
@@ -224,9 +225,9 @@ levels(nhanes$gender)
 
 `'Male'` is first, so men are group 1 and women are group 2, and the difference runs first minus second. A negative CI therefore says the first group is *lower*: mean cholesterol is lower in men than in women, by somewhere between 0.15 and 0.19 mmol/L.
 
-It is useful to check the alternative-hypothesis line before reading any two-group CI. If we'd rather write the comparison the other way round, which is often more natural to read, we flip the whole thing together. 'Cholesterol was 0.17 mmol/L higher in women than in men (95% CI: 0.15 to 0.19 mmol/L)' says exactly the same as R's output, with every sign reversed. What we must never do is flip the words and leave the numbers, or flip one end of the CI and not the other. The direction of the estimate and the direction of the CI have to agree.
+It is useful to check the alternative-hypothesis line before reading any two-group CI. If we'd rather write the comparison the other way round, which is often more natural to read, we flip the whole thing together. 'Cholesterol was 0.17 mmol/L higher in women than in men (95% CI: 0.15 to 0.19 mmol/L)' says the same as R's output, with every sign reversed. What we must never do is flip the words and leave the numbers, or flip one end of the CI and not the other. The direction of the estimate and the direction of the CI have to agree.
 
-## Confidence CI for a difference in proportions
+## A CI for a difference in proportions
 
 The same idea extends to two proportions: how many improved in each trial arm. `group_by()` and `summarise()`, already familiar from Chapter 3, give us the count and the number improved in each arm:
 
@@ -243,9 +244,9 @@ strep_arm_summary <- strep_tb |>
 strep_arm_summary
 ```
 
-`prop_improved` here is exactly what `mean(improved)` would give directly. `mean()` of a logical vector is a shortcut worth knowing: R treats `TRUE` as 1 and `FALSE` as 0, so the mean of a column of `TRUE`/`FALSE` values is the proportion that are `TRUE`.
+`prop_improved` here is what `mean(improved)` would give directly. `mean()` of a logical vector is a shortcut worth knowing: R treats `TRUE` as 1 and `FALSE` as 0, so the mean of a column of `TRUE`/`FALSE` values is the proportion that are `TRUE`.
 
-If we pass the two counts and the two totals to `prop.test()`, rather than a cross-tabulated table, it compares the two proportions unambiguously. `prop 1` and `prop 2` below correspond, in order, to the two rows of `strep_arm_summary` above:
+If we pass the two counts and the two totals to `prop.test()`, instead of a cross-tabulated table, it compares the two proportions unambiguously. `prop 1` and `prop 2` below correspond, in order, to the two rows of `strep_arm_summary` above:
 
 ```{r}
 #| label: ci-diff-props
@@ -258,22 +259,22 @@ prop.test(x = strep_arm_summary$n_improved, n = strep_arm_summary$n_arm)
 diff_props_test <- prop.test(x = strep_arm_summary$n_improved, n = strep_arm_summary$n_arm)
 ```
 
-The CI is for the difference in the proportion improved between the two arms. Before reading it, check the direction, exactly as we did for the difference in means above. The same rule applies: R takes the first group and subtracts the second, and the order comes from the factor's levels.
+The CI is for the difference in the proportion improved between the two arms. Before reading it, check the direction, as we did for the difference in means above. The same rule applies: R takes the first group and subtracts the second, and the order comes from the factor's levels.
 
 ```{r}
 #| label: levels-arm-direction
 levels(strep_tb$arm)
 ```
 
-`'Streptomycin'` is first, so `prop 1` is the streptomycin arm and `prop 2` is the control arm, and the difference runs streptomycin minus control. Both ends of the CI are positive, which therefore says the streptomycin arm improved *more*. Had the two levels been the other way round, every number in that CI would have carried a minus sign and meant exactly the same thing. Chapter 5 puts this same factor the other way round on purpose, which is why checking the levels here first matters.
+`'Streptomycin'` is first, so `prop 1` is the streptomycin arm and `prop 2` is the control arm, and the difference runs streptomycin minus control. Both ends of the CI are positive, which therefore says the streptomycin arm improved *more*. Had the two levels been the other way round, every number in that CI would have carried a minus sign and meant the same thing. Chapter 5 puts this same factor the other way round on purpose, which is why checking the levels here first matters.
 
-The heading says 'with continuity correction': `prop.test()` applies a small adjustment by default that nudges the p-value up and the CI slightly wider. Chapter 5 explains what it does, so leave it for now, but notice that the p-value printed here, 0.0004, is the one that adjustment produces. That p-value itself belongs to a hypothesis test, which is still Chapter 5's subject.
+The heading says 'with continuity correction': `prop.test()` applies a small adjustment by default that makes the CI slightly wider. Chapter 5 explains what it does, so leave it for now. The p-value printed alongside belongs to a hypothesis test, which is still Chapter 5's subject.
 
-Because `strep_tb` is a randomised trial rather than an observational study, a difference this large and this precisely estimated supports a causal reading in a way that an association in `nhanes_mph` would not. We can quite safely conclude, from the findings, that streptomycin improved the proportion of patients with X-ray improvement by about `r round((strep_arm_summary$prop_improved[1] - strep_arm_summary$prop_improved[2]) * 100)` percentage points (95% CI: `r round(diff_props_test$conf.int[1] * 100)` to `r round(diff_props_test$conf.int[2] * 100)` percentage points, p = 0.0004), compared with bed rest alone. We say percentage points rather than percent here: percent would describe how much bigger one proportion is relative to the other, not the size of the gap between them, which is what this CI estimates.
+Because `strep_tb` is a randomised trial, not an observational study, a difference this large and this precisely estimated supports a causal reading in a way that an association in `nhanes_mph` would not. We can quite safely conclude, from the findings, that streptomycin improved the proportion of patients with X-ray improvement by about `r round((strep_arm_summary$prop_improved[1] - strep_arm_summary$prop_improved[2]) * 100)` percentage points (95% CI: `r round(diff_props_test$conf.int[1] * 100)` to `r round(diff_props_test$conf.int[2] * 100)` percentage points), compared with bed rest alone. We say percentage points rather than percent here: percent would describe how much bigger one proportion is relative to the other, not the size of the gap between them, which is what this CI estimates.
 
 ## Width and sample size, without programming
 
-The seminar's rule was that a CI narrows as sample size grows. We can show this directly, by computing the same CI on the full sample and on two smaller subsets of it. `slice_sample()`, from `dplyr`, keeps a random fraction of the rows. `set.seed()`, from base R, fixes the sequence of 'random' numbers R uses, so the same subset gets drawn every time this code is run, rather than a different one each time.
+The lecture's rule was that a CI narrows as sample size grows. We can show this directly, by computing the same CI on the full sample and on two smaller subsets of it. `slice_sample()`, from `dplyr`, keeps a random fraction of the rows. `set.seed()`, from base R, fixes the sequence of 'random' numbers R uses, so the same subset gets drawn every time this code is run, instead of a different one each time.
 
 The full sample. This time we save the result into an object with `<-` as well as printing it, because we want to reuse its numbers in a moment:
 
@@ -311,7 +312,7 @@ tt_10
 
 The point estimates are similar across all three, because all three are samples from the same population. But the CI widens as the sample size drops.
 
-That's hard to see across three blocks of output, so let's put the three CIs in one small table. A `t.test()` result isn't a data frame, but `$` still works on it, pulling out one named piece at a time exactly as it pulls one column out of a data frame. `tt_full$conf.int` is the pair of numbers at the ends of the CI, and `[1]` and `[2]` take the lower and the upper one, the same square-bracket indexing we used in Chapter 2. `data.frame()`, from Chapter 1, builds the table out of them, and `mutate()` adds the column we care about:
+That's hard to see across three blocks of output, so let's put the three CIs in one small table. A `t.test()` result isn't a data frame, but `$` still works on it, pulling out one named piece at a time, as it pulls one column out of a data frame. `tt_full$conf.int` is the pair of numbers at the ends of the CI, and `[1]` and `[2]` take the lower and the upper one, the same square-bracket indexing we used in Chapter 2. `data.frame()`, from Chapter 1, builds the table out of them, and `mutate()` adds the column we care about:
 
 ```{r}
 #| label: width-table
@@ -326,51 +327,53 @@ widths <- data.frame(
 widths
 ```
 
-Now the pattern is one column instead of six numbers on three screens. Cut the sample in half and the CI gets about 40% wider; cut it to a tenth and it's roughly three times wider than we started. That last number is the useful one to hold onto. Ten times less data did not make the CI ten times wider, it made it about three times wider, and three is roughly the square root of ten. That's the SE = s/√n formula showing up in an actual result. Precision improves with the square root of the sample size, not with the sample size itself. That's why doubling a study's size buys much less than it feels like it should.
+Now the pattern is one column instead of six numbers on three screens. Cut the sample in half and the CI gets about 40% wider; cut it to a tenth and it's roughly three times wider than we started. That last number is the useful one to hold onto. Ten times less data did not make the CI ten times wider, it made it about three times wider, and three is roughly the square root of ten. That's the SE = SD/√n formula showing up in an actual result. Precision improves with the square root of the sample size, not with the sample size itself. That's why doubling a study's size buys much less than it feels like it should.
 
-## Sample size and power
+## Sample size and the margin of error
 
-The same logic runs in reverse. Instead of asking how precise an estimate from a given sample size will be, we can size a study in advance to detect a given effect. `strep_tb` supplies the natural example, since it's a trial with a binary outcome, and `strep_arm_summary` above already has the proportion improved in each arm: roughly 33% in the control arm and 69% in the streptomycin arm.
+The same logic runs in reverse. Instead of asking how precise an estimate from a given sample size will be, we can choose the precision we want first and work out the sample size that delivers it. The lecture called that precision the **margin of error**: the ± part of estimate ± 1.96 × SE, which is half the CI's width.
 
-`power.prop.test()`, from base R, answers a practical question: how large would a two-arm trial need to be to reliably detect a gap this size? We give it the two proportions, a significance level, and a target power:
+For a proportion, the SE is the square root of p × (1 − p) ÷ n, so the margin of error m is 1.96 times that. Rearranged to give n instead:
+
+n = 1.96² × p × (1 − p) ÷ m²
+
+Here p is the proportion we expect to find and m is the margin we want. A survey expecting about half of people to answer yes, and wanting a margin of 3 percentage points either side:
 
 ```{r}
-#| label: power-prop-original
-power.prop.test(p1 = 0.33, p2 = 0.69, sig.level = 0.05, power = 0.8)
+#| label: n-moe-prop
+1.96^2 * 0.5 * (1 - 0.5) / 0.03^2
 ```
 
-`sig.level = 0.05` sets the Type I error rate: the chance we're willing to accept of concluding there's an effect when there really isn't one. 0.05 is the conventional choice, the same five per cent threshold Chapter 5 uses for every test in this book. Next week's seminar names it properly alongside Type II error and defines power itself. `power = 0.8` is the conventional target: an 80% chance of detecting the effect if it's really there. `n` is the number **per group** required. The gap observed in the original trial was unusually large. A smaller assumed gap needs a correspondingly larger trial:
+`^` raises a number to a power, as in Chapter 1's BMI exercise, so `0.03^2` is 0.03 squared. We can't recruit part of a person, so a sample size always rounds up: 1,068 people. Now halve the margin, to 1.5 percentage points:
 
 ```{r}
-#| label: power-prop-smaller
-power.prop.test(p1 = 0.33, p2 = 0.45, sig.level = 0.05, power = 0.8)
+#| label: n-moe-prop-half
+1.96^2 * 0.5 * (1 - 0.5) / 0.015^2
 ```
 
-The same function, `power.t.test()`, sizes a study around a continuous outcome instead, using the variability of `chol`:
+About four times as many people. m is squared in the formula, so halving it quadruples n. That's the square-root relationship from the widths table above, read the other way round.
+
+A mean works the same way, with the SD taking the place of p × (1 − p): the margin of error is 1.96 × SD ÷ √n, so n = (1.96 × SD ÷ m)². We need an SD to plug in, and a planned study would take it from earlier data. Here we take it from `chol`:
 
 ```{r}
-#| label: power-t-chol
+#| label: n-moe-mean
 chol_sd <- nhanes |>
   filter(!is.na(chol)) |>
   summarise(sd_chol = sd(chol)) |>
   pull(sd_chol)
 
-power.t.test(delta = 0.5, sd = chol_sd, sig.level = 0.05, power = 0.8)
+chol_sd
+(1.96 * chol_sd / 0.05)^2
 ```
 
-`pull()`, from `dplyr`, extracts a single column as a plain vector instead of a one-column tibble. We need this because `power.t.test()` expects a single number for `sd`, not a table containing one. `delta` is the assumed difference in means the study is being sized to detect. As with the proportions above, a smaller assumed difference requires a larger sample:
+`pull()`, from `dplyr`, extracts a single column as a plain vector instead of a one-column tibble. We need that because the formula wants a single number for the SD, not a table containing one. Estimating mean cholesterol to within 0.05 mmol/L either side takes about `r format(ceiling((1.96 * chol_sd / 0.05)^2), big.mark = ',')` people. A noisier measurement, with a larger SD, would need more.
 
-```{r}
-#| label: power-t-smaller
-power.t.test(delta = 0.2, sd = chol_sd, sig.level = 0.05, power = 0.8)
-```
-
-Both functions size a study *before* it is run, from an assumed effect. Power calculated after the fact, from a result already in hand, only re-expresses the p-value already obtained and adds nothing: this applies to both `power.prop.test()` and `power.t.test()` equally, and next week's seminar explains why.
+This sizes a study to estimate one quantity to a chosen precision, which is what a descriptive study or a survey needs. Sizing a trial to *detect a difference* between two groups rests on a different idea, statistical power, which Chapter 5 introduces alongside the hypothesis tests it depends on.
 
 ::: {.callout-note}
-## Try it yourself: assumed effect size
+## Try it yourself: the margin you ask for
 
-Re-run `power.prop.test()` with `p2` set closer and closer to `p1` (for example 0.40, then 0.35), keeping `power = 0.8`. Watch what happens to `n`, and say in one sentence what it means for a researcher planning a trial to detect a genuinely small effect.
+Re-run the cholesterol calculation with a margin of 0.1 mmol/L, then 0.025 mmol/L. Watch what happens to n each time, and say in one sentence what it means for a researcher who wants a very precise estimate.
 :::
 
 ## Worked example: a CI for age
@@ -404,15 +407,15 @@ The hand-calculated CI and the one from `t.test()` agree closely. Written as it 
 
 ## Exercises
 
-**Exercise 1** (ILOs 1, 2, 3). Calculate the mean and standard error of total cholesterol (`chol`), construct a 95% CI by hand, and confirm it with `t.test()`. Report the result the way a results section would state it, in one sentence.
+**Exercise 1** (ILOs 3, 4, 5). Calculate the mean and standard error of total cholesterol (`chol`), construct a 95% CI by hand, and confirm it with `t.test()`. Report the result the way a results section would state it, in one sentence.
 
 Then use `t.test()` with formula syntax to obtain a 95% CI for the *difference* in mean cholesterol between smoking groups, comparing current smokers with those who have never smoked. You'll need `filter()` to restrict `smoking` to those two categories first, since `t.test()` compares exactly two groups. Write one sentence interpreting that CI, and one sentence saying how it differs in meaning from the CI you built in the first half of this exercise.
 
-**Exercise 2** (ILOs 1, 2, 3). In `strep_tb`, find the proportion of patients with baseline cavitation present (`baseline_cavitation`) and calculate its standard error by hand, then build a 95% CI from it and check the result against `prop.test()`. Then construct a 95% CI for the difference in the proportion improved between men and women (`gender`). Write one interpretive sentence for each CI.
+**Exercise 2** (ILOs 3, 4, 5). In `strep_tb`, find the proportion of patients with baseline cavitation present (`baseline_cavitation`) and calculate its standard error by hand, then build a 95% CI from it and check the result against `prop.test()`. Then construct a 95% CI for the difference in the proportion improved between men and women (`gender`). Write one interpretive sentence for each CI.
 
-**Exercise 3** (ILOs 3, 4). Repeat the width exploration above (full sample, 50% subset, 10% subset) using `sed` instead of `chol`, and collect the three CIs into one table the way the chapter did, so their widths sit side by side. Describe what changes and what stays about the same as the sample size drops.
+**Exercise 3** (ILO 6). Repeat the width exploration above (full sample, 50% subset, 10% subset) using `sed` instead of `chol`, and collect the three CIs into one table the way the chapter did, so their widths sit side by side. Describe what changes and what stays about the same as the sample size drops.
 
-**Exercise 4** (ILOs 3, 5). Using `power.t.test()`, find the sample size needed to detect a difference in `chol` of 0.3 mmol/L, and again for a difference of 0.8 mmol/L, both at `power = 0.8`. Write one sentence explaining why the two required sample sizes differ so much.
+**Exercise 4** (ILO 6). A health board wants to estimate the proportion of adults who currently smoke, and expects it to be about 20%. Find the sample size needed for a 95% CI with a margin of error of 2 percentage points, then 1 percentage point. Then find the sample size needed to estimate mean sedentary time (`sed`) to within 0.5 hours/day, using the SD of `sed` in `nhanes`. Write one sentence explaining why the two smoking sample sizes differ so much.
 
 ## Writing exercise
 
@@ -500,7 +503,7 @@ gender_test
 
 The hand-built CI and the one from `prop.test()` agree closely, as they did for the proportion improved earlier in the chapter.
 
-Just over half of patients (`r round(cav_stats$p_cav * 100)`%) had cavitation present on their baseline chest X-ray (95% CI: `r round(cav_test$conf.int[1] * 100)`% to `r round(cav_test$conf.int[2] * 100)`%, p = `r round(cav_test$p.value, 3)`). The CI includes 50%, so these data don't rule out the true proportion being exactly one half. The CI for the difference in improvement between women (`prop 1`) and men (`prop 2`) runs from `r round(gender_test$conf.int[1], 2)` to `r round(gender_test$conf.int[2], 2)` (p = `r round(gender_test$p.value, 3)`): it includes zero, consistent with little or no difference in outcome by gender in this trial.
+Just over half of patients (`r round(cav_stats$p_cav * 100)`%) had cavitation present on their baseline chest X-ray (95% CI: `r round(cav_test$conf.int[1] * 100)`% to `r round(cav_test$conf.int[2] * 100)`%). The CI includes 50%, so these data don't rule out the true proportion being exactly one half. The CI for the difference in improvement between women (`prop 1`) and men (`prop 2`) runs from `r round(gender_test$conf.int[1], 2)` to `r round(gender_test$conf.int[2], 2)`: it includes zero, consistent with little or no difference in improvement by gender in this trial.
 
 **Exercise 3**
 
@@ -531,19 +534,26 @@ data.frame(
   mutate(width = upper - lower)
 ```
 
-As with `chol`, the point estimate is broadly similar across all three samples, but the CI widens substantially in the 10% subset, and by almost exactly the same factor of about three. The same pattern holds for a skewed variable as for a symmetric one, because it's the *sample size*, not the shape of the raw data, that governs the width of the CI on the mean.
+As with `chol`, the point estimate is broadly similar across all three samples, but the CI widens substantially in the 10% subset, and by about the same factor of three. The same pattern holds for a skewed variable as for a symmetric one, because it's the *sample size*, not the shape of the raw data, that governs the width of the CI on the mean.
 
 **Exercise 4**
 
 ```{r}
 #| label: sol-ex4
-power.t.test(delta = 0.3, sd = chol_stats$sd_chol, sig.level = 0.05, power = 0.8)
-power.t.test(delta = 0.8, sd = chol_stats$sd_chol, sig.level = 0.05, power = 0.8)
+1.96^2 * 0.2 * (1 - 0.2) / 0.02^2
+1.96^2 * 0.2 * (1 - 0.2) / 0.01^2
+
+sed_sd <- nhanes |>
+  filter(!is.na(sed)) |>
+  summarise(sd_sed = sd(sed)) |>
+  pull(sd_sed)
+
+(1.96 * sed_sd / 0.5)^2
 ```
 
-Detecting the smaller difference (0.3 mmol/L) needs a much larger sample than detecting the larger difference (0.8 mmol/L). Smaller effects are harder to distinguish from chance variation, so we need more participants to have the same 80% chance of detecting them.
+Rounded up, a margin of 2 percentage points needs 1,537 adults, and a margin of 1 percentage point needs 6,147, four times as many. The margin is squared in the formula, so halving it quadruples the sample size: precision is bought with the square root of n. Estimating mean sedentary time to within 0.5 hours/day needs about `r format(ceiling((1.96 * sd(nhanes$sed, na.rm = TRUE) / 0.5)^2), big.mark = ',')` people. `sed`'s SD, about `r round(sd(nhanes$sed, na.rm = TRUE), 1)` hours/day, is large next to a margin of half an hour, and the SD enters the formula squared.
 
 **Writing exercise (sample answer)**
 
-Mean total cholesterol was `r round(chol_stats$mean_chol, 2)` mmol/L (95% CI: `r round(chol_stats$ci_lower, 2)` to `r round(chol_stats$ci_upper, 2)` mmol/L). In the streptomycin trial, the proportion of patients improved was about `r round((strep_arm_summary$prop_improved[1] - strep_arm_summary$prop_improved[2]) * 100)` percentage points higher in the streptomycin arm than in the control arm (95% CI: `r round(diff_props_test$conf.int[1] * 100)` to `r round(diff_props_test$conf.int[2] * 100)` percentage points, p = 0.0004). The CI excludes zero, consistent with a real difference in improvement between the two arms, rather than one attributable to chance alone.
+Mean total cholesterol was `r round(chol_stats$mean_chol, 2)` mmol/L (95% CI: `r round(chol_stats$ci_lower, 2)` to `r round(chol_stats$ci_upper, 2)` mmol/L). In the streptomycin trial, the proportion of patients improved was about `r round((strep_arm_summary$prop_improved[1] - strep_arm_summary$prop_improved[2]) * 100)` percentage points higher in the streptomycin arm than in the control arm (95% CI: `r round(diff_props_test$conf.int[1] * 100)` to `r round(diff_props_test$conf.int[2] * 100)` percentage points). The CI sits entirely above zero, so the data are compatible only with more improvement in the streptomycin arm than in the control arm.
 :::

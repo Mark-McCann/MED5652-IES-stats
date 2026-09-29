@@ -36,6 +36,14 @@ if the icons or the window ever change. Recalibrated 2026-09-24: the old
 fixed 655px band, tuned at 1280x720, flagged slides with only a couple of
 short bullets as crowded, and `.smaller` was added to them for no reason.
 
+Layout checks (2026-09-29). The same walk also measures every figure and
+table on each slide and flags a figure under FIG_MIN_WIDTH x FIG_MIN_HEIGHT, a
+table wider than its container or stretched across a slide while holding
+little text, and any figure or table whose centre is more than
+CENTRE_TOLERANCE from its container's centre (the column, or the slide).
+These are the mechanical half of the figure-size, table-width and centring
+rules in seminars/CLAUDE.md; a flagged slide still needs a look at the PNG.
+
 How it measures, and what it assumes
 ------------------------------------
 The deck is served locally with a measuring script injected into the HTML
@@ -91,6 +99,15 @@ NAV_SELECTORS = [
     ".reveal .slide-chalkboard-buttons", ".reveal .chalkboard-button",
 ]
 PORT = 8794
+# Layout checks on figures and tables, added 2026-09-29 (see seminars/CLAUDE.md,
+# "Figure size, table width and centring"). Calibrated on Week 10: the residuals
+# plot that rendered at 226x116 and the QQ plot at 350x180 are the known-bad
+# figures; the scatterplot slides (746x533, 746x336) are the known-good ones.
+FIG_MIN_WIDTH = 450    # slide px; a narrower figure cannot be read from the back
+FIG_MIN_HEIGHT = 250
+CENTRE_TOLERANCE = 10  # slide px between an item's centre and its container's
+TABLE_STRETCH_RATIO = 0.9   # table width / container width
+TABLE_SHORT_CHARS = 160     # a table with this little text has no need to stretch
 
 # Injected into the served HTML, before </body>. Walks the deck one slide at a
 # time and records the lowest laid-out pixel of each, converted back into slide
@@ -140,8 +157,31 @@ INJECT = """
         if (r.width <= 0 || r.height <= 0) continue;
         if (r.bottom > bottom) { bottom = r.bottom; worst = el; }
       }
+      var items = [];
+      var found = sec ? sec.querySelectorAll('img, table') : [];
+      for (var k = 0; k < found.length; k++) {
+        var it = found[k];
+        var ir = it.getBoundingClientRect();
+        if (ir.width < 60 || ir.height < 20) continue;
+        var isTable = it.tagName.toLowerCase() === 'table';
+        var box = it.closest('.column') || sec;
+        var cr = box.getBoundingClientRect();
+        var cs2 = window.getComputedStyle(box);
+        var padL = parseFloat(cs2.paddingLeft) || 0;
+        var padR = parseFloat(cs2.paddingRight) || 0;
+        var cLeft = cr.left + padL, cRight = cr.right - padR;
+        items.push({
+          kind: isTable ? 'table' : 'figure',
+          w: Math.round(ir.width / scale),
+          h: Math.round(ir.height / scale),
+          box: Math.round((cRight - cLeft) / scale),
+          off: Math.round(((ir.left + ir.right) / 2 - (cLeft + cRight) / 2) / scale),
+          chars: isTable ? it.textContent.replace(/\\s+/g, ' ').length : 0
+        });
+      }
       var heading = sec ? sec.querySelector('h1, h2') : null;
       out.push({
+        items: items,
         i: i,
         title: heading ? heading.textContent.trim() : '',
         bottom: Math.round((bottom - sr.top) / scale),
@@ -225,6 +265,26 @@ def screenshot(deck, index, port, out_dir):
     return out
 
 
+def layout_problems(row):
+    """Figure size, table width and centring problems for one slide's row."""
+    found = []
+    for it in row.get("items", []):
+        if it["kind"] == "figure":
+            if it["w"] < FIG_MIN_WIDTH or it["h"] < FIG_MIN_HEIGHT:
+                found.append("figure small (%dx%d)" % (it["w"], it["h"]))
+        else:
+            if it["w"] > it["box"] + 1:
+                found.append("table wider than its container (%d > %d)"
+                             % (it["w"], it["box"]))
+            elif (it["w"] / max(it["box"], 1) > TABLE_STRETCH_RATIO
+                  and it["chars"] < TABLE_SHORT_CHARS):
+                found.append("short table stretched full width (%d chars)"
+                             % it["chars"])
+        if abs(it["off"]) > CENTRE_TOLERANCE:
+            found.append("%s off-centre by %dpx" % (it["kind"], it["off"]))
+    return found
+
+
 def check(deck, port, shots):
     out_root = find_output_dir(deck)
     if out_root is None:
@@ -253,6 +313,9 @@ def check(deck, port, shots):
                 note = "  <-- OVERFLOWS"
             elif row["bottom"] > nav_band:
                 note = "  <-- crowds the nav band"
+            problems = layout_problems(row)
+            if problems:
+                note += ("  <-- " if not note else "; ") + "; ".join(problems)
             if note:
                 flagged.append(row)
             print("  s%02d %4dpx  %-44s%s"

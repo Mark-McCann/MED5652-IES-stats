@@ -99,11 +99,43 @@ $code-block-font-size: 0.75em;
   height: 0.5em;
 }
 
+// (Width changed from 100% to auto with max-width 100%, 2026-09-29: a short
+// table now stays as wide as its content and is centred, a long-text table
+// still grows to the column. check-overflow.py flags a short table that
+// stretches.)
+// A markdown pipe table (any table with no value computed from the deck's
+// data, per shared-ground-rules.md) sized to sit alongside a slide's own
+// title and bullets. gt tables (class gt_table) size themselves and are left
+// alone. Column widths come from the dash counts in the pipe-table separator
+// row, so a narrow label column is set in the source, not here.
+.reveal .slides section table:not(.gt_table) {
+  font-size: 0.6em;
+  width: auto;
+  max-width: 100%;
+  margin: 0 auto;
+}
+.reveal .slides section table:not(.gt_table) th,
+.reveal .slides section table:not(.gt_table) td {
+  padding: 0.25em 0.5em;
+}
+
 // A single retyped console value or short result (never full R syntax, never
 // a multi-column table standing in as monospace text: see the figure and
 // output supply chain rules in seminars/CLAUDE.md).
 .reveal .slides section code {
   font-family: "Courier New", monospace;
+}
+
+// A slide that prints real R model output (the narrow exception in
+// shared-ground-rules.md, 2026-09-29): reveal caps a code block at 400px and
+// scrolls it, which would hide the lines the slide is about, so the cap is
+// lifted and the font reduced to fit the whole printout.
+.reveal .slides section.full-output pre {
+  width: 100%;
+  font-size: 0.42em;
+}
+.reveal .slides section.full-output pre code {
+  max-height: none;
 }
 
 // Quarto's revealjs footer plugin defaults the logo to bottom-right and,
@@ -139,4 +171,20 @@ $code-block-font-size: 0.75em;
 .reveal .slides section .columns .column img {
   width: 100%;
   height: auto;
+}
+
+
+// Figures are horizontally centred, in a column or on the full slide.
+// Quarto emits `r-stretch` images as inline elements at their own width, which
+// sit at the left edge; a block with auto margins centres them. Added
+// 2026-09-29 after check-overflow.py's centring check found figures 16 to 527px
+// off-centre.
+.reveal .slides section img.r-stretch,
+.reveal .slides section .cell-output-display img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+.reveal .slides section .cell-output-display {
+  text-align: center;
 }

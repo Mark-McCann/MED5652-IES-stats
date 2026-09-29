@@ -134,7 +134,7 @@ width_points <- tibble(
 - **Stats, Week 7.** `sed` was described with a mean of 6.56 and an SD of 10.9 hours/day from 34,434 people, then the median (`r sed_median` hours/day) and the IQR (`r sed_q1` to `r sed_q3` hours/day).
 - **Epi.**
   - **Weeks 1 and 5.** External validity and selection bias. This week adds another source of problem: sampling variation, precision instead of bias and validity
-  - **Week 2.** Risk, odds, RR and OR calculated as point estimates. This week calculates also the confidence as well as that for a difference in proportions
+  - **Week 2.** Risk, odds, RR and OR calculated as point estimates. This week puts a confidence interval on a proportion and on a difference in proportions; Week 9 does the RR and OR
   - **Week 3.** Underpower was discussed. This week does the sample size arithmetic behind it, and Week 9 returns to define power itself
 
 ## By the end of this session, you will be able to {.smaller}
@@ -243,7 +243,7 @@ ggplot() +
   - The general statistical term for how much it scatters from sample to sample
   - A confidence interval addresses this, and does nothing about bias
 - A confidence interval states its precision but not the accuracy
-  - A tight CI can still be biased
+  - A narrow one can still be biased
 :::
 
 ::: {.column width="58%"}
@@ -251,7 +251,7 @@ ggplot() +
 #| label: bias-variance-target
 #| echo: false
 #| fig-width: 6.6
-#| fig-height: 4.4
+#| fig-height: 3.8
 set.seed(4)
 n_shots <- 20
 ring_radii <- c(0.3, 0.6, 0.9, 1.2)
@@ -319,8 +319,7 @@ ggplot() +
 
 - Three coins, fair (p = 0.5), biased (p = 0.25) and very biased (p = 0.1), and five sample sizes: n = 1, 5, 10, 30, 100
 - Buttons repeat 1, 5, 20, 100 or 1000 samples, so the shape of the sample mean builds live
-- Head = 1; tail = 0
-- The mean of the samples is the proportion of heads
+- Head = 1; tail = 0, so the mean of a sample is the proportion of heads
 
 ```{r}
 #| label: coin-clt-widget
@@ -486,11 +485,11 @@ cat('
 - Move up through n = 1, 5, 10, 30, 100, for either coin
 - The sample mean's own distribution drifts toward a bell shape[]{.gap}
 - **The data does not have to be normal.** Skewed data still end up with a bell-shaped sampling distribution, only with a larger n needed to get there than a symmetric parent needs
-- The skewed case that matters for this course is `sed`, right-skewed, in Chapter 4, which refers back to what this seminar showed
+- The skewed case that matters for this course is `sed`, right-skewed, which the lab returns to
 
 ## The central limit theorem {.smaller}
 
-- The distribution of the sample mean approaches a normal distribution as n grows
+- The central limit theorem (CLT): the distribution of the sample mean approaches a normal distribution as n grows
 - It applies no matter the shape of the underlying data
   - If the data is highly skewed, a larger sample is needed for the sample mean to follow a normal distribution approximately[]{.gap}
 - Textbooks often suggest rules of thumb, e.g., n ≥ 30, for the CLT to hold
@@ -502,7 +501,7 @@ cat('
 
 - Recall: any normal distribution is fully described by two numbers, its mean and its SD
 - The sampling distribution is a normal distribution too
-  - Its centre is the sample mean
+  - Its centre is the population mean
   - Its spread is the **standard error (SE)**
 - The SD describes the data; the SE describes the estimator
 - To quantify the precision, we need the SE
@@ -552,21 +551,19 @@ tibble(
 
 :::: {.columns}
 
-::: {.column width="52%"}
+::: {.column width="58%"}
 - CIs are mostly reported as '95% CI'
-  - 95% confidence level, or equivalently 5% (1-0.95) significance level
-  - The confidence/significance level is almost always fixed at this arbitrary level
+  - A 95% confidence level, i.e., a 5% (1-0.95) significance level
+  - Almost always fixed at this arbitrary level
   - 1.96 comes from the normal distribution the CLT delivers
 
 - With a small sample, we are less certain about our SD estimate
   - The t distribution allows for that extra uncertainty
-  - Same bell shape, heavier tails
-  - Bigger than 1.96, growing as n shrinks
-  - At n = 10 it is about `r round(qt(0.975, df = 9), 2)`. At n = 30, about `r round(qt(0.975, df = 29), 2)`
-- As n grows, t converges back to the normal and 1.96
+  - Same bell shape, heavier tails: a multiplier bigger than 1.96, growing as n shrinks
+  - At n = 10 it is about `r round(qt(0.975, df = 9), 2)`. At n = 30, about `r round(qt(0.975, df = 29), 2)`, converging to 1.96 as n grows
 :::
 
-::: {.column width="48%"}
+::: {.column width="42%"}
 ```{r}
 #| label: t-vs-normal
 #| echo: false
@@ -685,7 +682,7 @@ coverage_true_mean <- sum(sed_freq$sed * sed_freq$n) / sed_total_n
 
 cat(sprintf('
 <div id="coverage-widget" style="text-align:center;">
-<svg id="coverage-svg" width="900" height="330" style="max-width:100%%;"></svg>
+<svg id="coverage-svg" width="900" height="290" style="max-width:100%%;"></svg>
 <div>
 <button onclick="coverageNewSample()" style="font-size:0.8em;padding:0.25em 0.7em;margin-top:0.1em;background:#00213B;color:#fff;border:none;border-radius:4px;cursor:pointer;">New sample</button>
 <span id="coverage-caption" style="margin-left:1em;font-size:0.9em;"></span>
@@ -735,7 +732,7 @@ cat(sprintf('
     var allVals = intervals.reduce(function(a, d) { return a.concat(d); }, []).concat([trueMean]);
     var xmin = Math.min.apply(null, allVals) - 0.05;
     var xmax = Math.max.apply(null, allVals) + 0.05;
-    var w = 900, h = 330;
+    var w = 900, h = 290;
     var outerMargin = 40, gap = 30, top = 12, bottom = 8;
     var colWidth = (w - 2 * outerMargin - gap) / 2;
     var colStart = [outerMargin, outerMargin + colWidth + gap];
@@ -785,11 +782,14 @@ cat(sprintf('
   - **C.** 'If we repeated this study many times, 95% of the resulting CIs would contain the true mean'
 - Which are wrong, and what exactly is wrong with each?
 
-## Try it: the answer
+## Try it: the answer {.smaller}
 
-- **A. Wrong**: both the 95% CI and the true mean are fixed
-- **B. Wrong**: despite sounding careful, 'confident' is standing in for 'probability', the same error as A
-- **C. Right**: the coverage statement about the procedure across repeated samples, not about this one CI; doesn't assume the true mean or the CI to be random
+- **A. Wrong**: 'There is a 95% probability the true mean lies in this range'
+  - Both the 95% CI and the true mean are fixed
+- **B. Wrong**: 'We are 95% confident the true mean lies in this range'
+  - Despite sounding careful, 'confident' is standing in for 'probability', the same error as A
+- **C. Right**: 'If we repeated this study many times, 95% of the resulting CIs would contain the true mean'
+  - The coverage statement about the procedure across repeated samples, not about this one CI; doesn't assume the true mean or the CI to be random
 
 ## A common misconception {.smaller}
 
@@ -906,8 +906,7 @@ tibble(
 tibble(
   Quantity = 'Cholesterol, women minus men, mmol/L',
   Estimate = round(chol_diff, 3),
-  `95% CI` = paste0(round(chol_ci[1], 3), ' to ', round(chol_ci[2], 3)),
-  p = '< 0.001'
+  `95% CI` = paste0(round(chol_ci[1], 3), ' to ', round(chol_ci[2], 3))
 ) |>
   gt()
 ```
@@ -920,7 +919,7 @@ tibble(
   - For a proportion the normal shape is an approximation
   - The approximation won't be as good as when the underlying data is continuous
   - Good enough when both groups have a reasonable number of events **and** non-events
-- Exact methods exist for when either count is small (more in the labs)
+- Exact methods exist for when either count is small (Week 9)
 
 ## Streptomycin: 69% against 33% improved
 
@@ -972,7 +971,7 @@ tibble(
 - In practice, someone decides how many people to recruit before a single measurement is taken
 - How large does a study need to be, and what decides the answer?
 
-## What determines the margin of error?
+## What determines the margin of error? {.smaller}
 
 - In polling, people sample based on their desired margin of error
 - The same for descriptive epidemiological studies[]{.gap}
@@ -1029,7 +1028,7 @@ $$n = \frac{1.96^2 \times p(1-p)}{m^2}$$
 - *p* is the expected proportion, playing the same role the SD plays for a mean
 - *m* is squared, so it dominates: halve the margin, and n roughly quadruples
 
-## Try it: how does n respond?
+## Try it: how does n respond? {.smaller}
 
 - A poll wants to estimate a proportion around p = 0.5, with a 95% CI
 - At a margin of error of 3 percentage points (m = 0.03), the formula above gives n ≈ 1,067
@@ -1049,44 +1048,36 @@ $$n = \frac{1.96^2 \times p(1-p)}{m^2}$$
 
 ## Three claims, three CIs {.smaller}
 
-- Read the papers' absract, and discuss in pairs: 
-- Does each sentence say what the CI supports? Where it does not, what would you write instead? 
+- Read the papers' abstracts, and discuss in pairs:
+- Does each sentence say what the CI supports? Where it does not, what would you write instead?
 - Ten minutes
 
-```{r}
-#| label: application-table
-#| echo: false
-tibble(
-  Study = c('Cao et al. (2020), NEJM', 'Radonovich et al. (2019), JAMA', 'Williamson et al. (2020), Nature'),
-  Result = c(
-    '28-day mortality 19.2% vs 25.0%, difference -5.8pp (95% CI -17.3 to 5.7)',
-    'Influenza 8.2% vs 7.2% of person-seasons, difference 1.0pp (95% CI -0.5 to 2.5), p = 0.18',
-    'HR 1.48 (1.29 to 1.69) Black; 1.45 (1.32 to 1.58) South Asian, vs white'
-  ),
-  `Paper's conclusion` = c(
-    "'...no benefit was observed with lopinavir-ritonavir treatment beyond standard care.'",
-    "'...resulted in no significant difference in the incidence of laboratory-confirmed influenza.'",
-    "'Black and South Asian people were at higher risk, even after adjustment for other factors.'"
-  ),
-  Link = c(
-    '[PubMed](https://pubmed.ncbi.nlm.nih.gov/32187464/)',
-    '[PubMed](https://pubmed.ncbi.nlm.nih.gov/31479137/)',
-    '[PubMed](https://pubmed.ncbi.nlm.nih.gov/32640463/)'
-  )
-) |>
-  gt() |>
-  fmt_markdown(columns = Link) |>
-  cols_width(Study ~ pct(19), Result ~ pct(30), `Paper's conclusion` ~ pct(41), Link ~ pct(10)) |>
-  tab_options(table.font.size = px(17))
-```
+| Study | Result | Paper's conclusion | Link |
+|-----|---------|------------|---|
+| Cao et al. (2020), NEJM | 28-day mortality 19.2% vs 25.0%, difference -5.8pp (95% CI -17.3 to 5.7) | '...no benefit was observed with lopinavir-ritonavir treatment beyond standard care.' | [PubMed](https://pubmed.ncbi.nlm.nih.gov/32187464/) |
+| Radonovich et al. (2019), JAMA | Influenza 8.2% vs 7.2% of person-seasons, difference 1.0pp (95% CI -0.5 to 2.5), p = 0.18 | '...resulted in no significant difference in the incidence of laboratory-confirmed influenza.' | [PubMed](https://pubmed.ncbi.nlm.nih.gov/31479137/) |
+| Williamson et al. (2020), Nature | HR 1.48 (1.29 to 1.69) Black; 1.45 (1.32 to 1.58) South Asian, vs white | 'Black and South Asian people were at higher risk, even after adjustment for other factors.' | [PubMed](https://pubmed.ncbi.nlm.nih.gov/32640463/) |
+
 
 - A hazard ratio (Williamson) is a ratio measure like the RR and OR from Week 2, with a null value of 1. More details in Week 9.
 
-## Three claims, judged {.smaller}
+## Three claims, judged: Cao et al. {.smaller}
+
+| Study | Result |
+|-------|------------------|
+| Cao et al. (2020) | 28-day mortality difference -5.8pp (95% CI -17.3 to 5.7) |
 
 - **Cao et al.: too imprecise to support 'no benefit'**
   - The CI runs from a 17-point reduction in mortality to a 6-point increase, compatible with both a large benefit and real harm
   - The trial's own next sentence half-admits this
+
+## Three claims, judged: Radonovich et al. and Williamson et al. {.smaller}
+
+| Study | Result |
+|-------|------------------|
+| Radonovich et al. (2019) | Influenza difference 1.0pp (95% CI -0.5 to 2.5), p = 0.18 |
+| Williamson et al. (2020) | HR 1.48 (1.29 to 1.69) Black; 1.45 (1.32 to 1.58) South Asian, vs white |
+
 - **Radonovich et al.: precise, but the sentence is potentially misleading**
   - The narrow CI already shows any difference either way is small. 'No significant difference' throws that away
   - Cao's imprecision and this one point in opposite directions: one CI is too wide to conclude 'no difference', the other narrow enough to conclude it

@@ -1,0 +1,1107 @@
+---
+title: "Correlation and simple linear regression"
+subtitle: "Week 10"
+author: "Fred Ho"
+title-slide-attributes:
+  data-background-image: assets/skyline.jpg
+  data-background-size: cover
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(gt)
+library(here)
+library(broom)
+
+here::i_am('seminars/week10-regression.qmd')
+
+nhanes <- read_csv(here::here('data', 'mph_nhanes_20241107.csv'), show_col_types = FALSE)
+
+# Recoding, verbatim from chapters/10-regression.qmd's own `recode` chunk
+# (itself verbatim from Chapter 3): same levels, same labels, same order.
+nhanes <- nhanes |>
+  mutate(
+    gender = factor(gender,
+      levels = c(1, 2),
+      labels = c('Male', 'Female')),
+    eth = factor(eth,
+      levels = c(1, 2, 3, 4, 5),
+      labels = c('Mexican American', 'Other Hispanic', 'White', 'Black', 'Others')),
+    edu = factor(edu,
+      levels = c(1, 2, 3),
+      labels = c('Less than high school', 'High school graduate', 'Above high school')),
+    smoking = factor(smoking,
+      levels = c('Never', 'Previous', 'Current')),
+    phq.c = factor(phq.c,
+      levels = c('0 Normal', '1 Mild symptoms', '2 Possible depression'),
+      labels = c('Normal', 'Mild symptoms', 'Possible depression'),
+      ordered = TRUE),
+    blm.cvd = factor(blm.cvd,
+      levels = c(0, 1),
+      labels = c('No', 'Yes'))
+  )
+
+# Every quantity below is computed the same way chapters/10-regression.qmd
+# computes it: same variable names, same steps, same function calls.
+
+# Pearson: age and chol
+age_complete <- nhanes |> filter(!is.na(age), !is.na(chol))
+ct_age <- cor.test(age_complete$age, age_complete$chol)
+
+# Pearson: sed and chol
+sed_complete <- nhanes |> filter(!is.na(sed), !is.na(chol))
+ct_sed <- cor.test(sed_complete$sed, sed_complete$chol)
+
+# Spearman: age and phq.c
+phq_complete <- nhanes |> filter(!is.na(age), !is.na(phq.c))
+ct_spear <- suppressWarnings(cor.test(phq_complete$age, as.numeric(phq_complete$phq.c), method = 'spearman'))
+
+# Simple linear regression: chol ~ age
+m_age <- lm(chol ~ age, data = age_complete)
+tidy_age <- tidy(m_age, conf.int = TRUE)
+glance_age <- glance(m_age)
+pred_age <- predict(m_age, newdata = data.frame(age = c(45, 150)), interval = 'confidence')
+aug_age <- augment(m_age)
+int_age <- tidy_age |> filter(term == '(Intercept)')
+slope_age <- tidy_age |> filter(term == 'age')
+
+# The age-model coefficient table, built once so the slope and intercept slides
+# can re-show it without repeating the code (same values as 'How much does
+# cholesterol differ per year of age?').
+age_coef_gt <- tibble(
+  Quantity = c('Intercept, cholesterol at age zero, mmol/L', 'Slope, per year of age, mmol/L'),
+  Estimate = c(round(int_age$estimate, 3), round(slope_age$estimate, 5)),
+  `95% CI` = c(
+    paste0(round(int_age$conf.low, 3), ' to ', round(int_age$conf.high, 3)),
+    paste0(round(slope_age$conf.low, 5), ' to ', round(slope_age$conf.high, 5))
+  ),
+  p = c('< 0.001', '< 0.001')
+) |>
+  gt()
+
+# chol ~ gender, and the reconciliation with t.test()
+gender_complete <- nhanes |> filter(!is.na(gender), !is.na(chol))
+m_gender <- lm(chol ~ gender, data = gender_complete)
+tidy_gender <- tidy(m_gender, conf.int = TRUE)
+int_gender <- tidy_gender |> filter(term == '(Intercept)')
+slope_gender <- tidy_gender |> filter(term == 'genderFemale')
+tt_gender_eq <- t.test(chol ~ gender, data = gender_complete, var.equal = TRUE)
+
+# chol ~ edu, and releveled
+edu_complete <- nhanes |> filter(!is.na(edu), !is.na(chol))
+m_edu <- lm(chol ~ edu, data = edu_complete)
+tidy_edu <- tidy(m_edu, conf.int = TRUE)
+glance_edu <- glance(m_edu)
+int_edu <- tidy_edu |> filter(term == '(Intercept)')
+hs_edu <- tidy_edu |> filter(term == 'eduHigh school graduate')
+above_edu <- tidy_edu |> filter(term == 'eduAbove high school')
+
+edu_relevelled <- edu_complete |> mutate(edu = relevel(edu, ref = 'Above high school'))
+m_edu_relevel <- lm(chol ~ edu, data = edu_relevelled)
+tidy_edu_relevel <- tidy(m_edu_relevel, conf.int = TRUE)
+glance_edu_relevel <- glance(m_edu_relevel)
+
+# sed carries a small number of physically implausible values (over 24
+# hours/day), the same issue the Week 7 histogram met. The view is clipped
+# with coord_cartesian(), never xlim() or a filter(), so bins aren't
+# recomputed from a truncated dataset; the excluded count is said out loud
+# on the slide that shows it.
+sed_over24 <- sum(sed_complete$sed > 24, na.rm = TRUE)
+
+# chol ~ sed, the closing synthesis for Block 2
+m_sed <- lm(chol ~ sed, data = sed_complete)
+tidy_sed <- tidy(m_sed, conf.int = TRUE)
+glance_sed <- glance(m_sed)
+slope_sed <- tidy_sed |> filter(term == 'sed')
+
+# Gentamicin clearance in babies, a retained teaching example per the
+# narrow exception to the worked-example rule (shared-ground-rules.md,
+# settled 2026-09-28): neither nhanes_mph nor strep_tb can produce an
+# impossible prediction the way this one does. Numbers retyped from the
+# source deck's own Stata output, not recomputed (the raw data was never
+# digitised): slides_2025/Correlation and Regression AMcI 20251114.pptx,
+# slides 26, 27, 36 and 37. n = 31 babies, clearance (l/h) regressed on
+# weight (kg).
+# The gentamicin slide's markdown table retypes the intercept, slope, CIs and
+# p-values below by hand (no value on it is computed): keep the two in step.
+gent_n <- 31
+gent_intercept <- -0.027
+gent_intercept_ci <- c(-0.047, -0.008)
+gent_slope <- 0.074
+gent_slope_ci <- c(0.066, 0.082)
+gent_r2 <- 0.926
+gent_pred_3kg <- round(gent_intercept + gent_slope * 3, 3)
+gent_pred_300g <- round(gent_intercept + gent_slope * 0.3, 3)
+
+# Application: Potter GDM, Cade JE, Hardie LJ. 'Longer sleep is associated
+# with lower BMI and favorable metabolic profiles in UK adults: findings
+# from the National Diet and Nutrition Survey.' PLOS ONE 2017;12(7):e0182195,
+# https://doi.org/10.1371/journal.pone.0182195. CC BY 4.0, so retyping this
+# small an extract is unambiguously fine to publish. Verified against the
+# published Table 3 and its surrounding text. The model is adjusted for age,
+# ethnicity, sex, smoking, and socioeconomic status.
+# The Application slide's markdown table retypes app_estimate and app_ci: keep in step.
+app_n <- 1615
+app_estimate <- -0.46
+app_ci <- c(-0.69, -0.24)
+```
+
+## What you have learnt so far 
+
+- **Stats, Week 9.** We learnt t-tests for comparing a continuous variable between groups, and the chi-squared test for two categorical variables. But what if we want to examine the association between two continuous variables, e.g. cholesterol and age?
+- **Epi, Week 1.** Exposure and outcome as hypothetical causes and the health state of interest. How can we model them statistically? 
+- **Epi, Week 4.** Correlation is not causation was mentioned but what exactly is 'correlation'?
+
+## By the end of this session, you will be able to
+
+1. Select an appropriate correlation measure and interpret the findings
+2. Apply the simple linear regression model, and assess its assumptions using residual diagnostics
+3. Interpret the intercept and slope with confidence intervals and p-values
+4. Use a fitted model for prediction, and explain the danger of extrapolation
+
+## Block 1: correlation {background-image="assets/skyline.jpg" background-size="cover" .divider}
+
+## There are no two groups here
+
+- We can compare two groups. Last week's exposure was gender, a two-category label
+- This week's exposures are age and sedentary time, both are continuous[]{.gap}
+- We can't apply t-test with these as exposure
+- But the question is still the same one we've been asking all term: does the outcome differ, and by how much, as the exposure changes
+
+## Visualising two continuous variables at once {.smaller}
+
+:::: {.columns}
+::: {.column width="38%"}
+
+- Boxplot and histogram to examine distribution of a continuous variable by groups
+- Scatterplot is for two continuous variables
+- One point per participant, one variable on each axis
+- The first plot of two continuous variables together[]{.gap}
+- The cloud slopes gently upward and is wide
+:::
+::: {.column width="62%"}
+
+```{r}
+#| label: scatter-age
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5
+#| message: false
+ggplot(age_complete, aes(x = age, y = chol)) +
+  geom_point(alpha = 0.1) +
+  labs(x = 'Age (years)', y = 'Total cholesterol (mmol/L)')
+```
+
+:::
+::::
+
+## Pearson's correlation coefficient, r {.smaller}
+
+- The scatterplot seems to follow a straight line going upward. But it is too noisy to be sure
+- Pearson's correlation coefficient (r) measures the strength of a straight-line association between two continuous variables
+- Its range is minus 1 to plus 1, with 0 meaning no linear association. The null value for a test on r is 0
+- Neither variable is treated as the outcome: r is symmetric[]{.gap}
+- r = Σ(x − x̄)(y − ȳ) / √[Σ(x − x̄)² · Σ(y − ȳ)²]
+  - Each variable enters only through its own distance from its own mean, divided by its own spread
+  - That's why r carries no units
+
+## Age and cholesterol: what is r? {.smaller}
+
+```{r}
+#| label: cor-age-table
+#| echo: false
+tibble(
+  Quantity = 'Pearson r, age and total cholesterol',
+  Estimate = round(unname(ct_age$estimate), 3),
+  `95% CI` = paste0(round(ct_age$conf.int[1], 3), ' to ', round(ct_age$conf.int[2], 3)),
+  p = if (ct_age$p.value < 0.001) '< 0.001' else as.character(round(ct_age$p.value, 3))
+) |>
+  gt()
+```
+
+- H0: r is 0, i.e., no linear association between age and cholesterol
+- H1: r is not 0[]{.gap}
+- Age and total cholesterol were positively correlated (r = `r round(unname(ct_age$estimate), 3)`, 95% CI `r round(ct_age$conf.int[1], 3)` to `r round(ct_age$conf.int[2], 3)`, p `r if (ct_age$p.value < 0.001) '< 0.001' else paste('=', round(ct_age$p.value, 3))`)
+- The association is non-zero but weak, matching the wide, gently sloping cloud in the scatterplot
+
+## What different values of r look like
+
+```{r}
+#| label: r-gallery
+#| echo: false
+#| fig-width: 9
+#| fig-height: 2.6
+set.seed(1)
+n_gal <- 200
+gallery_r <- c(0.9, 0.5, 0, -0.5, -0.9)
+gallery_df <- do.call(rbind, lapply(gallery_r, function(r) {
+  z1 <- rnorm(n_gal)
+  z2 <- rnorm(n_gal)
+  x <- z1
+  y <- r * z1 + sqrt(1 - r^2) * z2
+  data.frame(r = paste0('r = ', r), x = x, y = y)
+}))
+gallery_df$r <- factor(gallery_df$r, levels = paste0('r = ', gallery_r))
+
+ggplot(gallery_df, aes(x = x, y = y)) +
+  geom_point(alpha = 0.3, size = 0.7) +
+  facet_wrap(~ r, nrow = 1) +
+  theme(axis.text = element_blank(), axis.ticks = element_blank()) +
+  labs(x = NULL, y = NULL)
+```
+
+## r does not depend on the units {.smaller}
+
+:::: {.columns}
+::: {.column width="38%"}
+
+- Same participants, same cholesterol: only the unit of age changes
+- r is identical for age in years and age in months[]{.gap}
+- This is why r often can be compared across studies
+- But also why r can't answer 'how much cholesterol changes per year of age'
+:::
+::: {.column width="62%"}
+
+```{r}
+#| label: r-units
+#| echo: false
+#| fig-width: 8
+#| fig-height: 3.6
+units_df <- bind_rows(
+  age_complete |> transmute(x = age, chol, panel = paste0('Age in years, r = ', round(cor(age, chol), 3))),
+  age_complete |> transmute(x = age * 12, chol, panel = paste0('Age in months, r = ', round(cor(age * 12, chol), 3)))
+)
+units_df$panel <- factor(units_df$panel, levels = unique(units_df$panel))
+
+ggplot(units_df, aes(x = x, y = chol)) +
+  geom_point(alpha = 0.03) +
+  facet_wrap(~ panel, nrow = 1, scales = 'free_x') +
+  labs(x = 'Age', y = 'Total cholesterol (mmol/L)')
+```
+
+:::
+::::
+
+## When r misleads
+
+```{r}
+#| label: r-misleads
+#| echo: false
+#| fig-width: 9
+#| fig-height: 3.6
+set.seed(2)
+n_mis <- 150
+
+curved_x <- runif(n_mis, -3, 3)
+curved_y <- -(curved_x^2) + rnorm(n_mis, sd = 1.2)
+panel1 <- data.frame(panel = 'A real curve, r near zero', x = curved_x, y = curved_y)
+
+out_x <- c(rnorm(n_mis - 1, 0, 1), 8)
+out_y <- c(rnorm(n_mis - 1, 0, 1), 8)
+panel2 <- data.frame(panel = 'One outlier, changing r', x = out_x, y = out_y)
+
+full_x <- rnorm(n_mis, 0, 3)
+full_y <- 0.7 * full_x + rnorm(n_mis, sd = 1)
+restrict_df <- data.frame(x = full_x, y = full_y)
+restrict_df <- restrict_df[abs(restrict_df$x) < 0.6, ]
+panel3 <- data.frame(panel = 'A restricted range, flattened', x = restrict_df$x, y = restrict_df$y)
+
+sub1_x <- rnorm(n_mis / 2, 0, 1); sub1_y <- 0.8 * sub1_x + rnorm(n_mis / 2, sd = 0.5) + 4
+sub2_x <- rnorm(n_mis / 2, 4, 1); sub2_y <- 0.8 * sub2_x + rnorm(n_mis / 2, sd = 0.5) - 4
+panel4 <- data.frame(panel = 'Two subgroups, opposite pull', x = c(sub1_x, sub2_x), y = c(sub1_y, sub2_y))
+
+misleads_df <- bind_rows(panel1, panel2, panel3, panel4)
+misleads_df$panel <- factor(misleads_df$panel, levels = c(
+  'A real curve, r near zero', 'One outlier, changing r',
+  'A restricted range, flattened', 'Two subgroups, opposite pull'
+))
+
+ggplot(misleads_df, aes(x, y)) +
+  geom_point(alpha = 0.3, size = 0.7) +
+  facet_wrap(~ panel, nrow = 1, scales = 'free') +
+  theme(axis.text = element_blank(), axis.ticks = element_blank()) +
+  labs(x = NULL, y = NULL)
+```
+
+- Four ways a linear coefficient hides or invents a relationship
+- All four can be identified from a scatterplot, which is why we always plot the data first
+
+## This week's methodological anchor {.smaller}
+
+- [Bland and Altman (1994)](https://pubmed.ncbi.nlm.nih.gov/8019296/), *BMJ*: 'Correlation, regression, and repeated data'
+- Their worked case: five subjects, each measured five times
+  - Taking the mean of each subject before calculating the correlation gives r of -0.67 (p = 0.22)
+  - Pooling all 25 data points before calculating the correlation gives r of -0.47 (p = 0.02)[]{.gap}
+- Pooling manufactured a significant result out of data that didn't have one
+- This is the independence assumption behind every test in this course
+- The paired t-test meets it by analysing one difference per person
+
+## Correlation for ordinal variables {.smaller}
+
+:::: {.columns}
+::: {.column width="58%"}
+
+- Pearson's r assumes both variables sit on a scale where equal steps mean the same thing throughout
+  - For age, the difference between 30 and 29 is the same as that between 60 and 59: 1 year
+- An ordinal variable doesn't: the step from 'no symptoms' to 'mild symptoms' isn't the same size as the step from 'mild symptoms' to 'possible depression'[]{.gap}
+- Spearman's rho is Pearson's r computed on the ranks of the observations instead of their raw values
+  - It needs the observations put in order
+  - It also handles a relationship that's consistently increasing or decreasing without being a straight line
+:::
+::: {.column width="42%"}
+
+```{r}
+#| label: spearman-curve
+#| echo: false
+#| fig-width: 4.6
+#| fig-height: 4.2
+set.seed(4)
+rank_x <- runif(80, 0, 4)
+rank_y <- exp(rank_x) + rnorm(80, sd = 3)
+rank_r <- cor(rank_x, rank_y)
+rank_rho <- cor(rank_x, rank_y, method = 'spearman')
+
+ggplot(data.frame(x = rank_x, y = rank_y), aes(x = x, y = y)) +
+  geom_point() +
+  labs(
+    x = NULL, y = NULL,
+    title = paste0('Pearson r = ', round(rank_r, 2), '; Spearman rho = ', round(rank_rho, 2))
+  ) +
+  theme(axis.text = element_blank(), axis.ticks = element_blank())
+```
+
+:::
+::::
+
+## Is age associated with depression symptom category?
+
+```{r}
+#| label: spearman-table
+#| echo: false
+tibble(
+  Quantity = 'Age and depression symptom category, Spearman rho',
+  Estimate = round(unname(ct_spear$estimate), 3),
+  `95% CI` = 'not available',
+  p = format(round(ct_spear$p.value, 2), nsmall = 2)
+) |>
+  gt()
+```
+
+- Rho is close to zero, and the p-value is far from significant: no clear ordered relationship in this sample
+- No CI accompanies it. Rho has no simple formula for one[]{.gap}
+
+## Try it: Pearson or Spearman?
+
+| Pair | Variable 1 | Variable 2 |
+|--|----------|----------|
+| A | Age (years) | Total cholesterol (mmol/L) |
+| B | Sedentary time (hours/day) | Total cholesterol (mmol/L) |
+| C | Age group (20-30, 31-40, 41-50) | Depression score, PHQ-2 (0 to 6) |
+| D | Education (less than high school, high school graduate, above high school) | Depression symptom category |
+
+- For each pair, would we report Pearson's r or Spearman's rho?
+- What in the variables decides it?
+- Three minutes
+
+## Try it: the answer
+
+| Pair | Variable 1 | Variable 2 | Measure |
+|--|----------|----------|-----|
+| A | Age (years) | Total cholesterol (mmol/L) | Pearson's r |
+| B | Sedentary time (hours/day) | Total cholesterol (mmol/L) | Pearson's r |
+| C | Age group (20-30, 31-40, 41-50) | Depression score, PHQ-2 (0 to 6) | Spearman's rho |
+| D | Education (less than high school, high school graduate, above high school) | Depression symptom category | Spearman's rho |
+
+- Pair A and pair B still need a scatterplot first, since r only measures a straight-line association
+
+## What a correlation cannot tell us
+
+- The coefficient for age and cholesterol was `r round(unname(ct_age$estimate), 3)`
+- It says the two move together weakly, but doesn't say:
+  - whether age is the cause or the other way round (an epi question)
+  - how much cholesterol differs between a 40 year old and a 60 year old (a stats question)[]{.gap}
+
+## Block 2: simple linear regression and diagnostics {background-image="assets/skyline.jpg" background-size="cover" .divider}
+
+## The response and the explanatory variable
+
+- When we are asking questions like 'how much cholesterol differs between a 40 year old and a 60 year old', we are often making implicit assumptions about what we want to explain:
+  - Cholesterol is the **response**, the variable being explained
+  - Age is the **explanatory variable**, the one doing the explaining[]{.gap}
+- Mapping the terminology from epi: the outcome is the response, the exposure is the explanatory variable
+
+## Try it: name the response
+
+| Study | Question |
+|--|------------|
+| 1 | Does blood pressure vary by daily salt intake? |
+| 2 | Would hours of revision affect exam score? |
+| 3 | Is cigarettes smoked per day in pregnancy a risk factor for birth weight? |
+| 4 | Does cholesterol become higher with older age? |
+
+- For each study, which variable is the response, and what in the question decides it?
+- Three minutes
+
+## Try it: the answer {.smaller}
+
+| Study | Question | Response | Explanatory variable |
+|--|------------|-----|-----|
+| 1 | Does blood pressure vary by daily salt intake? | Blood pressure | Daily salt intake |
+| 2 | Would hours of revision affect exam score? | Exam score | Hours of revision |
+| 3 | Is cigarettes smoked per day in pregnancy a risk factor for birth weight? | Birth weight | Cigarettes smoked per day |
+| 4 | Does cholesterol become higher with older age? | Cholesterol | Age |
+
+- The response is the variable the question wants explained[]{.gap}
+- The explanatory variable is the one that could plausibly have come first
+- Study 4's complication is why it's included: age can't be explained by cholesterol, so the direction is obvious there. Nothing in the arithmetic would have objected to fitting it the other way round
+
+## A regression model to answer these questions {.smaller}
+
+- All these questions can be answered using a simple linear regression:
+- Y = α + βX + ε
+  - Y: the response
+  - α: the intercept
+  - β: the slope
+  - X: the explanatory variable
+  - ε: the error the line doesn't capture[]{.gap}
+- X and Y are observed (the data)
+- α and β are model **coefficients** to be estimated
+- The assumptions ε carries come later
+
+## Fitting the line: least squares {.smaller}
+
+:::: {.columns}
+::: {.column width="58%"}
+
+- Ideally we want to estimate α and β so that the error is minimised
+- We can't because error is unobserved. We don't know the population regression line.
+- Instead we target the next best thing: the **residual**, the *vertical* distance between the estimated regression line and the data
+- Least squares picks the one line that makes the sum of the squared residuals smallest[]{.gap}
+- Vertical, not horizontal: the line is fitted to explain the response (vertical axis), so it's the response's own errors that get minimised
+:::
+::: {.column width="42%"}
+
+```{r}
+#| label: least-squares-schematic
+#| echo: false
+#| fig-width: 5
+#| fig-height: 4.6
+set.seed(3)
+ls_demo_x <- 1:10
+ls_demo_y <- 2 + 0.8 * ls_demo_x + rnorm(10, sd = 1.3)
+ls_demo_fit <- lm(y ~ x, data = data.frame(x = ls_demo_x, y = ls_demo_y))
+ls_demo_bad_b0 <- 1
+ls_demo_bad_b1 <- 0.3
+
+bad_df <- data.frame(panel = 'A badly fitted line', x = ls_demo_x, y = ls_demo_y)
+bad_df$fit <- ls_demo_bad_b0 + ls_demo_bad_b1 * bad_df$x
+bad_df$b0 <- ls_demo_bad_b0
+bad_df$b1 <- ls_demo_bad_b1
+
+good_df <- data.frame(panel = 'The least-squares line', x = ls_demo_x, y = ls_demo_y)
+good_df$fit <- predict(ls_demo_fit)
+good_df$b0 <- coef(ls_demo_fit)[1]
+good_df$b1 <- coef(ls_demo_fit)[2]
+
+demo_df <- bind_rows(bad_df, good_df)
+demo_df$panel <- factor(demo_df$panel, levels = c('A badly fitted line', 'The least-squares line'))
+abline_df <- demo_df |> distinct(panel, b0, b1)
+
+ggplot(demo_df, aes(x = x, y = y)) +
+  geom_segment(aes(xend = x, yend = fit), color = '#C0392B', linetype = 'dashed') +
+  geom_point() +
+  geom_abline(data = abline_df, aes(intercept = b0, slope = b1), color = '#4386AF', linewidth = 1) +
+  facet_wrap(~ panel, ncol = 1) +
+  theme(axis.text = element_blank(), axis.ticks = element_blank()) +
+  labs(x = NULL, y = NULL)
+```
+
+:::
+::::
+
+## Finding the line by hand {.smaller}
+
+```{r}
+#| label: ls-widget
+#| echo: false
+#| output: asis
+set.seed(42)
+ls_x <- c(1, 2, 3, 4, 4.5, 5.5, 6, 7, 8, 9)
+ls_y <- round(2 + 0.9 * ls_x + rnorm(10, sd = 1.1), 2)
+ls_fit <- lm(y ~ x, data = data.frame(x = ls_x, y = ls_y))
+ls_best_b0 <- round(unname(coef(ls_fit)[1]), 2)
+ls_best_b1 <- round(unname(coef(ls_fit)[2]), 2)
+ls_best_ss <- round(sum(residuals(ls_fit)^2), 2)
+ls_pts_json <- paste0('[', paste(sprintf('[%.2f,%.2f]', ls_x, ls_y), collapse = ','), ']')
+
+cat(sprintf('
+<div id="ls-widget" style="text-align:center;">
+<div style="margin-bottom:0.3em;">
+<label style="font-size:0.85em;">Intercept
+<input type="range" id="ls-intercept" min="0" max="6" step="0.5" value="3" style="vertical-align:middle;">
+</label>
+<label style="font-size:0.85em;margin-left:1em;">Slope
+<input type="range" id="ls-slope" min="-0.5" max="2" step="0.1" value="0.3" style="vertical-align:middle;">
+</label>
+</div>
+<svg id="ls-svg" width="760" height="330" style="max-width:100%%;"></svg>
+<div>
+<button id="ls-show-best" style="font-size:0.8em;padding:0.25em 0.7em;margin:0.15em;background:#00213B;color:#fff;border:none;border-radius:4px;cursor:pointer;">Show least-squares line</button>
+<button id="ls-reset" style="font-size:0.8em;padding:0.25em 0.7em;margin:0.15em;background:#ABB5C5;color:#00213B;border:none;border-radius:4px;cursor:pointer;">Reset</button>
+</div>
+<div id="ls-caption" style="margin-top:0.3em;font-size:0.9em;"></div>
+</div>
+<script>
+(function() {
+  var pts = %s;
+  var bestB0 = %s, bestB1 = %s, bestSS = %s;
+  var svg = document.getElementById("ls-svg");
+  var ns = "http://www.w3.org/2000/svg";
+  var w = 760, h = 330;
+  var marginTop = 16, marginRight = 16, marginBottom = 34, marginLeft = 44;
+  var plotW = w - marginLeft - marginRight;
+  var plotH = h - marginTop - marginBottom;
+  var xMin = 0, xMax = 10, yMin = 0, yMax = 16;
+  var showBest = false;
+
+  function xPix(x) { return marginLeft + (x - xMin) / (xMax - xMin) * plotW; }
+  function yPix(y) { return marginTop + (1 - (y - yMin) / (yMax - yMin)) * plotH; }
+
+  function sumSquares(b0, b1) {
+    var ss = 0;
+    pts.forEach(function(p) {
+      var resid = p[1] - (b0 + b1 * p[0]);
+      ss += resid * resid;
+    });
+    return ss;
+  }
+
+  function draw() {
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    var xAxis = document.createElementNS(ns, "line");
+    xAxis.setAttribute("x1", xPix(xMin)); xAxis.setAttribute("y1", yPix(yMin));
+    xAxis.setAttribute("x2", xPix(xMax)); xAxis.setAttribute("y2", yPix(yMin));
+    xAxis.setAttribute("stroke", "#00213B");
+    svg.appendChild(xAxis);
+    var yAxis = document.createElementNS(ns, "line");
+    yAxis.setAttribute("x1", xPix(xMin)); yAxis.setAttribute("y1", yPix(yMin));
+    yAxis.setAttribute("x2", xPix(xMin)); yAxis.setAttribute("y2", yPix(yMax));
+    yAxis.setAttribute("stroke", "#00213B");
+    svg.appendChild(yAxis);
+
+    var b0 = parseFloat(document.getElementById("ls-intercept").value);
+    var b1 = parseFloat(document.getElementById("ls-slope").value);
+
+    pts.forEach(function(p) {
+      var fitted = b0 + b1 * p[0];
+      var seg = document.createElementNS(ns, "line");
+      seg.setAttribute("x1", xPix(p[0])); seg.setAttribute("y1", yPix(p[1]));
+      seg.setAttribute("x2", xPix(p[0])); seg.setAttribute("y2", yPix(fitted));
+      seg.setAttribute("stroke", "#C0392B");
+      seg.setAttribute("stroke-dasharray", "3,3");
+      svg.appendChild(seg);
+    });
+
+    var line = document.createElementNS(ns, "line");
+    line.setAttribute("x1", xPix(xMin)); line.setAttribute("y1", yPix(b0 + b1 * xMin));
+    line.setAttribute("x2", xPix(xMax)); line.setAttribute("y2", yPix(b0 + b1 * xMax));
+    line.setAttribute("stroke", "#4386AF");
+    line.setAttribute("stroke-width", "2.5");
+    svg.appendChild(line);
+
+    if (showBest) {
+      var bline = document.createElementNS(ns, "line");
+      bline.setAttribute("x1", xPix(xMin)); bline.setAttribute("y1", yPix(bestB0 + bestB1 * xMin));
+      bline.setAttribute("x2", xPix(xMax)); bline.setAttribute("y2", yPix(bestB0 + bestB1 * xMax));
+      bline.setAttribute("stroke", "#1B7A3D");
+      bline.setAttribute("stroke-width", "2.5");
+      bline.setAttribute("stroke-dasharray", "6,3");
+      svg.appendChild(bline);
+    }
+
+    pts.forEach(function(p) {
+      var c = document.createElementNS(ns, "circle");
+      c.setAttribute("cx", xPix(p[0])); c.setAttribute("cy", yPix(p[1]));
+      c.setAttribute("r", 5);
+      c.setAttribute("fill", "#00213B");
+      svg.appendChild(c);
+    });
+
+    var ss = sumSquares(b0, b1);
+    var caption = "Your line: intercept " + b0.toFixed(1) + ", slope " + b1.toFixed(1) +
+      ". Sum of squared residuals: " + ss.toFixed(1);
+    if (showBest) {
+      caption += ". Least-squares line: intercept " + bestB0.toFixed(2) + ", slope " + bestB1.toFixed(2) +
+        ", sum of squared residuals " + bestSS.toFixed(1) + " (the smallest possible)";
+    }
+    document.getElementById("ls-caption").textContent = caption;
+  }
+
+  ["ls-intercept", "ls-slope"].forEach(function(id) {
+    var el = document.getElementById(id);
+    el.addEventListener("input", draw);
+    el.addEventListener("keydown", function(e) { e.stopPropagation(); });
+  });
+
+  document.getElementById("ls-show-best").addEventListener("click", function() {
+    showBest = true;
+    draw();
+  });
+  document.getElementById("ls-reset").addEventListener("click", function() {
+    showBest = false;
+    document.getElementById("ls-intercept").value = 3;
+    document.getElementById("ls-slope").value = 0.3;
+    draw();
+  });
+
+  draw();
+})();
+</script>
+', ls_pts_json, ls_best_b0, ls_best_b1, ls_best_ss))
+```
+
+- Drag the sliders to change the line, and watch the sum of squared residuals rise and fall
+- Every line has a total squared error, and exactly one line makes it smallest[]{.gap}
+
+## How much does cholesterol differ per year of age? {.smaller}
+
+```{r}
+#| label: lm-age-table
+#| echo: false
+tibble(
+  Quantity = c('Intercept, cholesterol at age zero, mmol/L', 'Slope, per year of age, mmol/L'),
+  Estimate = c(round(int_age$estimate, 3), round(slope_age$estimate, 5)),
+  `95% CI` = c(
+    paste0(round(int_age$conf.low, 3), ' to ', round(int_age$conf.high, 3)),
+    paste0(round(slope_age$conf.low, 5), ' to ', round(slope_age$conf.high, 5))
+  ),
+  p = c('< 0.001', '< 0.001')
+) |>
+  gt()
+```
+
+- Let's focus on the slope first, because it shows whether, and to which extent, cholesterol changes with age:
+- H0: the slope of cholesterol on age is zero, i.e., cholesterol doesn't vary with age
+- H1: the slope is not zero, i.e., cholesterol varies with age[]{.gap}
+- Total cholesterol was on average `r round(slope_age$estimate, 4)` mmol/L higher for each additional year of age (95% CI `r round(slope_age$conf.low, 4)` to `r round(slope_age$conf.high, 4)` mmol/L, p < 0.001)
+
+## Reading the slope {.smaller}
+
+```{r}
+#| label: age-coef-slope
+#| echo: false
+age_coef_gt
+```
+
+- The slope is the difference in mean cholesterol associated with one additional year of age, in mmol/L per year
+- Across the twenty years between 40 and 60 that's about `r round(slope_age$estimate * 20, 2)` mmol/L, the answer a correlation coefficient could never give[]{.gap}
+- We say 'associated with', not 'causes' because we can't be sure it is causal
+
+## Reading the intercept {.smaller}
+
+```{r}
+#| label: age-coef-intercept
+#| echo: false
+age_coef_gt
+```
+
+- The intercept is the model's fitted value where the explanatory variable is zero: here, `r round(int_age$estimate, 2)` mmol/L at age zero
+- Nobody in this survey is a newborn, so this intercept is a mathematical anchor that minimises the residuals, not something we want to interpret[]{.gap}
+- The intercept becomes a real, interpretable number as soon as the explanatory variable is a set of categories, coming up shortly
+
+## The fitted line on the data {.smaller}
+
+:::: {.columns}
+::: {.column width="38%"}
+
+- The least-squares line for cholesterol on age, drawn over the scatterplot from Block 1
+- The shaded band is a 95% CI for the line, drawn as a band instead of two numbers[]{.gap}
+- The band is narrow because n is large
+- The points still scatter widely around it indicating age per se doesn't explain much of the variation in cholesterol
+:::
+::: {.column width="62%"}
+
+```{r}
+#| label: scatter-age-line
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5
+#| message: false
+ggplot(age_complete, aes(x = age, y = chol)) +
+  geom_point(alpha = 0.1) +
+  geom_smooth(method = 'lm') +
+  labs(x = 'Age (years)', y = 'Total cholesterol (mmol/L)')
+```
+
+:::
+::::
+
+## The full output {.full-output}
+
+```{r}
+#| label: summary-age
+#| echo: false
+options(width = 76)
+summary(m_age)
+```
+
+- R prints all of this at once. The coefficient tables on earlier slides are taken from this printout
+
+## What else the output carries {.smaller}
+
+- Three quantities sit alongside the coefficients, in the last lines of the printout (R squared has its own slide next):
+
+```{r}
+#| label: summary-age-tail
+#| echo: false
+options(width = 76)
+out_lines <- capture.output(summary(m_age))
+cat(tail(out_lines[nzchar(out_lines)], 3), sep = '\n')
+```
+
+- The **residual standard error**: the typical size of a residual, in the response's units. Here, `r round(glance_age$sigma, 2)` mmol/L. It describes how far the points sit from the line, not how precise the line is
+- The **F-statistic** tests the model as a whole. With one explanatory variable, that's the same question the slope's own test already answers. It is more useful when we have more explanatory variables in the model[]{.gap}
+
+## Multiple R-squared {.smaller}
+
+- **Multiple R-squared** is the proportion of the response's total variation the model accounts for, from 0 to 1
+- R² = 1 − (residual sum of squares / total sum of squares)[]{.gap}
+- With one explanatory variable, R squared is exactly the square of Pearson's r, and hence the name
+- We report it because it answers a different question from the slope's p-value: not whether the association is real, but how much of the response the model explains
+
+## Cholesterol and age: R squared is under 1%
+
+- R squared is `r round(glance_age$r.squared, 4)`: age accounts for under 1% of the variation in cholesterol between participants[]{.gap}
+- Set that against the slope's p-value, well below 0.001, on the same model
+- An association can be real, precisely estimated, and still leave almost all of the response unexplained
+- A low R squared doesn't mean there's no association, only that age alone explains little of the variation
+
+## Can we trust the regression line?
+
+- Fitting the regression line is very easy (you can do it in Excel), but interpreting it and judging whether it's reliable is harder
+- It would still fit if the relationship were curved, if the scatter widened as age rose, or if the same people had been measured several times[]{.gap}
+- Nothing in the output distinguishes those cases from a well-behaved one, so the check has to be made deliberately
+
+## What the model assumes
+
+- **Linearity**: a straight line is the right shape
+- **Constant variance**: the scatter doesn't widen along the line
+- **Normally distributed errors**: we don't know the true errors but can look at the residuals[]{.gap}
+- **Independence between observations**: a property of how the data were collected, not something we can show from a plot or a test
+
+## Residuals against fitted values
+
+- Plotting each residual against its fitted value checks linearity and constant variance together
+- An even band around zero, with no curve and no change in spread from left to right, is what a well-behaved model looks like[]{.gap}
+
+## Cholesterol and age: residuals against fitted {.smaller}
+
+:::: {.columns}
+::: {.column width="38%"}
+
+- Most points sit in an even band around zero
+  - There's no visible trend
+  - The spread also looks constant along the fitted line
+- A small group of participants with very high cholesterol sit well above it
+  - They can be genuine outliers, e.g., someone whose disease puts them well outside the population norm
+:::
+::: {.column width="62%"}
+
+```{r}
+#| label: resid-fitted-age
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5
+ggplot(aug_age, aes(x = .fitted, y = .resid)) +
+  geom_point(alpha = 0.1) +
+  geom_hline(yintercept = 0) +
+  labs(x = 'Fitted value (mmol/L)', y = 'Residual (mmol/L)')
+```
+
+:::
+::::
+
+## The QQ plot
+
+- The standardised residuals, plotted against what a normal distribution would have produced, with a reference line
+- Points on the line are consistent with normally distributed residuals[]{.gap}
+- A systematic departure from it is not
+
+## Cholesterol and age: the QQ plot {.smaller}
+
+:::: {.columns}
+::: {.column width="38%"}
+
+- The middle of the distribution sits close to the line. The upper tail pulls away: the same high-cholesterol participants again
+- With `r format(nobs(m_age), big.mark = ',')` participants, the estimates hold up despite it because of the CLT. In a small sample, this same picture would be a real concern[]{.gap}
+- Taken together, the checks suggest the findings are reasonably reliable
+:::
+::: {.column width="62%"}
+
+```{r}
+#| label: qq-age
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5
+ggplot(aug_age, aes(sample = .std.resid)) +
+  stat_qq() +
+  stat_qq_line() +
+  labs(x = 'Theoretical quantiles', y = 'Standardised residuals')
+```
+
+:::
+::::
+
+## Block 3: a categorical explanatory variable {background-image="assets/skyline.jpg" background-size="cover" .divider}
+
+## When the explanatory variable has categories {.smaller}
+
+- A simple linear regression describes how a continuous response varies with a continuous explanatory variable
+- What if the explanatory variable is categorical?
+- The simplest case: a binary variable
+  - Same as the coin flip example, we will need to convert the categories to 0 and 1:
+  - The 'reference category' (the category to compare with) becomes 0
+  - The 'active category' becomes 1
+- The intercept becomes the mean of the reference[]{.gap}
+- The slope becomes the difference of active minus reference
+
+## Does cholesterol differ between men and women?
+
+```{r}
+#| label: lm-gender-table
+#| echo: false
+tibble(
+  Quantity = c('Intercept, mean cholesterol in men, mmol/L', 'Slope for women, mmol/L'),
+  Estimate = c(round(int_gender$estimate, 3), round(slope_gender$estimate, 3)),
+  `95% CI` = c(
+    paste0(round(int_gender$conf.low, 3), ' to ', round(int_gender$conf.high, 3)),
+    paste0(round(slope_gender$conf.low, 3), ' to ', round(slope_gender$conf.high, 3))
+  ),
+  p = c('< 0.001', '< 0.001')
+) |>
+  gt()
+```
+
+- H0: mean total cholesterol is the same in men and women
+- H1: it differs[]{.gap}
+- Mean total cholesterol was `r round(slope_gender$estimate, 2)` mmol/L higher in women than in men (95% CI `r round(slope_gender$conf.low, 2)` to `r round(slope_gender$conf.high, 2)` mmol/L, p < 0.001)
+
+## This is a replication of the t-test
+
+- Week 9 reported this exact comparison: `r round(slope_gender$estimate, 2)` mmol/L higher in women, 95% CI `r round(slope_gender$conf.low, 2)` to `r round(slope_gender$conf.high, 2)` mmol/L
+- The two agree to several decimal places here, because the two groups happen to have nearly the same spread[]{.gap}
+- The two procedures aren't identical, though: a t-test's default doesn't assume the groups share a spread, and a regression does
+- In practice the two answers rarely differ materially
+
+## When the explanatory variable has three categories {.smaller}
+
+- A regression model also handles an explanatory variable with more than two categories
+- Say for a three-category variable:
+  - The 'reference category' (the category to compare with) is 0 on every indicator
+  - The first 'active category' gets a 0/1 indicator (also known as *dummy variable*)
+  - Each further 'active category' gets its own 0/1 indicator
+- All comparisons were made against the reference[]{.gap}
+
+## Does cholesterol differ by education?
+
+```{r}
+#| label: lm-edu-table
+#| echo: false
+tibble(
+  Quantity = c(
+    "Intercept, mean cholesterol, 'less than high school', mmol/L",
+    "Slope for 'High school graduate', mmol/L",
+    "Slope for 'Above high school', mmol/L"
+  ),
+  Estimate = c(round(int_edu$estimate, 3), round(hs_edu$estimate, 3), round(above_edu$estimate, 3)),
+  `95% CI` = c(
+    paste0(round(int_edu$conf.low, 3), ' to ', round(int_edu$conf.high, 3)),
+    paste0(round(hs_edu$conf.low, 3), ' to ', round(hs_edu$conf.high, 3)),
+    paste0(round(above_edu$conf.low, 3), ' to ', round(above_edu$conf.high, 3))
+  ),
+  p = c('n/a', format(round(hs_edu$p.value, 3), nsmall = 3), format(round(above_edu$p.value, 3), nsmall = 3))
+) |>
+  gt()
+```
+
+- H0: a non-reference category's mean cholesterol equals the reference category's
+- H1: it differs[]{.gap}
+- Neither contrast is anywhere near significant. On this evidence, education isn't associated with cholesterol in this sample
+
+## Changing the reference
+
+- A reference category is arbitrary and decided based on the research question and framing
+- It changes the numbers because the comparison changes, but the fit stays the same. Changing the reference doesn't provide more information
+- R squared (`r format(glance_edu$r.squared, scientific = TRUE, digits = 3)`, both parameterisations) and the residual standard error don't move at all[]{.gap}
+
+## Try it: read the education table {.smaller}
+
+```{r}
+#| label: tryit-edu-table
+#| echo: false
+tibble(
+  Quantity = c(
+    "Intercept, mean cholesterol, 'less than high school', mmol/L",
+    "Slope for 'High school graduate', mmol/L",
+    "Slope for 'Above high school', mmol/L"
+  ),
+  Estimate = c(round(int_edu$estimate, 3), round(hs_edu$estimate, 3), round(above_edu$estimate, 3)),
+  `95% CI` = c(
+    paste0(round(int_edu$conf.low, 3), ' to ', round(int_edu$conf.high, 3)),
+    paste0(round(hs_edu$conf.low, 3), ' to ', round(hs_edu$conf.high, 3)),
+    paste0(round(above_edu$conf.low, 3), ' to ', round(above_edu$conf.high, 3))
+  ),
+  p = c('n/a', format(round(hs_edu$p.value, 3), nsmall = 3), format(round(above_edu$p.value, 3), nsmall = 3))
+) |>
+  gt()
+```
+
+- Which education category is the reference, and how can you tell from the table alone?
+- What's the model's estimated mean cholesterol for a participant in each of the three categories?[]{.gap}
+- What would happen to the coefficients, and to R squared, if 'above high school' were made the reference instead?
+- Three minutes
+
+## Try it: the answer {.smaller}
+
+```{r}
+#| label: answer-edu-table
+#| echo: false
+tibble(
+  Quantity = c(
+    "Intercept, mean cholesterol, 'less than high school', mmol/L",
+    "Slope for 'High school graduate', mmol/L",
+    "Slope for 'Above high school', mmol/L"
+  ),
+  Estimate = c(round(int_edu$estimate, 3), round(hs_edu$estimate, 3), round(above_edu$estimate, 3)),
+  `95% CI` = c(
+    paste0(round(int_edu$conf.low, 3), ' to ', round(int_edu$conf.high, 3)),
+    paste0(round(hs_edu$conf.low, 3), ' to ', round(hs_edu$conf.high, 3)),
+    paste0(round(above_edu$conf.low, 3), ' to ', round(above_edu$conf.high, 3))
+  ),
+  p = c('n/a', format(round(hs_edu$p.value, 3), nsmall = 3), format(round(above_edu$p.value, 3), nsmall = 3))
+) |>
+  gt()
+```
+
+- The reference is the one category without a row of its own: 'less than high school', mean `r round(int_edu$estimate, 3)` mmol/L[]{.gap}
+- The other two are the intercept plus their own contrasts: `r round(int_edu$estimate + hs_edu$estimate, 3)` mmol/L and `r round(int_edu$estimate + above_edu$estimate, 3)` mmol/L
+- The rows would become contrasts against 'above high school', while R squared stayed the same, because the fit is the same fit
+
+## Block 4: prediction {background-image="assets/skyline.jpg" background-size="cover" .divider}
+
+## Using the model to predict {.smaller}
+
+- 'Predict' is used loosely here. We are not really predicting what would happen in the future
+- Instead, we are *interpolating* or *extrapolating*
+- Consider a toy example with 3 data points: cholesterol readings from people aged 30, 50, and 70
+  - Interpolation is to use the regression model to estimate the average cholesterol for 31, 40 and 60 year olds even if our data don't include these exact ages
+  - Extrapolation is to use the regression model to estimate the average cholesterol for 29 and 75 year olds
+
+## Confidence and prediction intervals {.smaller}
+
+- Put a value of the explanatory variable into the fitted regression line, and it returns a fitted value for the response, with a CI round it
+- That CI describes the precision of the predicted **mean**, not of a single **individual**[]{.gap}
+- A **prediction interval**, a different quantity from a CI, describes the precision for an individual. It's always wider, since predicting one person is less certain than predicting the average across many
+- In public health we mostly report the CI, not the prediction interval
+- A prediction interval could in theory be useful in precision medicine, but it is usually too wide to be useful
+
+## Predicted mean cholesterol at age 45
+
+- The fitted regression line: cholesterol = α + β × age[]{.gap}
+- Substituting the estimates: `r round(int_age$estimate, 3)` + `r round(slope_age$estimate, 5)` × 45
+  - The slope term: `r round(slope_age$estimate, 5)` × 45 = `r round(slope_age$estimate * 45, 2)`
+  - Adding the intercept: `r round(int_age$estimate, 3)` + `r round(slope_age$estimate * 45, 2)` = `r round(int_age$estimate + slope_age$estimate * 45, 2)` mmol/L
+- With a 95% CI of `r round(pred_age[1, 'lwr'], 2)` to `r round(pred_age[1, 'upr'], 2)` mmol/L[]{.gap}
+- Age 45 sits comfortably inside the range this model was fitted on, 18 to 85 years, so the data support this answer
+
+## Try it: predict at age 150
+
+```{r}
+#| label: tryit-predict-table
+#| echo: false
+tibble(
+  Quantity = c('Intercept, mmol/L', 'Slope, mmol/L per year', 'Observed age range, years'),
+  Value = c(round(int_age$estimate, 3), round(slope_age$estimate, 5), '18 to 85')
+) |>
+  gt()
+```
+
+- Work out the predicted mean cholesterol for a person aged 150
+- Do you believe the answer, and what in the model would have warned you?[]{.gap}
+- Three minutes
+
+## Try it: the answer
+
+- `r round(int_age$estimate, 3)` plus `r round(slope_age$estimate, 5)` times 150 gives `r round(pred_age[2, 'fit'], 2)` mmol/L, with a CI for the mean of `r round(pred_age[2, 'lwr'], 2)` to `r round(pred_age[2, 'upr'], 2)` mmol/L[]{.gap}
+- That's an entirely ordinary cholesterol reading, next to a narrow CI. Nothing in the output looks wrong
+- The model holds no information about anyone over 85, and answers anyway
+- The only check is the one we make, on the input, against the range the model was fitted on
+
+## Gentamicin clearance in babies: how much per kilogram? {.smaller}
+
+| Quantity | Estimate | 95% CI | p |
+|----------|----|--------|---|
+| Intercept, l/h | -0.027 | -0.047 to -0.008 | 0.008 |
+| Slope, per kg of weight, l/h | 0.074 | 0.066 to 0.082 | < 0.001 |
+
+- Gentamicin is an antibiotic given for serious infections in newborns, and the kidneys clear it, so the safe dose depends on the baby's clearance[]{.gap}
+- Gentamicin clearance (l/h) regressed on weight (kg), `r gent_n` babies. R squared `r gent_r2`[]{.gap}
+- For a 3 kg baby, the predicted clearance is `r gent_pred_3kg` l/h, and the dose follows from it
+
+## A 300 g baby: an impossible prediction
+
+- What about a very preterm baby born at 25 weeks, weighing only 300 g?
+- The same formula for a 300 g baby returns a clearance of `r gent_pred_300g` l/h
+- A negative clearance is physically impossible[]{.gap}
+- This relates to the linear regression model assuming the response variable to change *linearly* with the explanatory variable
+- Likely this is also an extrapolation
+
+## Is sedentary time associated with cholesterol?
+
+```{r}
+#| label: lm-sed-table
+#| echo: false
+tibble(
+  Quantity = 'Slope, cholesterol per hour/day of sedentary time, mmol/L',
+  Estimate = round(slope_sed$estimate, 4),
+  `95% CI` = paste0(round(slope_sed$conf.low, 4), ' to ', round(slope_sed$conf.high, 4)),
+  p = format(round(slope_sed$p.value, 3), nsmall = 3)
+) |>
+  gt()
+```
+- The slope is close to zero, and small next to its own 95% CI[]{.gap}
+- The CI includes zero, so these data are consistent with no association. R squared is essentially zero
+- Cholesterol varies with age, and sedentary time might too
+- Is age a confounder? Can we deal with it in the regression model?
+- Next week answers that question
+
+## Application: write the sentence {background-image="assets/skyline.jpg" background-size="cover" .divider}
+
+## Two numbers, no interpretation {.smaller}
+
+| Quantity | Estimate | 95% CI | p |
+|----------|----|--------|---|
+| BMI, per additional hour/day of sleep, kg/m² | -0.46 | -0.69 to -0.24 | < 0.001 |
+
+- Potter, Cade and Hardie (2017), *PLOS ONE*: [sleep duration and BMI in `r format(app_n, big.mark = ',')` UK adults](https://doi.org/10.1371/journal.pone.0182195), adjusted for age, ethnicity, sex, smoking, and socioeconomic status[]{.gap}
+- In pairs: write one sentence interpreting this coefficient in context and in its units, and one sentence stating what the model assumes
+- Five minutes
+
+## The sentences, and what the authors wrote 
+
+- BMI was on average 0.46 kg/m² lower for each additional hour/day of sleep (95% CI 0.69 to 0.24 kg/m² lower, p < 0.001), after adjustment for age, ethnicity, sex, smoking, and socioeconomic status[]{.gap}
+- The model assumes linearity, constant variance, normally distributed residuals, and independence between participants
+- The authors' own sentence: 'participants had 0.46 kg/m2 lower BMI values (95% CI -0.69 to -0.24 kg/m2, p < 0.001) per additional hour of sleep'
+- Also an accurate description
+
+## Key points, and what the lab does {.smaller}
+
+- A correlation coefficient says how strongly two continuous variables move together, but not by what amount
+- A regression slope quantifies the amount, in the units of the response per unit of the explanatory variable, with a CI and a p-value[]{.gap}
+- Which variable is the response is an epidemiological assumption, not a statistical question
+- A regression model is only valid if assumptions are reasonably met, and prediction is only reliable if we avoid extrapolation
+- The lab fits every one of these models in R

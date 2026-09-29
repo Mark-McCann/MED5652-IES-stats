@@ -6,7 +6,7 @@ We need somewhere to save R, RStudio, and our clinic record on the computer, so 
 
 ## Chapter intended learning outcomes
 
-By the end of this chapter you will be able to:
+By the end of this week you will be able to:
 
 1.  Install R and RStudio on your own device, and verify the installation by running code and loading a package
 2.  Use an RStudio Project and a saved script, and justify scripting instead of working in the console
@@ -55,7 +55,7 @@ Working with R means managing at least a couple of files, most likely some data 
 
 ### Creating an RStudio Project
 
-An RStudio Project turns your folder into something RStudio understands directly. RStudio will consider all folders and files relative to the specific project folder, rather than all the folders on the computer. This allows you to reach files using relative paths rather than having to type a full path every time (we will cover this later) and is also helpful when working across multiple projects, and when working as part of a team of analysts on a project.
+An RStudio Project turns your folder into something RStudio understands directly. RStudio will consider all folders and files relative to the specific project folder, not all the folders on the computer. This allows you to reach files using relative paths rather than having to type a full path every time (we will cover this later) and is also helpful when working across multiple projects, and when working as part of a team of analysts on a project.
 
 1.  In RStudio's menu, go to **File → New Project...**
 2.  Choose **Existing Directory**, since the folder already exists.
@@ -105,7 +105,7 @@ age
 
 ## Vectors and a first look at data frames
 
-Most of what we do with data in this course means handling many values of the same variable at once, everyone's age in a sample, say, not just one person's. `c()` combines several values into one object like that, called a **vector**. The single `age` we assigned a moment ago only records one patient; the log needs all four. The code below combines all four ages and assigns the result to `age`, overwriting the single value from before, exactly the way the Objects and assignment section said an object could be overwritten:
+Most of what we do with data in this course means handling many values of the same variable at once, everyone's age in a sample, say, not just one person's. `c()` combines several values into one object like that, called a **vector**. The single `age` we assigned a moment ago only records one patient; the log needs all four. The code below combines all four ages and assigns the result to `age`, overwriting the single value from before, the way the Objects and assignment section said an object could be overwritten:
 
 ```{r}
 #| label: vector-demo
@@ -179,7 +179,7 @@ mean(chol)
 mean(chol, na.rm = TRUE)
 ```
 
-`chol` has one missing value, `NA`, for P03. `mean()`'s `na.rm` argument defaults to `FALSE`, so by default a single missing value makes the whole result `NA`, exactly as the first line shows. Setting `na.rm = TRUE` tells `mean()` to drop that one missing value first, then average the three that remain. We'll meet `na.rm` constantly from here on, and it always means the same thing: drop the missing values before calculating, and be clear about how many were dropped. `chol` joins the log the same way `weight_kg` just did:
+`chol` has one missing value, `NA`, for P03. `mean()`'s `na.rm` argument defaults to `FALSE`, so by default a single missing value makes the whole result `NA`, as the first line shows. Setting `na.rm = TRUE` tells `mean()` to drop that one missing value first, then average the three that remain. We'll meet `na.rm` constantly from here on, and it always means the same thing: drop the missing values before calculating, and be clear about how many were dropped. `chol` joins the log the same way `weight_kg` just did:
 
 ```{r}
 #| label: add-chol
@@ -254,7 +254,7 @@ class('P01')
 class(34)
 ```
 
-`'P01'` is text. `34` is a number, and `class()` treats them completely differently. The same logic applies to object and column names: writing `age` refers to the vector we created earlier, but writing `'age'` is just the three-letter word.
+`'P01'` is text. `34` is a number, and `class()` treats them completely differently. The same logic applies to object and column names: writing `age` refers to the vector we created earlier, but writing `'age'` is only the three-letter word.
 
 A column name containing a space needs a different kind of quoting mark entirely: backticks, not quotation marks.
 
@@ -285,7 +285,7 @@ If we see other people's code, we may find `%>%`, the older pipe, which is only 
 
 ## Reading errors
 
-The errors below are R telling us our *code* is wrong: a typo, a missing bracket, the wrong function name. That's a different job from checking whether the *data* are wrong, which is Chapter 2's problem once we're reading in a real file rather than typing values ourselves. Even a very experienced R user encounters errors constantly. The skill is reading what the message says, not reacting to the fact that something went wrong. R usually formats errors as a short heading followed by a line starting with `!` stating what went wrong. Five kinds of failure account for nearly everything we'll see in this course.
+The errors below are R telling us our *code* is wrong: a typo, a missing bracket, the wrong function name. That's a different job from checking whether the *data* are wrong, which is Chapter 2's problem once we're reading in a real file instead of typing values ourselves. Even a very experienced R user encounters errors constantly. The skill is reading what the message says, not reacting to the fact that something went wrong. R usually formats errors as a short heading followed by a line starting with `!` stating what went wrong. Five kinds of failure account for nearly everything we'll see in this course.
 
 **Object not found.** R can't find something by that name, usually a typo or a variable that was never created:
 
@@ -326,7 +326,7 @@ c(34, 61) c(45, 29)
 c(34, 61, 45, 29)
 ```
 
-Notice the fix is just `age` written out longhand: a missing comma between two calls that were meant to be one is exactly the mistake that would have split our own age vector in two.
+The fix is `age` written out longhand: a missing comma between two calls that were meant to be one is the same mistake that would have split our own age vector in two.
 
 **Unexpected end of input.** A bracket was opened and never closed, so R keeps waiting for the rest of the expression that never arrives. In the console this shows up as a `+` prompt instead of the usual `>`, waiting for us to finish the line; here, where the code has to run to completion on its own, it shows as an error instead:
 
@@ -353,7 +353,7 @@ The warning line above states the actual reason, a missing file, before the erro
 
 ## Getting help
 
-Every function used in this course has a help page. Typing `?mean` in the console and pressing Enter opens `mean()`'s help page in the Help pane, bottom-right, showing exactly what arguments it takes and what it returns. It's usually faster than searching online, and it's always correct for the version of R installed. RStudio also keeps a set of cheat sheets under **Help → Cheatsheets**, one per major package. Beyond that, this book itself stays the main reference for the rest of the course.
+Every function used in this course has a help page. Typing `?mean` in the console and pressing Enter opens `mean()`'s help page in the Help pane, bottom-right, which shows what arguments it takes and what it returns. It's usually faster than searching online, and it's always correct for the version of R installed. RStudio also keeps a set of cheat sheets under **Help → Cheatsheets**, one per major package. Beyond that, this book itself stays the main reference for the rest of the course.
 
 ## The finished log
 
@@ -364,7 +364,7 @@ Four sections ago we had nothing but an idea for a table. This is what we built,
 visits
 ```
 
-We can check what type each piece is, exactly the way the Data types section did partway through:
+We can check what type each piece is, the same way the Data types section did partway through:
 
 ```{r}
 #| label: worked-class
@@ -405,21 +405,21 @@ Everything in `visits` only exists inside this R session, in memory. Close RStud
 write.csv(visits, 'visits.csv', row.names = FALSE)
 ```
 
-Left out, `write.csv()` adds an extra column at the front of the file, numbering the rows 1 to 4. That's not part of our data, just R's own internal row labels leaking into the file, and it would show up as a stray, unlabelled column the moment the file is opened. `FALSE` tells `write.csv()` to leave it out and write only the columns we built.
+Left out, `write.csv()` adds an extra column at the front of the file, numbering the rows 1 to 4. That's not part of our data, only R's own internal row labels leaking into the file, and it would show up as a stray, unlabelled column the moment the file is opened. `FALSE` tells `write.csv()` to leave it out and write only the columns we built.
 
-That line just wrote a real file, `visits.csv`, sitting on disk the moment this page rendered, independent of R and of this book. In our own project, following the `data`/`scripts`/`outputs` structure from earlier in this chapter, this is what the `outputs` subfolder is for: a file we saved out, not one we're about to read back in. Opening it, in a spreadsheet application or a plain text editor, shows exactly what `visits` held in R: patient IDs, ages, smoking status, weight, and cholesterol, one row per patient, values separated by commas, no formatting or formulas hidden behind them. Chapter 2 explains why that matters, the moment we start reading files back in instead of writing them out.
+That line just wrote a real file, `visits.csv`, sitting on disk the moment this page rendered, independent of R and of this book. In our own project, following the `data`/`scripts`/`outputs` structure from earlier in this chapter, this is what the `outputs` subfolder is for: a file we saved out, not one we're about to read back in. Opening it, in a spreadsheet application or a plain text editor, shows what `visits` held in R: patient IDs, ages, smoking status, weight, and cholesterol, one row per patient, values separated by commas, no formatting or formulas hidden behind them. Chapter 2 explains why that matters, the moment we start reading files back in instead of writing them out.
 
-Every idea used to build this log, a vector, a data frame, `$`, a comparison, loading a package, the pipe, comes back constantly from Chapter 2 onward. Only the data changes: Chapter 2 brings in this same clinic's real log, all eight patients, kept exactly as messily as real logs are.
+Every idea used to build this log, a vector, a data frame, `$`, a comparison, loading a package, the pipe, comes back constantly from Chapter 2 onward. Only the data changes: Chapter 2 brings in this same clinic's real log, all eight patients, kept as messy as real logs are.
 
 ## Exercises
 
 **Exercise 1** (ILO 3). Create a vector called `height_cm` holding the values of 177, 155, 168, 181, using `c()` and `<-`. Check its class with `class()`, and confirm `height_cm` appears in the Environment pane after you run your code.
 
-**Exercise 2** (ILOs 4, 5). Using `visits$chol`, round the values to the nearest whole number, naming the `digits` argument explicitly rather than relying on position. Then build a logical condition that identifies which patients have a cholesterol reading above 5 and are smokers, combining a comparison operator with `&`.
+**Exercise 2** (ILOs 4, 5). Using `visits$chol`, round the values to the nearest whole number, naming the `digits` argument explicitly instead of relying on position. Then build a logical condition that identifies which patients have a cholesterol reading above 5 and are smokers, combining a comparison operator with `&`.
 
 Then open `round()`'s help page by typing `?round` in the console. Find the **Usage** section at the top, and write down what value `digits` takes when you don't supply one. Check your answer by running `round()` on the same values with the `digits` argument left out entirely.
 
-**Exercise 3** (ILOs 4, 5). Update the data frame `visits` to include the new `height_cm` variable. Calculate the BMI (weight in kg divided by height in metres, squared) of all the patients by using the `$` sign.
+**Exercise 3** (ILOs 4, 5). Update the data frame `visits` to include the new `height_cm` variable. Calculate the BMI (weight in kg divided by height in metres, squared) of all the patients by using the `$` sign. In R, `/` divides and `^` raises to a power, so `x^2` is `x` squared.
 
 **Exercise 4** (ILO 5). Write a piped sequence, using `|>`, that takes `visits$age`, finds its mean, and rounds the result to zero decimal places. Then use `select()` to keep just `patient_id` and `smoker` from `visits`, and write one sentence stating how the result differs from `visits$smoker`.
 
@@ -509,7 +509,7 @@ visits$age |> mean() |> round(digits = 0)
 select(visits, patient_id, smoker)
 ```
 
-`select(visits, patient_id, smoker)` returns a data frame with two columns and four rows. `visits$smoker` returns just the smoker column, on its own, as a bare vector with no `patient_id` alongside it and no data frame structure around it.
+`select(visits, patient_id, smoker)` returns a data frame with two columns and four rows. `visits$smoker` returns only the smoker column, on its own, as a bare vector with no `patient_id` alongside it and no data frame structure around it.
 
 **Self-check answers**
 

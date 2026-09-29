@@ -212,7 +212,7 @@ tibble(
 ```
 
 - Women reported slightly more sedentary time than men, about `r round(sed_diff, 2)` hours/day (95% CI `r round(sed_ci[1], 2)` to `r round(sed_ci[2], 2)` hours/day, p = `r format(round(sed_p, 3), nsmall = 3)`)
-- p is below 0.05, so we reject H0[]{.gap}
+- p is below 0.05, so we reject H0: the result is **statistically significant**[]{.gap}
 - But it is small: about 15 minutes a day, on a scale of many hours a day
 
 ## Compatibility, not a verdict
@@ -279,7 +279,26 @@ tibble(
 - For each row, would the test on the same data come out below 0.05? How do you know?
 - Three minutes
 
-## Try it: the answer
+## Try it: the answer {.smaller}
+
+```{r}
+#| label: tryit1-table-answer
+#| echo: false
+tibble(
+  Quantity = c(
+    'Improved, streptomycin minus control (difference in proportions)',
+    'Improved, men minus women (difference in proportions)',
+    'Sedentary time, women minus men, hours/day'
+  ),
+  Estimate = c(round(arm_diff, 3), round(gender_diff, 3), round(sed_diff, 2)),
+  `95% CI` = c(
+    paste0(round(pt_arm$conf.int[1], 3), ' to ', round(pt_arm$conf.int[2], 3)),
+    paste0(round(gender_ci[1], 3), ' to ', round(gender_ci[2], 3)),
+    paste0(round(sed_ci[1], 2), ' to ', round(sed_ci[2], 2))
+  )
+) |>
+  gt()
+```
 
 - **Streptomycin minus control**: clear of the null value of 0. p < 0.05
 - **Men minus women, improved**: straddles the null value of 0. p > 0.05 (p = `r format(round(gender_p, 2), nsmall = 2)`)
@@ -401,7 +420,7 @@ tibble(
 
 ## What decides the test
 
-| Outcome | Comparison / predictor | Test |
+| Outcome | Comparison / explanatory variable | Test |
 |:--------------|:-----------------------------------|:------------------------|
 | Continuous | Binary, i.e., two independent groups | Independent-samples t-test |
 | Continuous | A fixed benchmark | One-sample t-test |
@@ -629,13 +648,13 @@ tibble(
 
 ## Try it: the answer {.smaller}
 
-| | Outcome | Comparison / predictor | Test |
-|:--|:-----------|:-----------------------------------------|:--------------------------|
-| **A** | Continuous | Two independent groups, roughly symmetric | Independent-samples t-test |
-| **B** | Continuous | Two measurements on the same person | Paired t-test |
-| **C** | Categorical | Categorical, large sample | Chi-squared test |
-| **D** | Continuous | Two measurements on the same person, small sample, strongly skewed differences | Wilcoxon signed-rank test |
-| **E** | Categorical | Categorical, expected counts below 5 | Fisher's exact test |
+| | Scenario | Outcome | Comparison / explanatory variable | Test |
+|:--|:------------------|:---------|:--------------------------|:------------------|
+| **A** | Blood pressure reduction, two randomised drug groups | Continuous | Two independent groups, roughly symmetric | Independent-samples t-test |
+| **B** | Resting heart rate, before and after an exercise programme | Continuous | Two measurements on the same person | Paired t-test |
+| **C** | Chronic cough by smoking status, 2,000 adults | Categorical | Categorical, large sample | Chi-squared test |
+| **D** | Recovery time on two pain protocols, eight patients | Continuous | Two measurements on the same person, small sample, strongly skewed differences | Wilcoxon signed-rank test |
+| **E** | Rare side effect in a 24-patient pilot, small expected counts | Categorical | Categorical, expected counts below 5 | Fisher's exact test |
 
 ## Risk ratio and odds ratio, with 95% CIs
 
@@ -678,12 +697,26 @@ gt(tab_arm_df)
 - Then: why does the odds ratio sit so much further from 1 than the risk ratio?
 - Five minutes
 
-## Try it: the answer
+## Try it: the answer {.smaller}
+
+:::: {.columns}
+::: {.column width="40%"}
+
+```{r}
+#| label: strep-2x2-table-answer
+#| echo: false
+gt(tab_arm_df)
+```
+
+:::
+::: {.column width="60%"}
 
 - Streptomycin risk: 38/55 = 0.69. Control risk: 17/52 = 0.33[]{.gap}
 - Risk ratio: 0.69 / 0.33 = `r round(rr_arm$measure[2, 1], 2)`
 - Odds ratio: (38 x 35) / (17 x 17) = `r round(or_arm$measure[2, 1], 2)`
 - The odds ratio exaggerates when the outcome is common, which is why it is not a risk ratio and should not be read as one
+:::
+::::
 
 ## Back to the independent-samples t-test
 
@@ -694,7 +727,7 @@ gt(tab_arm_df)
 
 ## What decides the test, and what to check {.smaller}
 
-| Outcome | Comparison / predictor | Test | Assumption check | If it fails |
+| Outcome | Comparison / explanatory variable | Test | Assumption check | If it fails |
 |:-----------|:----------------------|:-------------------|:------------------------------|:----------------------|
 | Continuous | Binary, i.e., two independent groups | Independent-samples t-test | Similar spread and shape in each group; roughly normal sampling distribution | Mann-Whitney (Wilcoxon rank-sum) |
 | Continuous | A fixed benchmark | One-sample t-test | Roughly normal sampling distribution of the mean | One-sample Wilcoxon signed-rank |
@@ -744,46 +777,21 @@ ggplot(mult_curve, aes(x = k, y = p_any)) +
 - Does the sentence say what the numbers support? Where it does not, what would you write instead?
 - Ten minutes
 
-```{r}
-#| label: application-table
-#| echo: false
-tibble(
-  Study = c(
-    'Al-Lamee et al. (2018), Lancet',
-    'Nissen and Wolski (2007), NEJM',
-    'Sung et al. (1993), Lancet',
-    'CRASH-2 collaborators (2010), Lancet'
-  ),
-  Result = c(
-    'Exercise time increment, PCI vs placebo: 16.6 s (95% CI -8.9 to 42.0), p = 0.20',
-    'Death from cardiovascular causes, rosiglitazone vs control: OR 1.64 (95% CI 0.98 to 2.74), p = 0.06',
-    'Bleeding controlled: 90% sclerotherapy vs 84% octreotide, difference 95% CI 0 to 19.5pp, p = 0.55 (n = 100)',
-    'All-cause mortality: RR 0.91 (95% CI 0.85 to 0.97), p = 0.0035 (n = 20,211)'
-  ),
-  `Paper's conclusion` = c(
-    "'...PCI did not increase exercise time by more than the effect of a placebo procedure.'",
-    "'...an increase in the risk of death from cardiovascular causes that had borderline significance.'",
-    "'...octreotide infusion and emergency sclerotherapy are equally effective in controlling variceal haemorrhage.'",
-    "'Tranexamic acid safely reduced the risk of death in bleeding trauma patients in this study.'"
-  ),
-  Link = c(
-    '[PubMed](https://pubmed.ncbi.nlm.nih.gov/29103656/)',
-    '[PubMed](https://pubmed.ncbi.nlm.nih.gov/17517853/)',
-    '[PubMed](https://pubmed.ncbi.nlm.nih.gov/8103145/)',
-    '[PubMed](https://pubmed.ncbi.nlm.nih.gov/20554319/)'
-  )
-) |>
-  gt() |>
-  fmt_markdown(columns = Link) |>
-  cols_width(Study ~ pct(18), Result ~ pct(32), `Paper's conclusion` ~ pct(40), Link ~ pct(10)) |>
-  tab_options(table.font.size = px(16))
-```
+| Study | Result | Paper's conclusion | Link |
+|-----|---------|------------|---|
+| Al-Lamee et al. (2018), ORBITA, Lancet | Exercise time increment, PCI vs placebo: 16.6 s (95% CI -8.9 to 42.0), p = 0.20 | '...PCI did not increase exercise time by more than the effect of a placebo procedure.' | [PubMed](https://pubmed.ncbi.nlm.nih.gov/29103656/) |
+| Nissen and Wolski (2007), NEJM | Death from cardiovascular causes, rosiglitazone vs control: OR 1.64 (95% CI 0.98 to 2.74), p = 0.06 | '...an increase in the risk of death from cardiovascular causes that had borderline significance.' | [PubMed](https://pubmed.ncbi.nlm.nih.gov/17517853/) |
+| Sung et al. (1993), Lancet | Bleeding controlled: 90% sclerotherapy vs 84% octreotide, difference 95% CI 0 to 19.5pp, p = 0.55 (n = 100) | '...octreotide infusion and emergency sclerotherapy are equally effective in controlling variceal haemorrhage.' | [PubMed](https://pubmed.ncbi.nlm.nih.gov/8103145/) |
+| CRASH-2 collaborators (2010), Lancet | All-cause mortality: RR 0.91 (95% CI 0.85 to 0.97), p = 0.0035 (n = 20,211) | 'Tranexamic acid safely reduced the risk of death in bleeding trauma patients in this study.' | [PubMed](https://pubmed.ncbi.nlm.nih.gov/20554319/) |
 
-## Four claims, judged {.smaller}
 
-:::: {.columns}
+## Four claims, judged: ORBITA and Nissen and Wolski {.smaller}
 
-::: {.column width="50%"}
+| Study | Result |
+|-------|------------------|
+| ORBITA | Exercise time, PCI vs placebo: 16.6 s (95% CI -8.9 to 42.0), p = 0.20 |
+| Nissen and Wolski | CV death, rosiglitazone vs control: OR 1.64 (95% CI 0.98 to 2.74), p = 0.06 |
+
 - **ORBITA: too imprecise to support 'no benefit'**
   - The CI runs from a small negative effect to a 42-second gain, compatible with a real improvement
   - Easy to round down to 'stents don't work', the absence-of-evidence trap[]{.gap}
@@ -791,17 +799,19 @@ tibble(
   - An OR of 1.64 (CI to 2.74) isn't a small risk if it's real
   - 'Borderline significance' is often not accepted now
   - Interpret as non-significant increase but acknowledge imprecision
-:::
 
-::: {.column width="50%"}
+## Four claims, judged: Sung et al. and CRASH-2 {.smaller}
+
+| Study | Result |
+|-------|------------------|
+| Sung et al. | Bleeding controlled, 90% vs 84%: difference 95% CI 0 to 19.5pp, p = 0.55 (n = 100) |
+| CRASH-2 | All-cause mortality: RR 0.91 (95% CI 0.85 to 0.97), p = 0.0035 (n = 20,211) |
+
 - **Sung et al.: too small to claim equivalence**
   - n = 100; the CI on the difference runs to almost 20 percentage points
   - 'Equally effective' needs a trial sized to rule out a gap that large[]{.gap}
 - **CRASH-2: sound**
   - Huge sample, tight CI clear of the null, meaningful effect size
-:::
-
-::::
 
 ## Key points, and what the lab does {.smaller}
 

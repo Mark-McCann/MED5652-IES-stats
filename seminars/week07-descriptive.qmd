@@ -110,11 +110,11 @@ nrt_df <- tibble(
     - Collider bias
 
 - From Stats:
-  - Prep sessions: tidy data, file paths, CSV structure
+  - Weeks 4 and 5: tidy data, file paths, CSV structure
 
 ## By the end of this session, you will be able to
 
-1. Classify a variable as nominal, ordinal, discrete, or continuous, and explain how variable type constrains the analysis available
+1. Classify a variable as nominal, ordinal, binary, count, or continuous, and explain how variable type constrains the analysis available
 2. Select and construct an appropriate table or plot for one or more variables of a given type
 3. Calculate and interpret measures of central tendency and spread, and justify a choice between mean/SD and median/IQR by distributional shape
 4. Describe the normal distribution and apply the 68-95-99.7 rule
@@ -156,6 +156,17 @@ $$s = \sqrt{\frac{1}{n-1}\sum_{i=1}^{n} (x_i - \bar{x})^2}$$
 
 - How much individuals typically differ from the mean
 
+## Median and IQR {.smaller}
+
+- Mean and SD are the most common pair, but not the only one
+  - **Median**: the middle value once sorted, half the data below it, half above
+  - **IQR**: the width of the middle 50% of the data
+- **Q1** and **Q3**: the values a quarter and three quarters of the way up the sorted data
+
+$$\text{IQR} = Q_3 - Q_1$$
+
+- Often reported as the range, Q1 to Q3, not just one number
+
 ## Distribution
 
 - A variable's **distribution** is how its values are spread out
@@ -166,56 +177,49 @@ $$s = \sqrt{\frac{1}{n-1}\sum_{i=1}^{n} (x_i - \bar{x})^2}$$
 
 ## Three shapes, three variables
 
+```{r}
+#| label: shape-panels
+#| echo: false
+#| fig-width: 12
+#| fig-height: 3.4
+shape_labels <- c('Cholesterol (mmol/L)', 'Sedentary time (hours/day)', 'Vigorous activity (hours/day)')
+shape_df <- bind_rows(
+  tibble(panel = shape_labels[1], x = nhanes$chol),
+  tibble(panel = shape_labels[2], x = nhanes$sed),
+  tibble(panel = shape_labels[3], x = nhanes$vpa_t)
+) |>
+  filter(!is.na(x))
+shape_df$panel <- factor(shape_df$panel, levels = shape_labels)
+
+# Same bins and axis ranges as before; each panel's data is trimmed to its
+# plotted range, which leaves the bins inside that range unchanged.
+ggplot() +
+  geom_histogram(data = shape_df |> filter(panel == shape_labels[1], x >= 2, x <= 9),
+    aes(x = x), binwidth = 0.25, fill = '#00213B') +
+  geom_histogram(data = shape_df |> filter(panel == shape_labels[2], x <= 24),
+    aes(x = x), binwidth = 1, fill = '#00213B') +
+  geom_histogram(data = shape_df |> filter(panel == shape_labels[3]),
+    aes(x = x), binwidth = 0.5, fill = '#00213B') +
+  facet_wrap(~ panel, nrow = 1, scales = 'free') +
+  labs(x = NULL, y = NULL) +
+  theme_minimal(base_size = 14)
+```
+
 :::: {.columns}
 
 ::: {.column width="33%"}
-```{r}
-#| label: shape-chol
-#| echo: false
-#| fig-width: 4
-#| fig-height: 3
-ggplot(nhanes, aes(x = chol)) +
-  geom_histogram(binwidth = 0.25, fill = '#00213B') +
-  coord_cartesian(xlim = c(2, 9)) +
-  labs(x = 'Cholesterol (mmol/L)', y = NULL) +
-  theme_minimal(base_size = 11)
-```
-
 - Roughly symmetric
 - `chol`, mmol/L
 - Mean 4.97, median 4.89
 :::
 
 ::: {.column width="33%"}
-```{r}
-#| label: shape-sed
-#| echo: false
-#| fig-width: 4
-#| fig-height: 3
-ggplot(nhanes, aes(x = sed)) +
-  geom_histogram(binwidth = 1, fill = '#00213B') +
-  coord_cartesian(xlim = c(0, 24)) +
-  labs(x = 'Sedentary time (hours/day)', y = NULL) +
-  theme_minimal(base_size = 11)
-```
-
 - Skewed to the right
 - `sed`, hours/day
 - Mean 6.56, median 5.00
 :::
 
 ::: {.column width="34%"}
-```{r}
-#| label: shape-vpa
-#| echo: false
-#| fig-width: 4
-#| fig-height: 3
-ggplot(nhanes, aes(x = vpa_t)) +
-  geom_histogram(binwidth = 0.5, fill = '#00213B') +
-  labs(x = 'Vigorous activity (hours/day)', y = NULL) +
-  theme_minimal(base_size = 11)
-```
-
 - Heavily skewed
 - `vpa_t`, hours/day
 - Median 0.00: 64% report none
@@ -259,17 +263,6 @@ ggplot(curve_df, aes(x, y)) +
 :::
 
 ::::
-
-## Median and IQR
-
-- Mean and SD are commonly used, but they can mislead
-- When the data is skewed, we should consider:
-  - **Median**: the middle value once sorted, half the data below it, half above
-  - **IQR**: the width of the middle 50% of the data
-
-$$\text{IQR} = Q_3 - Q_1$$
-
-- Often reported as the range, Q1 to Q3, not just one number
 
 ## Which do we report: mean/SD, or median/IQR?
 
@@ -328,8 +321,8 @@ ggplot(skew_df, aes(x = value)) +
 
 - Mean, SD, median and IQR give a crude description
 - Five numbers give a fuller picture: minimum, Q1, median, Q3, maximum[]{.gap}
-- **Q1**, the 25th percentile: a quarter of the data falls at or below it
-- **Q3**, the 75th percentile: three quarters of the data falls at or below it
+- **Q1** is also called the 25th percentile: a quarter of the data falls at or below it
+- **Q3** is the 75th percentile: three quarters of the data falls at or below it
 - Together, the five numbers split the data into four equal-sized chunks
 
 ## The five-number summary: sedentary time
@@ -430,8 +423,8 @@ ggplot(nhanes, aes(x = '', y = sed)) +
 ```{r}
 #| label: chol-gender-boxplot
 #| echo: false
-#| fig-width: 4
-#| fig-height: 4.5
+#| fig-width: 5
+#| fig-height: 4
 ggplot(nhanes |> filter(!is.na(gender)), aes(x = gender, y = chol)) +
   geom_boxplot() +
   labs(x = 'Gender', y = 'Total cholesterol (mmol/L)') +
@@ -553,25 +546,32 @@ nhanes |>
 
 ::::
 
-## Values that are labels: the bar chart
+## Values that are labels: the bar chart {.smaller}
 
+:::: {.columns}
+
+::: {.column width="40%"}
 - A **bar chart**: one bar per group, count or percentage
+- Bars separated, axis has no numeric meaning between categories
+- Unlike a histogram: bars touch, drawn along one scale
+- The gap indicates the variable is not a scale
+:::
 
+::: {.column width="60%"}
 ```{r}
 #| label: bar-smoking
 #| echo: false
-#| fig-width: 8
-#| fig-height: 4
+#| fig-width: 7
+#| fig-height: 4.5
 ggplot(nhanes |> filter(!is.na(smoking)), aes(x = smoking, fill = smoking)) +
   geom_bar() +
   scale_fill_manual(values = c('#00213B', '#4386AF', '#ABB5C5'), guide = 'none') +
   labs(x = 'Smoking status', y = 'Count') +
   theme_minimal(base_size = 16)
 ```
+:::
 
-- Bars separated, axis has no numeric meaning between categories
-- Unlike a histogram: bars touch, drawn along one scale
-- The gap indicates the variable is not a scale
+::::
 
 ## The pie chart, and why we avoid it
 
@@ -709,14 +709,31 @@ strep_sample |>
 - The 1948 MRC streptomycin trial: ten of 107 patients shown
 - Name each column's type, and which you could average
 
-## Try it: the answer
+## Try it: the answer {.smaller}
 
+:::: {.columns}
+
+::: {.column width="52%"}
 - `patient_id`: nominal; it is a number, but it labels an individual
 - `arm`: nominal (binary); Streptomycin or Control
 - `gender`: nominal (binary); the values are the letters F and M
 - `baseline_condition`: ordinal; Good, Fair, Poor run in a real order
 - `rad_num`: a 1 to 6 score standing for an ordered category; or a count
 - `improved`: binary, stored as TRUE/FALSE; storage is not type
+:::
+
+::: {.column width="48%"}
+```{r}
+#| label: strep-sample-table-answer
+#| echo: false
+strep_sample |>
+  select(patient_id, arm, gender, baseline_condition, rad_num, improved) |>
+  gt() |>
+  tab_options(table.font.size = px(13), data_row.padding = px(2))
+```
+:::
+
+::::
 
 ## Which summary, which plot, for which type
 
@@ -804,7 +821,7 @@ nhanes |>
 
 - Gender by baseline cardiovascular disease
 - The same layout from epi weeks 1 to 5, reactivated here
-- No risk ratio or odds ratio yet: `blm.cvd` is measured at the same visit as the exposure
+- No risk ratio or odds ratio here: `blm.cvd` was recorded at the same visit, so the table shows who already had CVD, not who went on to develop it
 - Week 9 covers the formulae
 
 ## Try it: build the 2x2
@@ -854,7 +871,7 @@ strep_sample |>
 - The conventional first table in a paper, describing the participants
 - Often stratified by the exposure or group of interest
 - Each row shows the appropriate summary for that variable's type[]{.gap}
-- Mean/SD or median/IQR for numeric, count/percentage for categorical
+- Mean/SD or median/IQR for continuous, count/percentage for categorical
 - The same choice from a few slides ago
 
 ## A Table 1
