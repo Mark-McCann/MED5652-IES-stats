@@ -292,8 +292,7 @@ Fred Ho
 <ul>
 <li class="fragment">Three coins, fair (p = 0.5), biased (p = 0.25) and very biased (p = 0.1), and five sample sizes: n = 1, 5, 10, 30, 100</li>
 <li class="fragment">Buttons repeat 1, 5, 20, 100 or 1000 samples, so the shape of the sample mean builds live</li>
-<li class="fragment">Head = 1; tail = 0</li>
-<li class="fragment">The mean of the samples is the proportion of heads</li>
+<li class="fragment">Head = 1; tail = 0, so the mean of a sample is the proportion of heads</li>
 </ul>
 <div id="coin-widget" style="text-align:center;">
 <div style="margin-bottom:0.25em;">
@@ -1039,24 +1038,22 @@ Reset
 <section id="why-95-and-1.96-and-when-t-replaces-it" class="slide level2 smaller">
 <h2>Why 95% and 1.96, and when t replaces it</h2>
 <div class="columns">
-<div class="column" style="width:52%;">
+<div class="column" style="width:58%;">
 <ul>
 <li class="fragment">CIs are mostly reported as ‘95% CI’
 <ul>
-<li class="fragment">95% confidence level, or equivalently 5% (1-0.95) significance level</li>
-<li class="fragment">The confidence/significance level is almost always fixed at this arbitrary level</li>
+<li class="fragment">A 95% confidence level, i.e., a 5% (1-0.95) significance level</li>
+<li class="fragment">Almost always fixed at this arbitrary level</li>
 <li class="fragment">1.96 comes from the normal distribution the CLT delivers</li>
 </ul></li>
 <li class="fragment">With a small sample, we are less certain about our SD estimate
 <ul>
 <li class="fragment">The t distribution allows for that extra uncertainty</li>
-<li class="fragment">Same bell shape, heavier tails</li>
-<li class="fragment">Bigger than 1.96, growing as n shrinks</li>
-<li class="fragment">At n = 10 it is about 2.26. At n = 30, about 2.05</li>
+<li class="fragment">Same bell shape, heavier tails: a multiplier bigger than 1.96, growing as n shrinks</li>
+<li class="fragment">At n = 10 it is about 2.26. At n = 30, about 2.05, converging to 1.96 as n grows</li>
 </ul></li>
-<li class="fragment">As n grows, t converges back to the normal and 1.96</li>
 </ul>
-</div><div class="column" style="width:48%;">
+</div><div class="column" style="width:42%;">
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -2076,7 +2073,7 @@ Reset
 </ul></li>
 </ul>
 <div id="coverage-widget" style="text-align:center;">
-<svg id="coverage-svg" width="900" height="330" style="max-width:100%;">
+<svg id="coverage-svg" width="900" height="290" style="max-width:100%;">
 </svg>
 <div>
 <button onclick="coverageNewSample()" style="font-size:0.8em;padding:0.25em 0.7em;margin-top:0.1em;background:#00213B;color:#fff;border:none;border-radius:4px;cursor:pointer;">
@@ -2129,7 +2126,7 @@ New sample
     var allVals = intervals.reduce(function(a, d) { return a.concat(d); }, []).concat([trueMean]);
     var xmin = Math.min.apply(null, allVals) - 0.05;
     var xmax = Math.max.apply(null, allVals) + 0.05;
-    var w = 900, h = 330;
+    var w = 900, h = 290;
     var outerMargin = 40, gap = 30, top = 12, bottom = 8;
     var colWidth = (w - 2 * outerMargin - gap) / 2;
     var colStart = [outerMargin, outerMargin + colWidth + gap];
@@ -4733,7 +4730,7 @@ New sample
 <li class="fragment">How large does a study need to be, and what decides the answer?</li>
 </ul>
 </section>
-<section id="what-determines-the-margin-of-error" class="slide level2">
+<section id="what-determines-the-margin-of-error" class="slide level2 smaller">
 <h2>What determines the margin of error?</h2>
 <ul>
 <li class="fragment">In polling, people sample based on their desired margin of error</li>
@@ -4773,7 +4770,7 @@ New sample
 <li class="fragment"><em>m</em> is squared, so it dominates: halve the margin, and n roughly quadruples</li>
 </ul>
 </section>
-<section id="try-it-how-does-n-respond" class="slide level2">
+<section id="try-it-how-does-n-respond" class="slide level2 smaller">
 <h2>Try it: how does n respond?</h2>
 <ul>
 <li class="fragment">A poll wants to estimate a proportion around p = 0.5, with a 95% CI</li>
