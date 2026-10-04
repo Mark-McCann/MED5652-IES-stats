@@ -1,0 +1,1094 @@
+---
+title: "Multiple linear and logistic regression"
+subtitle: "Week 11"
+author: "Fred Ho"
+title-slide-attributes:
+  data-background-image: assets/skyline.jpg
+  data-background-size: cover
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(gt)
+library(here)
+library(broom)
+
+here::i_am('seminars/week11-adjustment.qmd')
+
+nhanes <- read_csv(here::here('data', 'mph_nhanes_20241107.csv'), show_col_types = FALSE)
+
+# Recoding, verbatim from chapters/11-adjustment.qmd's own `recode` chunk
+# (itself verbatim from Chapter 3): same levels, same labels, same order.
+nhanes <- nhanes |>
+  mutate(
+    gender = factor(gender,
+      levels = c(1, 2),
+      labels = c('Male', 'Female')),
+    eth = factor(eth,
+      levels = c(1, 2, 3, 4, 5),
+      labels = c('Mexican American', 'Other Hispanic', 'White', 'Black', 'Others')),
+    edu = factor(edu,
+      levels = c(1, 2, 3),
+      labels = c('Less than high school', 'High school graduate', 'Above high school')),
+    smoking = factor(smoking,
+      levels = c('Never', 'Previous', 'Current')),
+    phq.c = factor(phq.c,
+      levels = c('0 Normal', '1 Mild symptoms', '2 Possible depression'),
+      labels = c('Normal', 'Mild symptoms', 'Possible depression'),
+      ordered = TRUE),
+    blm.cvd = factor(blm.cvd,
+      levels = c(0, 1),
+      labels = c('No', 'Yes'))
+  )
+
+# Every quantity below is computed the same way chapters/11-adjustment.qmd
+# computes it: same variable names, same steps, same function calls.
+
+# sprintf() rather than round(), as in Chapter 7: small slopes otherwise
+# print in scientific notation, and dp3 keeps 1.020 from printing as 1.02.
+dp5 <- function(x) sprintf('%.5f', x)
+dp3 <- function(x) sprintf('%.3f', x)
+fmt_p <- function(p) ifelse(p < 0.001, '< 0.001', sprintf('%.3f', p))
+# 'p < 0.001' or 'p = 0.070', for p-values inside a sentence
+p_txt <- function(p) ifelse(p < 0.001, 'p < 0.001', paste0('p = ', sprintf('%.3f', p)))
+
+# dead_10yr, verbatim from Chapter 7's `dead-10yr` chunk
+nhanes <- nhanes |>
+  mutate(
+    dead_10yr = case_when(
+      dth == 1 & fu_month <= 120 ~ 1,
+      fu_month >= 120 ~ 0,
+      TRUE ~ NA
+    )
+  )
+n_dead <- sum(nhanes$dead_10yr == 1, na.rm = TRUE)
+n_alive <- sum(nhanes$dead_10yr == 0, na.rm = TRUE)
+n_excluded <- sum(is.na(nhanes$dead_10yr))
+
+# Block 1: chol ~ sed, crude and adjusted, on one sample
+chol_adj_complete <- nhanes |>
+  filter(!is.na(sed), !is.na(chol), !is.na(age), !is.na(gender), !is.na(edu))
+m_adj <- lm(chol ~ sed + age + gender + edu, data = chol_adj_complete)
+m_crude <- lm(chol ~ sed, data = chol_adj_complete)
+tidy_adj <- tidy(m_adj, conf.int = TRUE)
+crude_sed <- tidy(m_crude, conf.int = TRUE) |> filter(term == 'sed')
+adj_sed <- tidy_adj |> filter(term == 'sed')
+
+# Week 10's own chol ~ sed slope, on every participant with sed and chol,
+# for the 'same participants' slide
+sed_complete <- nhanes |> filter(!is.na(sed), !is.na(chol))
+w10_sed <- tidy(lm(chol ~ sed, data = sed_complete), conf.int = TRUE) |> filter(term == 'sed')
+
+# met_t, crude and adjusted (the Try it). Same steps as Chapter 7's
+# Exercise 1 solution, which now runs on mpa_w so this result isn't spoiled.
+met_t_complete <- nhanes |>
+  filter(!is.na(met_t), !is.na(chol), !is.na(age), !is.na(gender), !is.na(edu))
+crude_met <- tidy(lm(chol ~ met_t, data = met_t_complete), conf.int = TRUE) |> filter(term == 'met_t')
+adj_met <- tidy(lm(chol ~ met_t + age + gender + edu, data = met_t_complete), conf.int = TRUE) |>
+  filter(term == 'met_t')
+
+# Block 2: chol ~ edu (Chapter 6's model), read as a one-way ANOVA
+edu_complete <- nhanes |> filter(!is.na(edu), !is.na(chol))
+m_edu <- lm(chol ~ edu, data = edu_complete)
+glance_edu <- glance(m_edu)
+edu_means <- edu_complete |> group_by(edu) |> summarise(mean_chol = mean(chol), n = n())
+adj_aug <- augment(m_adj)
+
+# Block 3: logistic regression, Chapter 7's dead_complete sample
+dead_complete <- nhanes |>
+  filter(!is.na(dead_10yr), !is.na(sed), !is.na(age), !is.na(gender), !is.na(edu))
+m_dead_crude <- glm(dead_10yr ~ sed, data = dead_complete, family = binomial)
+m_dead_adj <- glm(dead_10yr ~ sed + age + gender + edu,
+  data = dead_complete, family = binomial)
+logit_crude_sed <- coef(m_dead_crude)[['sed']]
+logit_adj_sed <- coef(m_dead_adj)[['sed']]
+or_crude <- tidy(m_dead_crude, exponentiate = TRUE, conf.int = TRUE) |> filter(term == 'sed')
+or_adj <- tidy(m_dead_adj, exponentiate = TRUE, conf.int = TRUE) |> filter(term == 'sed')
+
+# A straight line through 0/1, drawn on age (checked 2026-09-03: on sed the
+# fitted line stays inside 0 to 1 across all plausible values)
+lin_bin_data <- nhanes |> filter(!is.na(dead_10yr), !is.na(age))
+m_lin_bin <- lm(dead_10yr ~ age, data = lin_bin_data)
+lin_min_age <- min(lin_bin_data$age)
+lin_at_min <- predict(m_lin_bin, newdata = data.frame(age = lin_min_age))
+
+# vpa_r, crude and adjusted (result only; Chapter 7's Exercise 2 now runs
+# on vpa_t so this result isn't spoiled)
+vpa_r_dead_complete <- nhanes |>
+  filter(!is.na(vpa_r), !is.na(dead_10yr), !is.na(age), !is.na(gender), !is.na(edu))
+or_vpa_crude <- tidy(glm(dead_10yr ~ vpa_r, data = vpa_r_dead_complete, family = binomial),
+  exponentiate = TRUE, conf.int = TRUE) |> filter(term == 'vpa_r')
+or_vpa_adj <- tidy(glm(dead_10yr ~ vpa_r + age + gender + edu, data = vpa_r_dead_complete,
+  family = binomial), exponentiate = TRUE, conf.int = TRUE) |> filter(term == 'vpa_r')
+
+# Sensitivity analysis, verbatim from Chapter 7's `sensitivity-cvd` chunk
+dead_cvd_complete <- dead_complete |> filter(!is.na(blm.cvd))
+m_dead_without <- glm(dead_10yr ~ sed + age + gender + edu,
+  data = dead_cvd_complete, family = binomial)
+m_dead_with <- glm(dead_10yr ~ sed + age + gender + edu + blm.cvd,
+  data = dead_cvd_complete, family = binomial)
+or_without <- tidy(m_dead_without, exponentiate = TRUE, conf.int = TRUE) |> filter(term == 'sed')
+tidy_with <- tidy(m_dead_with, exponentiate = TRUE, conf.int = TRUE)
+or_with <- tidy_with |> filter(term == 'sed')
+or_cvd <- tidy_with |> filter(term == 'blm.cvdYes')
+
+# One three-column result table, built the same way on every slide
+result_table <- function(labels, rows, digits) {
+  fmt <- if (digits == 5) dp5 else dp3
+  tibble(
+    Quantity = labels,
+    Estimate = fmt(rows$estimate),
+    `95% CI` = paste0(fmt(rows$conf.low), ' to ', fmt(rows$conf.high)),
+    p = fmt_p(rows$p.value)
+  ) |>
+    gt()
+}
+
+# Paired crude/adjusted intervals on one axis (slides on chol ~ sed, the
+# sedentary-time odds ratios, and vpa_r against sed)
+forest_plot <- function(df, null, xlab, log_scale = FALSE) {
+  df$label <- factor(df$label, levels = rev(df$label))
+  p <- ggplot(df, aes(x = estimate, y = label)) +
+    geom_vline(xintercept = null, linetype = 'dashed', colour = 'grey40') +
+    geom_errorbarh(aes(xmin = conf.low, xmax = conf.high), height = 0.2, linewidth = 0.9) +
+    geom_point(size = 3) +
+    labs(x = xlab, y = NULL) +
+    theme_minimal(base_size = 18) +
+    theme(panel.grid.minor = element_blank())
+  if (log_scale) p <- p + scale_x_log10(n.breaks = 5) else p <- p + scale_x_continuous(n.breaks = 4)
+  p
+}
+
+# Schematic causal diagrams: boxes and arrows, no data
+dag_plot <- function(nodes, edges) {
+  ggplot() +
+    geom_segment(data = edges,
+      aes(x = x, y = y, xend = xend, yend = yend),
+      arrow = arrow(length = unit(0.3, 'cm'), type = 'closed'), linewidth = 0.8) +
+    geom_label(data = nodes, aes(x = x, y = y, label = label),
+      size = 6, label.padding = unit(0.5, 'lines')) +
+    coord_cartesian(xlim = c(-0.3, 2.3), ylim = c(-0.3, 1.3)) +
+    theme_void()
+}
+dag_nodes <- tibble(x = c(0, 2, 1), y = c(0, 0, 1),
+  label = c('Exposure', 'Outcome', 'Confounder'))
+dag_edges <- tibble(
+  x = c(0.82, 1.18, 0.38), y = c(0.88, 0.88, 0),
+  xend = c(0.12, 1.88, 1.6), yend = c(0.16, 0.16, 0))
+med_nodes <- tibble(x = c(0, 2, 1), y = c(0, 0, 1),
+  label = c('Exposure', 'Outcome', 'Mediator'))
+med_edges <- tibble(
+  x = c(0.12, 1.18, 0.38), y = c(0.16, 0.88, 0),
+  xend = c(0.82, 1.88, 1.6), yend = c(0.88, 0.16, 0))
+dag_pair_plot <- function() {
+  nodes <- bind_rows(
+    dag_nodes |> mutate(panel = 'Confounder'),
+    med_nodes |> mutate(panel = 'Mediator'))
+  edges <- bind_rows(
+    dag_edges |> mutate(panel = 'Confounder'),
+    med_edges |> mutate(panel = 'Mediator'))
+  dag_plot(nodes, edges) +
+    facet_wrap(~ panel, ncol = 1) +
+    theme(strip.text = element_blank())
+}
+
+# Cautionary tale: Scottish further-education student activity (thousand
+# hours), 1993 to 1999, plus the predicted (red) and actual (green) 2000
+# values. Retained from slides_2025/Correlation and Regression AMcI
+# 20251114.pptx, slides 40 to 43. The source deck carries the chart only,
+# with no table or citation, so these values are read off its chart by eye
+# (the same approach Week 7 took with the NRT figure): approximate, and the
+# slide says so in its sourcing line.
+tale <- tibble(
+  year = 1993:1999,
+  activity = c(4230, 5080, 5760, 6280, 6640, 6840, 6880)
+)
+tale_actual_2000 <- 6890
+m_tale <- lm(activity ~ year, data = tale)
+tale_pred_2000 <- predict(m_tale, newdata = data.frame(year = 2000))
+
+# Application: Chan YY, Lim KK, Lim KH, et al. 'Physical activity and
+# overweight/obesity among Malaysian adults: findings from the 2015 National
+# Health and morbidity survey (NHMS).' BMC Public Health 2017;17:733,
+# https://doi.org/10.1186/s12889-017-4772-z. CC BY 4.0. Retyped from the
+# published Table 3 (men only; full PMC HTML, PMC5609047, checked
+# 2026-10-03). The adjusted model is adjusted for every variable in that
+# table. The Application slides' markdown tables retype these by hand: keep
+# them in step with the paper, not with any R value.
+```
+
+## What you have learnt so far {.smaller}
+
+- **Stats, Week 10.** Cholesterol on sedentary time gave a slope of `r sprintf('%.4f', w10_sed$estimate)` mmol/L per hour/day, with a 95% CI spanning zero
+  - We left age as a potential confounder
+- **Epi, Week 3.** Regression adjustment is one of the main ways to mitigate confounding
+- **Epi, Week 4.** Overadjustment bias, mediation, and reverse causation
+- **Epi, Week 5.** Residual confounding, information bias, and Bradford Hill
+
+## By the end of this week, you will be able to {.smaller}
+
+1. Specify a multiple linear regression model to account for confounding and interpret the adjusted coefficients
+2. Include a categorical explanatory variable, interpret coefficients relative to the reference level, and recognise the equivalence with analysis of variance (ANOVA)
+3. Explain why a linear model is unsuitable for a binary response, and why the logistic regression model is a better alternative
+4. Interpret an exponentiated coefficient and its confidence interval from a logistic regression
+
+## Block 1: confounding and multiple linear regression {background-image="assets/skyline.jpg" background-size="cover" .divider}
+
+## Was it age all along? {.smaller}
+
+- Last week's slope for cholesterol on sedentary time was small, and its 95% CI spanned zero
+- We discussed whether that is convincing evidence of no association
+  - Older participants sit for longer
+  - Older participants also have higher cholesterol[]{.gap}
+- So comparing people who sit more against people who sit less is partly comparing older people against younger ones[]{.gap}
+- How can we account for this in regression models?
+
+## Confounding, revisited {.smaller}
+
+:::: {.columns}
+::: {.column width="45%"}
+
+- A confounder is a common cause of the exposure (the explanatory variable) and the outcome (the response)
+- The arrows are a claim about the world[]{.gap}
+- They come from subject knowledge, not from the data (why?)
+:::
+::: {.column width="55%"}
+
+```{r}
+#| label: dag-confounder
+#| echo: false
+#| fig-width: 6
+#| fig-height: 4
+dag_plot(dag_nodes, dag_edges)
+```
+
+:::
+::::
+
+## A model with several explanatory variables {.smaller}
+
+- Y = α + β~1~X~1~ + β~2~X~2~ + … + β~k~X~k~ + ε
+  - Y: the response, e.g., cholesterol in mmol/L
+  - X~1~: the exposure, e.g., sedentary time in hours/day
+  - X~2~ to X~k~: the other explanatory variables, e.g., age, gender, and education
+  - α: the intercept, the mean response when every X is zero
+  - β~1~ to β~k~: one coefficient per explanatory variable
+  - ε: the error, what the model leaves unexplained[]{.gap}
+- The only change from Week 10 is that there is more than one X
+- Every assumption from Week 10 carries over unchanged
+
+## What an 'adjustment' means
+
+- β~1~ is the difference in mean response for one unit more of the exposure
+- Among people who share the same values of every other variable in the model[]{.gap}
+- That is what 'adjusted for age, gender, and education' means
+- Some may also describe this as 'holding age, gender, and education constant'
+
+## What an 'adjustment' does not mean {.smaller}
+
+- It does not mean the study held anything constant
+  - Nobody was matched, and nobody was restricted
+  - The model doesn't actively keep variables unchanged
+- It does not mean the estimate is now causal[]{.gap}
+- It does commit the model to an assumption:
+  - The model estimates one shared slope from everybody at once
+  - One extra hour of sitting carries the same association with cholesterol at every age, in both genders, and at each education level (i.e. no effect modification by these)
+
+## Sedentary behaviour and cholesterol, revisited {.smaller}
+
+```{r}
+#| label: adj-table
+#| echo: false
+adj_rows <- tidy_adj |> filter(term != '(Intercept)')
+tibble(
+  Quantity = c(
+    'Sedentary time, per hour/day, mmol/L',
+    'Age, per year, mmol/L',
+    'Women against men, mmol/L',
+    "'High school graduate' against 'Less than high school', mmol/L",
+    "'Above high school' against 'Less than high school', mmol/L"
+  ),
+  Estimate = c(dp5(adj_rows$estimate[1:2]), dp3(adj_rows$estimate[3:5])),
+  `95% CI` = c(
+    paste0(dp5(adj_rows$conf.low[1:2]), ' to ', dp5(adj_rows$conf.high[1:2])),
+    paste0(dp3(adj_rows$conf.low[3:5]), ' to ', dp3(adj_rows$conf.high[3:5]))
+  ),
+  p = fmt_p(adj_rows$p.value)
+) |>
+  gt()
+```
+
+- `r format(nobs(m_adj), big.mark = ',')` participants with sedentary time, cholesterol, age, gender, and education recorded[]{.gap}
+- After adjustment for age, gender, and education, each additional hour/day of sedentary time was associated with `r dp5(abs(adj_sed$estimate))` mmol/L lower cholesterol (95% CI `r dp5(abs(adj_sed$conf.high))` to `r dp5(abs(adj_sed$conf.low))` mmol/L lower, p = `r dp3(adj_sed$p.value)`)
+- How should we interpret the rows for age, gender, and education?
+
+## Crude and adjusted, side by side {.smaller}
+
+```{r}
+#| label: crude-adj-table
+#| echo: false
+result_table(
+  c('Crude, per hour/day, mmol/L', 'Adjusted for age, gender, and education, per hour/day, mmol/L'),
+  bind_rows(crude_sed, adj_sed), digits = 5)
+```
+
+:::: {.columns}
+::: {.column width="40%"}
+
+- The crude 95% CI includes zero, and the adjusted one doesn't
+- The estimate moved further from zero
+- The CI did not narrow
+- After adjustment for age, gender, and education, more sedentary time is associated with slightly lower cholesterol
+:::
+::: {.column width="60%"}
+
+```{r}
+#| label: crude-adj-forest
+#| echo: false
+#| fig-width: 7
+#| fig-height: 3.2
+forest_plot(
+  bind_rows(crude_sed, adj_sed) |> mutate(label = c('Crude', 'Adjusted')),
+  null = 0, xlab = 'mmol/L per hour/day of sedentary time')
+```
+
+:::
+::::
+
+## Both models, the same participants {.smaller}
+
+- Requiring age, gender, and education to be recorded drops some participants because of missing data
+- So the crude model is refitted on the participants the adjusted model could use[]{.gap}
+- Otherwise any movement between the two could be the adjustment, or the change of sample
+- Nothing in the output would say which[]{.gap}
+- This is why the crude slope here is `r dp5(crude_sed$estimate)` mmol/L per hour/day, not Week 10's `r sprintf('%.4f', w10_sed$estimate)`
+
+## Reading the change
+
+- Look at the estimate first
+- The adjusted slope is about `r round(adj_sed$estimate / crude_sed$estimate, 1)` times the size of the crude one
+- Adjusting for age, gender, and education pulls the association further from zero
+- The crude model was understating it, assuming we are sure the adjusted variables are true confounders
+
+## Try it: what did adjustment do here? {.smaller}
+
+```{r}
+#| label: tryit-met-table
+#| echo: false
+result_table(
+  c('Total physical activity, crude, per MET-hour/day, mmol/L',
+    'Total physical activity, adjusted for age, gender, and education, per MET-hour/day, mmol/L'),
+  bind_rows(crude_met, adj_met), digits = 5)
+```
+
+- What has changed between the two rows?
+- Describe the two results in two sentences
+- Five minutes, in pairs
+
+## Try it: the answer {.smaller}
+
+```{r}
+#| label: answer-met-table
+#| echo: false
+result_table(
+  c('Total physical activity, crude, per MET-hour/day, mmol/L',
+    'Total physical activity, adjusted for age, gender, and education, per MET-hour/day, mmol/L'),
+  bind_rows(crude_met, adj_met), digits = 5)
+```
+
+- The estimate changed sign
+  - Crude: each additional MET-hour/day of total physical activity was associated with `r dp5(abs(crude_met$estimate))` mmol/L lower cholesterol (95% CI `r dp5(abs(crude_met$conf.low))` lower to `r dp5(crude_met$conf.high)` higher, p = `r dp3(crude_met$p.value)`)
+  - Adjusted for age, gender, and education: each additional MET-hour/day was associated with `r dp5(adj_met$estimate)` mmol/L higher cholesterol (95% CI `r dp5(adj_met$conf.low)` to `r dp5(adj_met$conf.high)`, `r p_txt(adj_met$p.value)`)[]{.gap}
+- The adjusted row is the better estimate of the association
+  - The crude row compares active people against inactive people who also differ in age and gender
+- Adjustment still doesn't guarantee a causal estimate
+  - It is closer to one than the crude estimate, since age, gender, and education are likely confounders
+
+## Table 2 fallacy {.smaller}
+
+```{r}
+#| label: table2-adj-table
+#| echo: false
+tibble(
+  Quantity = c(
+    'Sedentary time, per hour/day, mmol/L',
+    'Age, per year, mmol/L',
+    'Women against men, mmol/L',
+    "'High school graduate' against 'Less than high school', mmol/L",
+    "'Above high school' against 'Less than high school', mmol/L"
+  ),
+  Estimate = c(dp5(adj_rows$estimate[1:2]), dp3(adj_rows$estimate[3:5])),
+  `95% CI` = c(
+    paste0(dp5(adj_rows$conf.low[1:2]), ' to ', dp5(adj_rows$conf.high[1:2])),
+    paste0(dp3(adj_rows$conf.low[3:5]), ' to ', dp3(adj_rows$conf.high[3:5]))
+  ),
+  p = fmt_p(adj_rows$p.value)
+) |>
+  gt() |>
+  tab_options(data_row.padding = px(3))
+```
+
+- Suppose sitting lies on the pathway from age to cholesterol
+  - Part of age's association then runs through sitting
+  - Age's adjusted coefficient captures only the rest[]{.gap}
+  - The overadjustment bias from Epi Week 4
+- Reading every coefficient as if they're causal is the **Table 2 fallacy**
+  - [Westreich and Greenland (2013)](https://doi.org/10.1093/aje/kws412), *American Journal of Epidemiology*
+- The confounders' own coefficients are usually not presented: overadjustment, or their own confounders, can bias them
+
+## The difference between a confounder and a mediator {.smaller}
+
+:::: {.columns}
+::: {.column width="58%"}
+
+- A confounder is a common cause of the exposure and the outcome
+  - Adjusting for it removes bias
+- A mediator lies on the path between them
+  - Adjusting for it removes part of the association we set out to estimate
+  - This is overadjustment bias, from Week 4[]{.gap}
+:::
+::: {.column width="42%"}
+
+```{r}
+#| label: dag-pair
+#| echo: false
+#| fig-width: 5
+#| fig-height: 5
+dag_pair_plot()
+```
+
+:::
+::::
+
+## The data cannot tell them apart
+
+- If a variable is associated with both exposure and outcome
+  - It can be a confounder
+  - But also a mediator, and a collider[]{.gap}
+- Confounder or mediator is a causal judgement, made before the analysis
+  - It rests on subject knowledge and on the study design
+- No statistical test or software makes it for us
+
+## Try it: adjust, or leave it out? {.smaller}
+
+| | Exposure | Outcome | Third variable |
+|--|----------|---------|----------------|
+| A | Sedentary time | Cholesterol | Age |
+| B | Salt intake | Stroke | Blood pressure |
+| C | Alcohol intake | Lung cancer | Smoking |
+| D | Sedentary time | Death | Baseline cardiovascular disease |
+
+- For each row:
+  - Is the third variable most plausibly a confounder or a mediator?
+  - What would adjusting for it do to the estimate?
+- Three to five minutes, in pairs
+
+## Try it: the answer {.smaller}
+
+| | Exposure | Outcome | Third variable | Role | Adjusting for it |
+|--|----------|---------|----------------|------|------------------|
+| A | Sedentary time | Cholesterol | Age | Confounder | Reduces confounding bias |
+| B | Salt intake | Stroke | Blood pressure | Mediator | Introduces overadjustment bias |
+| C | Alcohol intake | Lung cancer | Smoking | Confounder or prognostic factor | Reduces confounding bias or improves precision |
+| D | Sedentary time | Death | Baseline cardiovascular disease | Cannot be settled from these data | Block 3 returns to it |
+
+## This week's methodological anchor {.smaller}
+
+- Which variables to adjust for depends on causal assumptions, not on patterns in the data[]{.gap}
+- Confounders should usually be adjusted for
+- Mediators should not be, when the question is about the total association
+- Colliders, common effects of the exposure and the outcome, should not be either[]{.gap}
+- Where the causal role is unclear, fit the model under each plausible role and report them all
+- [Ho (2025)](https://doi.org/10.1136/bmjmed-2023-000816), *BMJ Medicine*: 'Regression adjustment for causal inference'
+- Judging whether a sentence says what the numbers support is where half the assessment marks are
+
+## Block 2: Regression and ANOVA {background-image="assets/skyline.jpg" background-size="cover" .divider}
+
+## One categorical variable: one-way ANOVA {.smaller}
+
+- Analysis of variance (ANOVA) asks whether the mean response is equal across three or more groups
+- It answers with the F statistic:
+  - F = mean square between groups / mean square within groups
+    - Mean square between = sum of squares between groups / (k − 1), for k groups
+    - Mean square within = sum of squares within groups / (n − k), for n participants
+  - Intuitively, this is the ratio of between-group variation to within-group variation
+  - A large F statistic means the group means sit further apart than the spread inside the groups accounts for
+- A regression on one categorical explanatory variable with three or more levels asks the same question
+  - The F statistic from Week 10 is the same as the ANOVA F statistic
+
+## Between-group and within-group variation {.smaller}
+
+:::: {.columns}
+::: {.column width="40%"}
+
+- Between-group variation: how far the group means sit from each other
+- Within-group variation: how far each participant sits from their own group's mean[]{.gap}
+- Top: the means are far apart and each group is tight, so F is large
+- Bottom: the means are close and each group is spread out, so F is small
+:::
+::: {.column width="60%"}
+
+```{r}
+#| label: anova-illustration
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5
+set.seed(11)
+anova_demo <- bind_rows(
+  tibble(panel = 'Large F', group = rep(c('A', 'B', 'C'), each = 30),
+    y = rnorm(90, mean = rep(c(3, 6, 9), each = 30), sd = 0.7)),
+  tibble(panel = 'Small F', group = rep(c('A', 'B', 'C'), each = 30),
+    y = rnorm(90, mean = rep(c(5.6, 6, 6.4), each = 30), sd = 2.2))
+)
+anova_means <- anova_demo |> group_by(panel, group) |> summarise(y = mean(y), .groups = 'drop')
+ggplot(anova_demo, aes(x = group, y = y)) +
+  geom_jitter(width = 0.15, height = 0, alpha = 0.5, colour = 'grey40') +
+  geom_errorbar(data = anova_means, aes(ymin = y, ymax = y), width = 0.5,
+    linewidth = 1.2, colour = '#00213B') +
+  facet_wrap(~ panel, ncol = 1) +
+  labs(x = 'Group', y = 'Response') +
+  theme_minimal(base_size = 16) +
+  theme(axis.text.y = element_blank(), panel.grid = element_blank(),
+    strip.text = element_text(face = 'bold', size = 16))
+```
+
+:::
+::::
+
+## Does mean cholesterol differ by education? {.smaller}
+
+```{r}
+#| label: edu-means
+#| echo: false
+edu_means |>
+  transmute(
+    Education = as.character(edu),
+    `Participants` = format(n, big.mark = ','),
+    `Mean cholesterol, mmol/L` = dp3(mean_chol)
+  ) |>
+  gt()
+```
+
+- H0: mean cholesterol is the same in all three education groups
+- H1: at least one group's mean differs[]{.gap}
+- F = `r dp3(glance_edu$statistic)` on `r glance_edu$df` and `r format(glance_edu$df.residual, big.mark = ',')` degrees of freedom, p = `r dp3(glance_edu$p.value)`
+- No evidence of a difference in mean cholesterol between the three groups
+- The same model as Week 10, read as one question across all three groups
+
+## Try it: how far apart are the groups?
+
+```{r}
+#| label: tryit-edu-means
+#| echo: false
+edu_means |>
+  transmute(
+    Education = as.character(edu),
+    `Mean cholesterol, mmol/L` = dp3(mean_chol)
+  ) |>
+  gt()
+```
+
+- Which two groups differ most, and by how much, in mmol/L?
+- Is that consistent with F = `r dp3(glance_edu$statistic)`?
+- Three minutes
+
+## Try it: the answer
+
+```{r}
+#| label: answer-edu-means
+#| echo: false
+edu_means |>
+  transmute(
+    Education = as.character(edu),
+    `Mean cholesterol, mmol/L` = dp3(mean_chol)
+  ) |>
+  gt()
+```
+
+- 'Less than high school' and 'High school graduate' differ most: `r dp3(max(edu_means$mean_chol) - min(edu_means$mean_chol))` mmol/L
+- Tiny, set against how much cholesterol varies inside each group[]{.gap}
+- So the between-group mean square is small next to the within-group one, and F is small
+
+## Why not compare the groups in pairs?
+
+- Sometimes we want to know whether a categorical variable matters, instead of which group has the higher or lower response
+- Also, three groups give three pairwise comparisons, which makes at least one Type I error more likely[]{.gap}
+- Where pairwise comparisons are wanted afterwards, each CI has to be widened to keep the whole set at 95%
+  - Bonferroni is the simplest way of doing this
+
+## Diagnostics, several explanatory variables
+
+- The four assumptions from Week 10 are unchanged
+  - Linearity, constant variance, normally distributed residuals, independence
+- The same two plots check them[]{.gap}
+- The fitted value now combines several explanatory variables
+- So the horizontal axis of the residual plot is no longer any one variable
+
+## Adjusted model: residuals against fitted {.smaller}
+
+:::: {.columns}
+::: {.column width="38%"}
+
+- The same picture as Week 10
+- An even band around zero for most of the range
+- No visible trend, and the spread looks constant[]{.gap}
+- A small group with unusually high cholesterol sits well above the band
+:::
+::: {.column width="62%"}
+
+```{r}
+#| label: diag-resid
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5
+ggplot(adj_aug, aes(x = .fitted, y = .resid)) +
+  geom_point(alpha = 0.1) +
+  geom_hline(yintercept = 0) +
+  labs(x = 'Fitted value (mmol/L)', y = 'Residual (mmol/L)')
+```
+
+:::
+::::
+
+## Adjusted model: the QQ plot {.smaller}
+
+:::: {.columns}
+::: {.column width="38%"}
+
+- The middle of the distribution sits close to the line
+- The same high-cholesterol participants pull the upper tail away from it[]{.gap}
+- With `r format(nobs(m_adj), big.mark = ',')` participants, the estimates hold up despite it
+:::
+::: {.column width="62%"}
+
+```{r}
+#| label: diag-qq
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5
+ggplot(adj_aug, aes(sample = .std.resid)) +
+  stat_qq() +
+  stat_qq_line() +
+  labs(x = 'Theoretical quantiles', y = 'Standardised residuals')
+```
+
+:::
+::::
+
+## The response has always been a measurement
+
+- Everything so far has changed the right-hand side of the model
+  - More explanatory variables, better questions[]{.gap}
+- The response has been cholesterol every time, a measurement in mmol/L
+- Almost every outcome in the epidemiology half is not a measurement
+  - Died or survived, improved or not, diagnosed or not
+
+## Block 3: when the response is binary {background-image="assets/skyline.jpg" background-size="cover" .divider}
+
+## Most epidemiology outcomes are binary {.smaller}
+
+- Improvement in the streptomycin trial
+- Incidence of a disease[]{.gap}
+- Death
+- None of these is a measurement
+- The linear regression models we used need a continuous response
+- But what if we still fit a binary variable using linear regression?
+
+## The outcome: died within ten years {.smaller}
+
+- The survey records whether each participant died during follow-up, and how long they were followed
+- To create a binary variable, participants are categorised into three groups:
+  - Died within 120 months: an event, coded 1
+  - Known to be alive at 120 months, whether or not they died later: coded 0
+  - Alive, but followed for less than 120 months: cannot be classified either way, so excluded
+
+## What that costs, and what the models use {.smaller}
+
+| Group | Participants |
+|-------|-------------:|
+| Died within ten years | `r format(n_dead, big.mark = ',')` |
+| Known alive at ten years | `r format(n_alive, big.mark = ',')` |
+| Excluded: follow-up ended too early | `r format(n_excluded, big.mark = ',')` |
+
+- The models in this block run on a smaller set again: `r format(nrow(dead_complete), big.mark = ',')` participants, `r format(sum(dead_complete$dead_10yr), big.mark = ',')` events
+  - Every explanatory variable has to be recorded
+- A fixed window ignores the timing of death
+  - Survival analysis keeps that, and the excluded participants: Advanced Statistics
+- The number of events limits how many explanatory variables the model can carry
+  - So the adjustment set stays at three
+
+## A straight line through zeros and ones {.smaller}
+
+:::: {.columns}
+::: {.column width="38%"}
+
+- Ten-year mortality against age, with a straight line fitted
+- At age `r lin_min_age`, the youngest age in the sample, the line gives `r sprintf('%.3f', lin_at_min)`
+  - A value below zero is not a probability[]{.gap}
+- The line also describes the binary response variable poorly
+:::
+::: {.column width="62%"}
+
+```{r}
+#| label: linear-on-binary
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5
+ggplot(lin_bin_data, aes(x = age, y = dead_10yr)) +
+  geom_jitter(height = 0.04, width = 0, alpha = 0.03) +
+  geom_abline(intercept = coef(m_lin_bin)[[1]], slope = coef(m_lin_bin)[[2]],
+    colour = '#00213B', linewidth = 1.2) +
+  geom_hline(yintercept = c(0, 1), linetype = 'dashed', colour = 'grey40') +
+  scale_y_continuous(breaks = c(0, 0.5, 1)) +
+  labs(x = 'Age (years)', y = 'Died within ten years (0 = no, 1 = yes)')
+```
+
+:::
+::::
+
+## The fix: model the log odds
+
+- From Week 2: odds = number with the outcome / number without it
+- An odds ratio is one group's odds divided by another's[]{.gap}
+- A probability is bounded between zero and one, which is what broke the straight line
+- The log of the odds runs from minus infinity to plus infinity
+  - That is the range a straight line needs[]{.gap}
+- So the model works on the log odds, with the same right-hand side as Block 1
+
+## The logistic regression model {.smaller}
+
+:::: {.columns}
+::: {.column width="55%"}
+
+$$P(Y = 1) = \frac{1}{1 + e^{-(\alpha + \beta_1 X_1 + \dots + \beta_k X_k)}}$$
+
+- Y is the binary response, e.g., died within ten years
+  - X~1~ to X~k~: the explanatory variables, as in Block 1
+  - α and β~1~ to β~k~: on the log-odds scale[]{.gap}
+- Whatever the exponent's value, P(Y = 1) stays between 0 and 1
+- Rearranged: log(odds) = α + β~1~X~1~ + … + β~k~X~k~
+:::
+::: {.column width="45%"}
+
+```{r}
+#| label: sigmoid
+#| echo: false
+#| fig-width: 6
+#| fig-height: 4.5
+tibble(lp = seq(-6, 6, by = 0.05)) |>
+  mutate(prob = plogis(lp)) |>
+  ggplot(aes(x = lp, y = prob)) +
+  geom_hline(yintercept = c(0, 1), linetype = 'dashed', colour = 'grey40') +
+  geom_line(linewidth = 1.2, colour = '#00213B') +
+  scale_y_continuous(breaks = c(0, 0.5, 1)) +
+  labs(x = 'Log odds: α + β₁X₁ + … (any value)', y = 'Probability (0 to 1)') +
+  theme_minimal(base_size = 16)
+```
+
+:::
+::::
+
+## How to estimate the coefficients {.smaller}
+
+- Linear regression used least squares, and its CIs and p-values rest on Week 10's assumptions
+- A binary response breaks them:
+  - At any fitted value, a residual can take only two values, so residuals cannot be normal
+  - The spread is p(1 − p), largest near 0.5, so it is not constant
+  - The fitted line can leave 0 to 1, as two slides back[]{.gap}
+- A larger sample does not fix any of these
+- Maximum likelihood instead chooses the coefficients that make the observed 0s and 1s most probable
+- Where linear regression's assumptions hold, least squares and maximum likelihood give the same answer
+
+## What the software gives back
+
+- The crude model of ten-year mortality on sedentary time returns a coefficient of `r sprintf('%.4f', logit_crude_sed)` per hour/day
+- That number is on the log-odds scale[]{.gap}
+- Log-odds difference is usually not reported because it doesn't have epidemiological meaning
+- The reportable version needs one more step
+
+## Why exponentiating gives an odds ratio {.smaller}
+
+- Compare X~1~ = x with X~1~ = x + 1, every other X unchanged
+
+$$\begin{aligned}
+\log(\text{odds}_{x+1}) &= \alpha + \beta_1 (x + 1) + \beta_2 X_2 + \dots \\
+\log(\text{odds}_{x}) &= \alpha + \beta_1 x + \beta_2 X_2 + \dots \\
+\log(\text{odds}_{x+1}) - \log(\text{odds}_{x}) &= \beta_1
+\end{aligned}$$
+
+- Every other term is the same on both lines, so it cancels
+- A difference of logs is the log of a ratio
+
+$$\log\left(\frac{\text{odds}_{x+1}}{\text{odds}_{x}}\right) = \log(\text{OR}) = \beta_1 \quad\text{so}\quad \text{OR} = e^{\beta_1}$$
+
+## Exponentiate it: an odds ratio
+
+- e^`r sprintf('%.4f', logit_crude_sed)`^ = `r dp3(exp(logit_crude_sed))`[]{.gap}
+- The odds ratio from Epi Week 2
+- The principle of adjustment also works for logistic regression
+
+## Sitting and ten-year mortality {.smaller}
+
+```{r}
+#| label: or-table
+#| echo: false
+result_table(
+  c('Crude odds ratio, per hour/day', 'Odds ratio adjusted for age, gender, and education, per hour/day'),
+  bind_rows(or_crude, or_adj), digits = 3)
+```
+
+:::: {.columns}
+::: {.column width="45%"}
+
+- Crude: each additional hour/day of sedentary time was associated with `r sprintf('%.1f', (or_crude$estimate - 1) * 100)`% higher odds of dying within ten years (OR `r dp3(or_crude$estimate)`, 95% CI `r dp3(or_crude$conf.low)` to `r dp3(or_crude$conf.high)`, `r p_txt(or_crude$p.value)`)[]{.gap}
+- Both 95% CIs sit entirely above 1
+- The adjusted estimate is the smaller
+- Part of the crude association was age
+  - Older participants both sit more and are more likely to die within ten years
+:::
+::: {.column width="55%"}
+
+```{r}
+#| label: or-forest
+#| echo: false
+#| fig-width: 6
+#| fig-height: 3.2
+forest_plot(
+  bind_rows(or_crude, or_adj) |> mutate(label = c('Crude', 'Adjusted')),
+  null = 1, xlab = 'Odds ratio (log scale)', log_scale = TRUE)
+```
+
+:::
+::::
+
+## An odds ratio as a percentage change
+
+- An odds ratio above 1: (OR − 1) × 100% higher odds
+  - e.g., `r dp3(or_crude$estimate)` is `r sprintf('%.1f', (or_crude$estimate - 1) * 100)`% higher odds per hour/day
+- An odds ratio below 1: (1 − OR) × 100% lower odds
+  - e.g., 0.80 is 20% lower odds[]{.gap}
+- Convert both CI limits the same way: `r sprintf('%.1f', (or_crude$conf.low - 1) * 100)`% to `r sprintf('%.1f', (or_crude$conf.high - 1) * 100)`% higher
+- It is a change in the odds, not in the risk
+
+## The null value is 1, not 0
+
+- No association on the odds ratio scale is an odds ratio of 1
+- The same point Week 9 made for the risk ratio and the odds ratio from a 2x2 table[]{.gap}
+- A 95% CI that excludes 1 is the ratio-scale version of one that excludes zero
+- Both 95% CIs on the previous slide exclude 1
+
+## Try it: coefficient to odds ratio
+
+- The adjusted model's coefficient for sedentary time is `r sprintf('%.5f', logit_adj_sed)` on the log-odds scale, per hour/day[]{.gap}
+- Turn it into an odds ratio for one extra hour a day, and describe it in one or two sentences, with the 95% CI and p from the mortality table
+- Bonus question: Give the odds ratio for five extra hours a day
+- Five minutes
+
+## Try it: the answer {.smaller}
+
+- e^`r sprintf('%.5f', logit_adj_sed)`^ = `r dp3(exp(logit_adj_sed))`, the adjusted odds ratio in the mortality table
+- After adjustment for age, gender, and education, each additional hour/day of sedentary time was associated with `r sprintf('%.1f', (or_adj$estimate - 1) * 100)`% higher odds of dying within ten years (OR `r dp3(or_adj$estimate)`, 95% CI `r dp3(or_adj$conf.low)` to `r dp3(or_adj$conf.high)`, `r p_txt(or_adj$p.value)`)[]{.gap}
+- Bonus, five hours: `r dp3(exp(logit_adj_sed))`^5^ ≈ `r sprintf('%.2f', exp(5 * logit_adj_sed))`, about `r round((exp(5 * logit_adj_sed) - 1) * 100)`% higher odds
+  - Not `r dp3(exp(logit_adj_sed))` × 5[]{.gap}
+- The model is additive on the log-odds scale
+- Exponentiating turns adding into multiplying
+- So odds ratios multiply across units
+
+## When adjustment moves the answer a lot {.smaller}
+
+```{r}
+#| label: vpa-table
+#| echo: false
+result_table(
+  c('Vigorous activity outside work, crude odds ratio, per hour/day',
+    'Vigorous activity outside work, adjusted odds ratio, per hour/day'),
+  bind_rows(or_vpa_crude, or_vpa_adj), digits = 3)
+```
+
+- Crude: each additional hour/day of vigorous activity outside work was associated with `r round((1 - or_vpa_crude$estimate) * 100)`% lower odds of dying within ten years (OR `r dp3(or_vpa_crude$estimate)`, 95% CI `r dp3(or_vpa_crude$conf.low)` to `r dp3(or_vpa_crude$conf.high)`, `r p_txt(or_vpa_crude$p.value)`)
+- Adjusted for age, gender, and education: `r round((1 - or_vpa_adj$estimate) * 100)`% lower odds (OR `r dp3(or_vpa_adj$estimate)`, 95% CI `r dp3(or_vpa_adj$conf.low)` to `r dp3(or_vpa_adj$conf.high)`, `r p_txt(or_vpa_adj$p.value)`)
+
+## How far adjustment moved it {.smaller}
+
+:::: {.columns}
+::: {.column width="45%"}
+
+- Still a substantial association, but far smaller
+  - Most of the crude association was age[]{.gap}
+- Sedentary time, for comparison, moved far less on this scale
+- The lab's Exercise 2 repeats this on vigorous activity overall
+:::
+::: {.column width="55%"}
+
+```{r}
+#| label: vpa-forest
+#| echo: false
+#| fig-width: 6
+#| fig-height: 3.6
+forest_plot(
+  bind_rows(or_vpa_crude, or_vpa_adj, or_crude, or_adj) |>
+    mutate(label = c('Vigorous activity, crude', 'Vigorous activity, adjusted',
+      'Sedentary time, crude', 'Sedentary time, adjusted')),
+  null = 1, xlab = 'Odds ratio (log scale)', log_scale = TRUE)
+```
+
+:::
+::::
+
+## A harder case: baseline heart disease
+
+- Existing heart disease could make someone both less active and more likely to die
+  - A confounder, worth adjusting for[]{.gap}
+- Or sitting could contribute to heart disease, which then contributes to death
+  - A mediator, and adjusting for it removes part of what we set out to estimate[]{.gap}
+- Both are biologically plausible
+
+## Why the data cannot decide
+
+- Sedentary time and baseline cardiovascular disease were recorded at the same study visit
+- Nothing in the data establishes which came first[]{.gap}
+- This is not a gap in the analysis, and more data would not close it
+- It is a limitation of the lack of temporality in the measurements
+
+## What a sensitivity analysis is
+
+- An analysis can rest on an assumption we are not certain of
+- A sensitivity analysis fits the model under each competing assumption and reports them all[]{.gap}
+- It cannot say which assumption is right
+- It is not a test with a verdict
+- It says whether the conclusion depends on the assumption at all
+
+## Sensitivity analysis: the two models {.smaller}
+
+```{r}
+#| label: sensitivity-table
+#| echo: false
+result_table(
+  c('Without baseline cardiovascular disease (assumes a mediator), odds ratio per hour/day',
+    'With baseline cardiovascular disease (assumes a confounder), odds ratio per hour/day'),
+  bind_rows(or_without, or_with), digits = 3)
+```
+
+- Baseline cardiovascular disease is itself strongly associated with dying within ten years
+  - Odds ratio `r dp3(or_cvd$estimate)` (95% CI `r dp3(or_cvd$conf.low)` to `r dp3(or_cvd$conf.high)`, p < 0.001)[]{.gap}
+- Without it: OR `r dp3(or_without$estimate)` per hour/day of sedentary time (95% CI `r dp3(or_without$conf.low)` to `r dp3(or_without$conf.high)`, `r p_txt(or_without$p.value)`)
+- With it: OR `r dp3(or_with$estimate)` (95% CI `r dp3(or_with$conf.low)` to `r dp3(or_with$conf.high)`, `r p_txt(or_with$p.value)`)[]{.gap}
+- Adjusting for it changes almost nothing about the sedentary time estimate
+- Whether baseline cardiovascular disease is a confounder or a mediator, the conclusion about sedentary time and death is the same
+
+## What adjustment can and cannot fix
+
+- Regression adjustment is a powerful tool, and one of the most used statistical tools to mitigate confounding, but it cannot fix:
+  - Confounders that were measured badly (information bias, leading to residual confounding)
+  - Confounders that were never measured at all (unmeasured confounding)
+  - Participants missing from the analysis (selection bias)
+  - Adjusting for the wrong variable (overadjustment bias)[]{.gap}
+
+## Application {background-image="assets/skyline.jpg" background-size="cover" .divider}
+
+## Crude, adjusted, and no interpretation {.smaller}
+
+- Overweight or obesity in Malaysian men, by physical activity level, with selected other rows
+
+| Comparison | Crude OR (95% CI) | Adjusted OR (95% CI) |
+|------------------|-------------|-------------|
+| Physical activity: low against high | 1.28 (1.10 to 1.49) | 1.06 (0.91 to 1.24) |
+| Physical activity: moderate against high | 1.34 (1.18 to 1.51) | 1.14 (1.01 to 1.30) |
+| Age 40 to 49 against 18 to 29 | 1.98 (1.65 to 2.37) | 1.44 (1.14 to 1.81) |
+| Age 60 or over against 18 to 29 | 1.32 (1.10 to 1.58) | 0.74 (0.56 to 0.98) |
+| Tertiary education against none | 2.49 (1.81 to 3.44) | 1.67 (1.20 to 2.33) |
+
+- Adjusted for age, ethnicity, area, marital status, education, income, sitting time, diabetes, hypertension, and high cholesterol[]{.gap}
+- In pairs, ten minutes:
+  - Interpret the adjusted odds ratio for moderate against high activity, in context, and state what it is adjusted for
+  - Pick any other coefficients: could the same sentence honestly be written about it?
+- [Chan et al. (2017)](https://doi.org/10.1186/s12889-017-4772-z), *BMC Public Health*, Table 3, men only
+
+## The sentences, and what the authors wrote {.smaller}
+
+| Comparison | Crude OR (95% CI) | Adjusted OR (95% CI) |
+|------------------|-------------|-------------|
+| Physical activity: moderate against high | 1.34 (1.18 to 1.51) | 1.14 (1.01 to 1.30) |
+
+- Men with moderate activity had 1.14 times the odds of overweight or obesity of men with high activity (95% CI 1.01 to 1.30), after adjustment for the variables listed
+- The authors: 'A low level of PA was associated with the risk of overweight/obesity (Adjusted OR = 1.14; 95% CI: 1.01–1.30) compared to a high level of PA among men'
+  - 1.14 is the moderate row, not the low row
+  - An odds ratio is not a risk[]{.gap}
+- Diabetes, hypertension, and high cholesterol may follow from overweight, not precede it
+  - Adjusting for them is a judgement the table does not justify
+
+## The other coefficients {.smaller}
+
+- All coefficients are mutually adjusted
+- But the adjustment set was chosen for physical activity, not for age or education
+  - So the same sentence cannot honestly be written about the other rows: the Table 2 fallacy[]{.gap}
+- The authors: 'Among the socio-demographic variables, age, ethnicity and educational level were significantly associated with being overweight/obese'
+- [Chan et al. (2017)](https://doi.org/10.1186/s12889-017-4772-z), *BMC Public Health*, CC BY 4.0, Table 3, men only
+
+## A cautionary tale {.smaller}
+
+:::: {.columns}
+::: {.column width="38%"}
+
+- Year trend for student activity in Scottish further education
+- A statistician was asked to predict the next point in this sequence
+- They fitted a straight line, and predicted the red point: about `r format(round(tale_pred_2000, -1), big.mark = ',')`
+- The actual value was the green point: about `r format(tale_actual_2000, big.mark = ',')`[]{.gap}
+- The data had levelled off, and a straight line cannot
+
+:::
+::: {.column width="62%"}
+
+```{r}
+#| label: cautionary-tale
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5
+ggplot(tale, aes(x = year, y = activity)) +
+  geom_abline(intercept = coef(m_tale)[[1]], slope = coef(m_tale)[[2]],
+    colour = '#00213B', linewidth = 1) +
+  geom_point(size = 3) +
+  annotate('point', x = 2000, y = tale_pred_2000, colour = 'red', size = 4) +
+  annotate('point', x = 2000, y = tale_actual_2000, colour = 'forestgreen', size = 4) +
+  scale_x_continuous(breaks = 1993:2000) +
+  coord_cartesian(ylim = c(4000, 8000)) +
+  labs(x = 'Year', y = 'Student activity (thousand hours)') +
+  theme_minimal(base_size = 16)
+```
+
+:::
+::::
+
+## Always look at the data first
+
+- Plot before modelling
+  - Week 7's descriptive statistics
+  - Week 10's scatterplot
+  - This week's diagnostics[]{.gap}
+- A model always returns a number, whatever shape the data are
+
+## Where this goes next {.smaller}
+
+- Not covered here:
+  - Model fit statistics: deviance and pseudo R squared
+  - Diagnostics specific to logistic regression
+  - Interaction, prediction, and discrimination[]{.gap}
+- Picked up by Advanced Statistics:
+  - Model building, and why stepwise selection is a poor way to do it
+  - Explanation against prediction, and multicollinearity
+  - Formal mediation analysis
+  - Survival analysis, for the follow-up time this session set aside
+  - Logistic regression in full
+
+## Key points, and what the lab does {.smaller}
+
+- A crude association can mislead, and adjustment is how a regression addresses it
+- An adjusted coefficient is an association among people alike in everything else the model holds
+- Beware the Table 2 fallacy when interpreting the other variables' coefficients[]{.gap}
+- Exponentiate a logistic regression coefficient to derive an odds ratio, with the null at 1
+- Sensitivity analysis is a tool to help when you want to examine if an assumption is important[]{.gap}
+- The lab derives the ten-year mortality outcome, fits both model types, and builds the crude-and-adjusted and sensitivity tables

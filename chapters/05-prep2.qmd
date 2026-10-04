@@ -36,7 +36,7 @@ Picture reading the sheet in the screenshot below the way a person would, workin
 
 Row 1 is a title, 'Clinic Visit Log - Week 12', stretched across six columns as one merged cell. A heading merged like that looks fine to a person. But when R reads the underlying columns back out, most of them come back empty, because the merge only stored the value in one of the cells it covers. Row 2 does the same thing on a smaller scale, merging 'Measurements' across just the Weight and Height columns, so a proper header for either one only turns up in row 3.
 
-Read on down the Weight and Height columns themselves and one row breaks the pattern. Most patients are plain numbers, kilograms and metres. One row is text instead: `195 lbs` and `6 ft`. R reads a whole column as text the moment a single cell in it isn't a bare number. So it only takes one row like that to turn an otherwise clean numeric column into text throughout, no matter how many other rows are perfectly formed. This is the same problem Chapter 1's `round()` example was solving for us by hand, turning a raw scale reading into a clean whole-kilogram number before it ever went in the log. Nobody has done that here, and R has no way to do it on our behalf.
+Read on down the Weight and Height columns themselves and one row breaks the pattern. Most patients are plain numbers, kilograms and metres. One row is text instead: `195 lbs` and `6 ft`. R reads a whole column as text the moment a single cell in it isn't a bare number. This is the same problem Chapter 1's `round()` example was solving for us by hand, turning a raw scale reading into a clean whole-kilogram number before it ever went in the log. Nobody has done that here, and R has no way to do it on our behalf.
 
 Off to the side, in a cell with no column of its own, sits a note about one specific patient's missed follow-up, disconnected from the table it's about. Further down, after a blank row inserted purely for visual spacing, which becomes a row of missing values, `NA`, in every column the moment it's imported, sits a second, smaller table: a follow-up schedule, unrelated to the patient log above it. R expects one table per sheet, so this second table gets read as more rows of the first one, and the result makes no sense.
 
@@ -48,7 +48,7 @@ Go through the sheet and list every feature above that you can find in it. There
 
 ## Finding a file, and telling R where it is
 
-We just saved a clean CSV in the exercise above. Before we can read it, or anything else, into R, we need to know where the file we want lives. This is the file system skill everything from here on assumes.
+We just saved a clean CSV in the exercise above. Before we can read it, or anything else, into R, we need to know where the file we want lives.
 
 **Where downloads go.** When you download a file from a browser, most browsers save it into a folder called `Downloads` by default, without asking. On Windows that's usually `C:\Users\yourname\Downloads`; on a Mac it's usually `/Users/yourname/Downloads`. If you can't find a file you just downloaded, that folder is the first place to check. Confirm where your own browser is set to save to, since some let you change it.
 
@@ -69,7 +69,7 @@ We just saved a clean CSV in the exercise above. Before we can read it, or anyth
 
 `readr`'s `read_csv()` reads a `.csv` file into R as a data frame. It needs a path telling it where that file is, using the path skills from earlier in this chapter. Building that path with `here()`, from the `here` package, means the same code works on any machine, regardless of where the project folder sits on that machine's disk: `here()` starts from the project folder and adds the pieces you give it, one folder at a time.
 
-This is a different function from `read.csv()`, base R's own version, which Chapter 1 used deliberately, and from `write.csv()`, which Chapter 1 used to save `visits` out. Base R's versions weren't wrong there, only the simpler tool for four hand-typed patients. From here on we use `readr`'s `read_csv()`, and later `write_csv()`, instead. They read faster on a file this size. They also don't silently guess at things the way base R's older functions do: `read.csv()` used to turn every text column into a factor by default unless told not to, a behaviour that caught out R users for years. `read_csv()` and `write_csv()` are the pair this book, and the wider tidyverse, are built around. The data is about to get a lot bigger than four patients, and that's when a guess R gets wrong starts to matter.
+This is a different function from `read.csv()`, base R's own version, which Chapter 1 used deliberately, and from `write.csv()`, which Chapter 1 used to save `visits` out. Base R's versions weren't wrong there, only the simpler tool for four hand-typed patients. From here on we use `readr`'s `read_csv()`, and later `write_csv()`, instead. They read faster on a file this size. They also don't silently guess at things the way base R's older functions do: `read.csv()` used to turn every text column into a factor by default unless told not to, a behaviour that caught out R users for years. `read_csv()` and `write_csv()` are the pair this book, and the wider tidyverse, are built around.
 
 This chapter needs three packages: `readr` for reading files, `here` for building paths, and `ggplot2` for the plot at the end. As Chapter 1 explained, installing a package and loading it are two different actions. Unless these are installed already, run this once in the console, not inside this document:
 
@@ -90,7 +90,7 @@ library(here)
 
 ### Four things that go wrong
 
-With the path skills just covered, we're ready to read a file in, and the fastest way to get comfortable with that is watching it fail a few ways on purpose first. Almost every import problem we'll see is one of four things.
+Almost every import problem we'll see is one of four things.
 
 **A wrong filename.** Close, but not exact:
 
@@ -116,7 +116,7 @@ read_csv(here('data', 'mph_nhanes_20241107.csv'))
 read_csv('C:\Users\yourname\Documents\new_folder\mph_nhanes_20241107.csv')
 ```
 
-This isn't even a 'file not found' error. It never gets that far. `\U` is one of a handful of backslash sequences R's parser treats specially inside a string, and `\Users` isn't a valid one, so R refuses to parse the string at all. Every Windows path copied this way starts with `C:\Users\...`, so this isn't a rare edge case, it's the default shape of a pasted Windows path. The fix from earlier in this chapter still applies: replace every backslash with a forward slash before using a path in R. Better still, once the path is inside the project folder, `here()` avoids the problem entirely, since we never type the backslash-filled part of the path at all.
+This isn't even a 'file not found' error. It never gets that far. `\U` is one of a handful of backslash sequences R's parser treats specially inside a string, and `\Users` isn't a valid one, so R refuses to parse the string at all. Every Windows path copied this way starts with `C:\Users\...`, so this is the usual case. The fix from earlier in this chapter still applies: replace every backslash with a forward slash before using a path in R. Better still, once the path is inside the project folder, `here()` avoids the problem entirely, since we never type the backslash-filled part of the path at all.
 
 **The right file, wrong location.** Forgetting which subfolder the file lives in:
 
@@ -126,7 +126,7 @@ This isn't even a 'file not found' error. It never gets that far. `\U` is one of
 read_csv(here('mph_nhanes_20241107.csv'))
 ```
 
-The filename is right this time. What's missing is `'data'`, the subfolder it lives in. R's error message looks identical to the wrong-filename case above, which is worth noticing: the message tells us *that* nothing was found at that path, not *why* the path was wrong. We have to check that ourselves.
+The filename is right this time. What's missing is `'data'`, the subfolder it lives in. R's error message looks identical to the wrong-filename case above: the message tells us *that* nothing was found at that path, not *why* the path was wrong. We have to check that ourselves.
 
 ```{r}
 #| label: fix-file-not-there
@@ -150,7 +150,7 @@ substr(names(messy_attempt), 1, 50)
 
 No error, but nothing usable either: one column, zero rows, and a column name that's a fragment of raw XML. An `.xlsx` file is a small zip archive of several XML files bundled together. `read_csv()` has gone looking inside that archive and started reading one of those XML files as if it were plain text. This is the quietest kind of import failure there is: nothing crashes, nothing complains, and the result still looks like a data frame at a glance. Always check what came in, which is what the next section is for.
 
-Put right, all four attempts above collapse into the one call we want, and this is the real import we use for the rest of this book. But first, notice what we're about to leave behind: four patients, hand typed in Chapter 1, were only ever enough to practise R's syntax on. No real public health question gets answered from four people. The file we're about to read holds `nhanes_mph` instead, an extract of a large American health survey in which adults were interviewed and then given a physical examination, tens of thousands of them, not four. Chapter 3 introduces it properly. For today we only need it to be a real file with real data in it, at the scale our toy log never had:
+Put right, all four attempts above collapse into the one call we want, and this is the real import we use for the rest of this book. The file holds `nhanes_mph`, an extract of a large American health survey in which adults were interviewed and then given a physical examination, tens of thousands of them, not four. Chapter 3 introduces it properly:
 
 ```{r}
 #| label: read-nhanes
@@ -238,7 +238,7 @@ Look at `gender` and `smoking` in the output above. `gender` is a plain number, 
 
 ### When R guesses the wrong type
 
-`read_csv()` decides each column's type by looking at the values in it. Most of the time that guess is right. It goes wrong in the same situation the messy spreadsheet exercise built on purpose: a column that's plain numbers for every patient except one, who was recorded as `'195 lbs'` instead of a number in kilograms. R has no way to know that `'lbs'` should be split off, converted, and the rest treated as a number. It sees text and stores the whole column as text, one stray row is all it takes. This is why the clean version of that spreadsheet needed every patient converted to the same unit, with that unit moved into the column *name* (`weight_kg`) and out of every individual *value*: it's the only way `read_csv()` ends up with a column it can calculate on.
+`read_csv()` decides each column's type by looking at the values in it. Most of the time that guess is right. It goes wrong in the same situation the messy spreadsheet exercise built on purpose: a column that's plain numbers for every patient except one, who was recorded as `'195 lbs'` instead of a number in kilograms. R has no way to know that `'lbs'` should be split off, converted, and the rest treated as a number. It sees text and stores the whole column as text. This is why the clean version of that spreadsheet needed every patient converted to the same unit, with that unit moved into the column *name* (`weight_kg`) and out of every individual *value*: it's the only way `read_csv()` ends up with a column it can calculate on.
 
 ### Spotting missing data
 
@@ -249,7 +249,7 @@ Look at `gender` and `smoking` in the output above. `gender` is a plain number, 
 sum(is.na(nhanes$vpa_w))
 ```
 
-That's how many participants have no value recorded for `vpa_w`, vigorous physical activity at work, out of `r format(nrow(nhanes), big.mark = ',')` participants in total. `nrow()`, from base R, returns the row count on its own, the same number `dim()` gives as its first value above, useful whenever we want the total without the column count. It's a real gap, not a rounding artefact, and it matters. Whatever we go on to calculate from `vpa_w` only ever describes the participants who have a value. We should say so out loud whenever we report it, instead of letting it pass silently.
+That's how many participants have no value recorded for `vpa_w`, vigorous physical activity at work, out of `r format(nrow(nhanes), big.mark = ',')` participants in total. `nrow()`, from base R, returns the row count on its own, the same number `dim()` gives as its first value above, useful whenever we want the total without the column count. Whatever we go on to calculate from `vpa_w` only ever describes the participants who have a value. We should say so out loud whenever we report it, instead of letting it pass silently.
 
 ### Using the dictionary file
 
@@ -269,7 +269,7 @@ The dictionary's first column is called `Variable names`, with a space in it, so
 dictionary[dictionary$`Variable names` %in% c('age', 'chol', 'smoking'), ]
 ```
 
-That's the habit to build now: when a column's meaning isn't obvious from its name, the answer lives in this file, not in a guess. Chapter 3 uses this same file to build proper factors out of six of these columns; for today, just knowing how to look one up is enough.
+That's the habit to build now: when a column's meaning isn't obvious from its name, the answer lives in this file, not in a guess. Chapter 3 uses this same file to build proper factors out of six of these columns.
 
 ## A first analysis, and your first script
 
@@ -292,7 +292,7 @@ summary(nhanes$chol[nhanes$smoking == 'Never'])
 summary(nhanes$chol[nhanes$smoking == 'Current'])
 ```
 
-That's a genuine grouped summary, built entirely from tools already familiar: `$`, `==`, and now `[` and `]` with a condition inside it. It works, but it's clunky already with just two groups, and `smoking` has three. Chapter 3 introduces `group_by()` and `summarise()`, a far nicer way to do this for as many groups as we like, in one line instead of several. This is only a preview of what's coming, not the tool we'll use going forward.
+That's a grouped summary, built from tools we already have: `$`, `==`, and now `[` and `]` with a condition inside it. It works, but it's clunky already with just two groups, and `smoking` has three. Chapter 3 introduces `group_by()` and `summarise()`, a far nicer way to do this for as many groups as we like, in one line instead of several.
 
 ### A first taste of a plot
 
@@ -347,17 +347,17 @@ ggplot(nhanes, aes(x = chol)) +
   geom_histogram(binwidth = 0.5)
 ```
 
-Notice the shape of it. The `library()` calls come first, because nothing below them works until the packages are loaded. The `read_csv()` line comes next, because every line after it needs `nhanes` to exist. A script runs top to bottom, so the order isn't decoration, it's the thing that makes it work.
+Notice the shape of it. The `library()` calls come first, because nothing below them works until the packages are loaded. The `read_csv()` line comes next, because every line after it needs `nhanes` to exist.
 
 ### Proving it works
 
-Here's the part people skip, and it's the part that matters. A script that runs on your machine right now, in a session where you've been typing for an hour, is not yet proof of anything. Half of what it needs might already be sitting in memory from something you typed and forgot.
+A script that runs on your machine right now, in a session where you've been typing for an hour, is not yet proof of anything. Half of what it needs might already be sitting in memory from something you typed and forgot.
 
 So test it properly. In RStudio, go to **Session → Restart R**. That throws away every object and every loaded package, leaving you with an empty session, like the one a colleague, a marker, or you-in-six-months would start from. Now run your script from the top.
 
-If it runs clean, the script is self-contained. If it fails, the error tells us precisely what we'd forgotten to write down, and the fix belongs *in the script*, not typed into the console again. That restart is the reproducibility argument from Chapter 1, made concrete: not 'scripts are good practice' but 'here is how we find out whether ours is one.'
+If it runs clean, the script is self-contained. If it fails, the error tells us precisely what we'd forgotten to write down, and the fix belongs *in the script*, not typed into the console again.
 
-That's the script this whole chapter has been building toward, starting all the way back with a merged title row that wouldn't import cleanly: an import a stranger, or you in six months, could pick up cold and trust, more than one that only ever runs once. Chapter 3 starts from this point, with `nhanes` already read in and ready.
+Chapter 3 starts from this point, with `nhanes` already read in and ready.
 
 ## Exercises
 

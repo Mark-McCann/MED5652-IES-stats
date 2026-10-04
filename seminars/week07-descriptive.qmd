@@ -106,13 +106,13 @@ nrt_df <- tibble(
   - Measures of occurrence and association
   - Non-causal explanations of associations
     - Confounding bias
-    - Mediator bias
+    - Overadjustment bias (adjusting for a mediator)
     - Collider bias
 
 - From Stats:
   - Weeks 4 and 5: tidy data, file paths, CSV structure
 
-## By the end of this session, you will be able to
+## By the end of this week, you will be able to
 
 1. Classify a variable as nominal, ordinal, binary, count, or continuous, and explain how variable type constrains the analysis available
 2. Select and construct an appropriate table or plot for one or more variables of a given type
@@ -154,8 +154,6 @@ $$\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i$$
 
 $$s = \sqrt{\frac{1}{n-1}\sum_{i=1}^{n} (x_i - \bar{x})^2}$$
 
-- How much individuals typically differ from the mean
-
 ## Median and IQR {.smaller}
 
 - Mean and SD are the most common pair, but not the only one
@@ -171,9 +169,9 @@ $$\text{IQR} = Q_3 - Q_1$$
 
 - A variable's **distribution** is how its values are spread out
 - Which values are common, which are rare, and how far apart they reach
-- Mean, SD, median and IQR are all attempts to describe it in a few numbers
+- Mean, SD, median, and IQR are all attempts to describe it in a few numbers
 - The shape itself decides which of those numbers is honest
-- We see shape by counting values into bins and plotting the counts, named properly later
+- We see shape by counting values into bins and plotting the counts
 
 ## Three shapes, three variables
 
@@ -282,7 +280,6 @@ ggplot(curve_df, aes(x, y)) +
 ::: {.column width="42%"}
 - Altman and Bland (1996), BMJ *Statistics Notes*: 'Detecting skewness from summary information'
 - Tells skew from summary numbers alone
-- Reused across the course
 :::
 
 ::: {.column width="58%"}
@@ -319,7 +316,7 @@ ggplot(skew_df, aes(x = value)) +
 
 ## The five-number summary
 
-- Mean, SD, median and IQR give a crude description
+- Mean, SD, median, and IQR give a crude description
 - Five numbers give a fuller picture: minimum, Q1, median, Q3, maximum[]{.gap}
 - **Q1** is also called the 25th percentile: a quarter of the data falls at or below it
 - **Q3** is the 75th percentile: three quarters of the data falls at or below it
@@ -454,10 +451,8 @@ tibble(
 
 ## Which plot, for which variable?
 
-- We have used plots already: to see shape, and to compare groups
 - Which plot works depends on the kind of variable
 - Some variables are measured on a scale; some record which group someone is in
-- Next: a plot for each kind
 - The proper names for those kinds come after the break
 
 ## Values on a scale: the histogram
@@ -515,7 +510,7 @@ ggplot(bin_df, aes(x = mid, y = count, width = w)) +
   theme_minimal(base_size = 13)
 ```
 
-- If in doubt, look at more than one bins before choosing
+- If in doubt, look at more than one bin width before choosing
 :::
 
 ::::
@@ -554,7 +549,6 @@ nhanes |>
 - A **bar chart**: one bar per group, count or percentage
 - Bars separated, axis has no numeric meaning between categories
 - Unlike a histogram: bars touch, drawn along one scale
-- The gap indicates the variable is not a scale
 :::
 
 ::: {.column width="60%"}
@@ -822,7 +816,7 @@ nhanes |>
 - Gender by baseline cardiovascular disease
 - The same layout from epi weeks 1 to 5, reactivated here
 - No risk ratio or odds ratio here: `blm.cvd` was recorded at the same visit, so the table shows who already had CVD, not who went on to develop it
-- Week 9 covers the formulae
+- Week 9 puts a 95% CI on them
 
 ## Try it: build the 2x2
 
@@ -872,7 +866,6 @@ strep_sample |>
 - Often stratified by the exposure or group of interest
 - Each row shows the appropriate summary for that variable's type[]{.gap}
 - Mean/SD or median/IQR for continuous, count/percentage for categorical
-- The same choice from a few slides ago
 
 ## A Table 1
 
@@ -944,7 +937,7 @@ ggplot(nrt_df, aes(x = year, y = rate)) +
 
 ## Same data, one misleading axis
 
-- `year`: a count variable, evenly spaced
+- `year`: continuous, recorded in whole years
 - Prescriptions of NRT per 100,000 population: a continuous variable
 - A line chart suits both: an ordered numeric variable tracked over time
 - The right chart's y-axis does not start at zero, so a modest rise looks dramatic

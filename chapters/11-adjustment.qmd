@@ -8,17 +8,16 @@ Getting there means extending linear regression to hold several explanatory vari
 
 By the end of this week you will be able to:
 
-1. Fit a multiple linear regression using `lm()`, including categorical explanatory variables with a stated reference level
-2. Compare crude and adjusted estimates and quantify the change
-3. Fit a logistic regression with `glm(family = binomial)`, and interpret an exponentiated coefficient as an adjusted odds ratio with a confidence interval
-4. Compare nested models as a sensitivity analysis, and appraise what each assumes about `blm.cvd`
-5. Write an interpretation of an adjusted association in an appropriate academic style
+1. Specify a multiple linear regression model to account for confounding and interpret the adjusted coefficients, using `lm()`
+2. Include a categorical explanatory variable, interpret coefficients relative to the reference level, and recognise the equivalence with analysis of variance (ANOVA), fitting a factor in `lm()` and checking its reference with `levels()`
+3. Explain why a linear model is unsuitable for a binary response, and why the logistic regression model is a better alternative, fitting it with `glm(family = binomial)`
+4. Interpret an exponentiated coefficient and its confidence interval from a logistic regression, using `exp()` and `broom::tidy(exponentiate = TRUE)`
 
 ## Setup
 
 As in Chapters 3 to 6, we read the data with `read_csv()` and turn the six coded variables into factors against the dictionary.
 
-This chapter adds one new package underneath the scenes: `gtsummary`'s `tbl_regression()`, which we use for the first time here, depends on `broom.helpers`. If `broom.helpers` isn't already on your machine, install it the usual way, in the console, not in the script. We don't `library()` it directly; `gtsummary` finds it automatically once it's installed.
+This chapter adds one new package behind the scenes: `gtsummary`'s `tbl_regression()`, which we use for the first time here, depends on `broom.helpers`. If `broom.helpers` isn't already on your machine, install it the usual way, in the console, not in the script. We don't `library()` it directly; `gtsummary` finds it automatically once it's installed.
 
 ```{r}
 #| label: setup
@@ -112,7 +111,7 @@ nhanes <- nhanes |>
 table(nhanes$dead_10yr, useNA = 'always')
 ```
 
-The second condition is written as `fu_month >= 120` alone, with no condition on `dth`, precisely to catch both parts of that second group: `dth == 1` (died, but after month 120) and `dth == 0` (never died, followed at least that long) both belong in it. Anyone who was still being observed at month 120 was alive at month 120, and that is the whole question.
+The second condition is written as `fu_month >= 120` alone, with no condition on `dth`, precisely to catch both parts of that second group: `dth == 1` (died, but after month 120) and `dth == 0` (never died, followed at least that long) both belong in it. Anyone who was still being observed at month 120 was alive at month 120.
 
 The catch-all comes last and returns `NA`. That's the third group: alive, but followed for less than ten years. Had it been written first, it would have swallowed everybody.
 :::
@@ -155,7 +154,7 @@ confint(m_adj)
 
 The coefficient on `sed` is now what this model calls the *adjusted* association between sedentary time and cholesterol: the association after holding age, gender, and education constant. 'Adjustment' here means the model assumes the association of an extra hour of sedentary time with cholesterol is the same regardless of a participant's age, gender, or education, and estimates that one shared slope from everybody at once.
 
-`gender` and `edu` entered that model as factors, and each one contributes a row per non-reference level instead of one row for the whole variable. `levels()`, from base R, shows a factor's categories in order; the first one listed is the reference level, the category every other row is compared against, the same idea Chapter 6 covered in full, including what `relevel()` does and doesn't change. We don't interpret `gender`'s or `edu`'s own coefficients here the way we interpret `sed`'s: neither was the exposure this model was built to assess, so their adjustment sets weren't chosen with that in mind. The reason is explained below.
+`gender` and `edu` entered that model as factors, and each one contributes a row per non-reference level instead of one row for the whole variable. `levels()`, from base R, shows a factor's categories in order; the first one listed is the reference level, the category every other row is compared against, as in Chapter 6. We don't interpret `gender`'s or `edu`'s own coefficients here the way we interpret `sed`'s: neither was the exposure this model was built to assess, so their adjustment sets weren't chosen with that in mind. The reason is explained below.
 
 ## Crude versus adjusted: quantifying the change
 
@@ -184,9 +183,9 @@ dp3 <- function(x) sprintf('%.3f', x)
 
 Crude, the slope on `sed` is about `r dp5(crude_sed$estimate)` mmol/L per hour/day (95% CI `r dp5(crude_sed$conf.low)` to `r dp5(crude_sed$conf.high)` mmol/L per hour/day, p = `r round(crude_sed$p.value, 3)`). Adjusted for age, gender, and education, it moves to about `r dp5(adj_sed$estimate)` mmol/L per hour/day (95% CI `r dp5(adj_sed$conf.low)` to `r dp5(adj_sed$conf.high)` mmol/L per hour/day, p = `r round(adj_sed$p.value, 3)`).
 
-Look at the estimate first, not the p-value. The adjusted slope is about `r round(adj_sed$estimate / crude_sed$estimate, 1)` times the size of the crude one: holding age, gender, and education constant pulls the association between sedentary time and cholesterol substantially further from zero. That movement is what confounding looks like. Age and gender were masking part of a real association, and the model that ignores them understates it. The p-value crossing 0.05 is a consequence of the estimate moving away from zero, not a separate finding.
+Look at the estimate first, not the p-value. The adjusted slope is about `r round(adj_sed$estimate / crude_sed$estimate, 1)` times the size of the crude one: holding age, gender, and education constant pulls the association between sedentary time and cholesterol substantially further from zero. That movement is what confounding looks like. Age and gender were masking part of the association, and the model that ignores them understates it. The p-value crossing 0.05 is a consequence of the estimate moving away from zero, not a separate finding.
 
-A caution about reading the other rows of this table: `age`'s coefficient here is adjusted for `sed` too, the same as `sed`'s own coefficient is. If sedentary time sits on the path from age to cholesterol, part of age's true association runs through it, and `age`'s row only captures the part that doesn't. Treating every coefficient in a regression table as though it carried the same interpretation as the one we set out to estimate is called the *Table 2 fallacy*. `sed` is the exposure this model was built to assess, and its adjustment set was chosen with that in mind; `age`, `gender`, and `edu` weren't, so their coefficients shouldn't be read as if they were each other's crude-versus-adjusted comparisons in miniature. This is the same logic the sensitivity analysis later in this chapter applies to `blm.cvd`, stated as a general caution instead of worked through on one variable.
+A caution about reading the other rows of this table: `age`'s coefficient here is adjusted for `sed` too, the same as `sed`'s own coefficient is. If sedentary time sits on the path from age to cholesterol, part of age's true association runs through it, and `age`'s row only captures the part that doesn't. Treating every coefficient in a regression table as though it carried the same interpretation as the one we set out to estimate is called the *Table 2 fallacy*. `sed` is the exposure this model was built to assess, and its adjustment set was chosen with that in mind; `age`, `gender`, and `edu` weren't, so their coefficients shouldn't be read as if they were each other's crude-versus-adjusted comparisons in miniature.
 
 ## Diagnostics for the multiple regression model
 
@@ -278,11 +277,17 @@ or_crude <- tidy(m_dead_crude, exponentiate = TRUE, conf.int = TRUE) |>
   filter(term == 'sed')
 or_adj <- tidy(m_dead_adj, exponentiate = TRUE, conf.int = TRUE) |>
   filter(term == 'sed')
+
+# pct turns an odds ratio into a percentage change in the odds, to one
+# decimal: 1.040 becomes '4.0', and 0.80 becomes '20.0' (lower)
+pct <- function(x) sprintf('%.1f', abs(x - 1) * 100)
 ```
 
-Crude, each additional hour/day of sedentary time is associated with an odds ratio of about `r dp3(or_crude$estimate)` for ten-year mortality (95% CI: `r dp3(or_crude$conf.low)` to `r dp3(or_crude$conf.high)`, p < 0.001). Adjusted for age, gender, and education, the odds ratio attenuates to about `r dp3(or_adj$estimate)` (95% CI: `r dp3(or_adj$conf.low)` to `r dp3(or_adj$conf.high)`, p < 0.001). Both CIs sit entirely above 1, the null value for an odds ratio, so both are statistically significant. But the adjusted estimate is noticeably smaller than the crude one. Part of the crude association reflected age. Older participants are both more sedentary and more likely to die within ten years, for reasons that have nothing to do with sedentary behaviour itself.
+An odds ratio also reads as a percentage change in the odds, the conversion the interactive lecture introduced. Above 1, it means $(\text{OR} - 1) \times 100\%$ higher odds, so 1.040 is 4.0% higher. Below 1, it means $(1 - \text{OR}) \times 100\%$ lower odds, so 0.80 is 20% lower. Each CI limit converts the same way. The change is in the odds of dying, not in the risk of dying.
 
-Both odds ratios sit close to 1, so confounding matters less here than it will in Exercise 2, where the same mechanism, age, moves the estimate by a factor of about six instead of a couple of percent. Do that exercise before deciding how seriously to take adjustment.
+Crude, each additional hour/day of sedentary time is associated with `r pct(or_crude$estimate)`% higher odds of dying within ten years (OR `r dp3(or_crude$estimate)`, 95% CI `r dp3(or_crude$conf.low)` to `r dp3(or_crude$conf.high)`, p < 0.001). Adjusted for age, gender, and education, the association attenuates to `r pct(or_adj$estimate)`% higher odds (OR `r dp3(or_adj$estimate)`, 95% CI `r dp3(or_adj$conf.low)` to `r dp3(or_adj$conf.high)`, p < 0.001): a CI from `r pct(or_adj$conf.low)`% to `r pct(or_adj$conf.high)`% higher. Both CIs sit entirely above 1, the null value for an odds ratio, so both are statistically significant. But the adjusted estimate is noticeably smaller than the crude one. Part of the crude association reflected age. Older participants are both more sedentary and more likely to die within ten years, for reasons that have nothing to do with sedentary behaviour itself.
+
+Both odds ratios sit close to 1, so confounding matters less here than it will in Exercise 2, where the same mechanism, age, shrinks the association by about two thirds instead of a couple of percent. Do that exercise before deciding how seriously to take adjustment.
 
 ## Regression tables with `gtsummary`
 
@@ -344,13 +349,13 @@ or_with <- tidy(m_dead_with, exponentiate = TRUE, conf.int = TRUE) |>
   filter(term == 'sed')
 ```
 
-The odds ratio for `sed` moves only a little between the two models: `r dp3(or_without$estimate)` (95% CI `r dp3(or_without$conf.low)` to `r dp3(or_without$conf.high)`, p < 0.001) without `blm.cvd`, and `r dp3(or_with$estimate)` (95% CI `r dp3(or_with$conf.low)` to `r dp3(or_with$conf.high)`, p < 0.001) with it. `blm.cvd` itself is strongly associated with ten-year mortality, but adjusting for it changes almost nothing about the sedentary time estimate. Whichever role `blm.cvd` plays, confounder or mediator, the conclusion about sedentary time and mortality in this dataset doesn't depend much on which one it is.
+The odds ratio for `sed` moves only a little between the two models. Without `blm.cvd`, each additional hour/day of sedentary time is associated with `r pct(or_without$estimate)`% higher odds of dying within ten years (OR `r dp3(or_without$estimate)`, 95% CI `r dp3(or_without$conf.low)` to `r dp3(or_without$conf.high)`, p < 0.001); with it, `r pct(or_with$estimate)`% higher odds (OR `r dp3(or_with$estimate)`, 95% CI `r dp3(or_with$conf.low)` to `r dp3(or_with$conf.high)`, p < 0.001). `blm.cvd` itself is strongly associated with ten-year mortality, but adjusting for it changes almost nothing about the sedentary time estimate. Whichever role `blm.cvd` plays, confounder or mediator, the conclusion about sedentary time and mortality in this dataset barely changes.
 
 ## Exercises
 
 **Exercise 1** (ILOs 1, 2). State the null and alternative hypotheses for the adjusted slope. Fit `chol ~ mpa_w + age + gender + edu`, where `mpa_w` is moderate physical activity at work in hours/day, and compare it with the crude model `chol ~ mpa_w`. Report both slopes for `mpa_w` with their 95% CIs and p-values, and write one sentence describing how the adjusted estimate differs from the crude one, including its direction.
 
-**Exercise 2** (ILOs 3, 5). State the null and alternative hypotheses for the odds ratio, noting the scale its null value sits on. Fit `dead_10yr ~ vpa_t + age + gender + edu`, where `vpa_t` is vigorous physical activity overall in hours/day, and compare it with the crude model `dead_10yr ~ vpa_t`. Exponentiate both models' coefficients to obtain odds ratios with CIs, and build a `tbl_regression()` table for the adjusted model. Write one sentence interpreting the adjusted odds ratio for `vpa_t` in context.
+**Exercise 2** (ILOs 3, 4). State the null and alternative hypotheses for the odds ratio, noting the scale its null value sits on. Fit `dead_10yr ~ vpa_t + age + gender + edu`, where `vpa_t` is vigorous physical activity overall in hours/day, and compare it with the crude model `dead_10yr ~ vpa_t`. Exponentiate both models' coefficients to obtain odds ratios with CIs, and build a `tbl_regression()` table for the adjusted model. Write one sentence interpreting the adjusted odds ratio for `vpa_t` in context.
 
 **Exercise 3** (ILO 4). Using the adjusted model from Exercise 2, fit a second version that also adjusts for `blm.cvd`. Combine both models into one table with `tbl_merge()`, and write one sentence comparing the two odds ratios for `vpa_t` and one sentence stating what each model assumes about `blm.cvd`.
 
@@ -431,9 +436,9 @@ or_vpa_adj <- tidy(m_vpa_t_adj, exponentiate = TRUE, conf.int = TRUE) |>
   filter(term == 'vpa_t')
 ```
 
-Adjusted for age, gender, and education, each additional hour/day of vigorous activity overall is associated with an odds ratio of about `r dp3(or_vpa_adj$estimate)` for ten-year mortality (95% CI: `r dp3(or_vpa_adj$conf.low)` to `r dp3(or_vpa_adj$conf.high)`, p < 0.001): participants reporting more vigorous activity had lower odds of dying within ten years, holding age, gender, and education constant.
+Adjusted for age, gender, and education, each additional hour/day of vigorous activity overall is associated with `r pct(or_vpa_adj$estimate)`% lower odds of dying within ten years (OR `r dp3(or_vpa_adj$estimate)`, 95% CI `r dp3(or_vpa_adj$conf.low)` to `r dp3(or_vpa_adj$conf.high)`, p < 0.001). On the percentage scale the CI runs from `r pct(or_vpa_adj$conf.high)`% to `r pct(or_vpa_adj$conf.low)`% lower: the upper OR limit, nearer 1, gives the smaller reduction.
 
-Now compare that with the crude model. Crude, the odds ratio is `r dp3(or_vpa_crude$estimate)`, which would say that an extra hour a day of vigorous activity cuts the odds of dying by something like `r round((1 - or_vpa_crude$estimate) * 100)`%. Adjusted, it's `r dp3(or_vpa_adj$estimate)`: still a real association, but noticeably weaker. Part of that gap is age. Older participants do less vigorous activity overall, and are more likely to die within ten years, for reasons that have nothing to do with the activity itself. So a crude comparison of the active against the inactive is partly a comparison of the young against the old. This is the same confounding story the chapter told with `sed`, moving the estimate the same way, toward the null: there the adjusted odds ratio moved from `r dp3(or_crude$estimate)` to `r dp3(or_adj$estimate)`, closer to 1; here it moves from `r dp3(or_vpa_crude$estimate)` to `r dp3(or_vpa_adj$estimate)`, also closer to 1, from further below it. Reporting the crude figure on its own would overstate the association with vigorous activity.
+Now compare that with the crude model. Crude, each additional hour/day of vigorous activity is associated with `r pct(or_vpa_crude$estimate)`% lower odds of dying within ten years (OR `r dp3(or_vpa_crude$estimate)`, 95% CI `r dp3(or_vpa_crude$conf.low)` to `r dp3(or_vpa_crude$conf.high)`, p < 0.001). Adjusted, it's `r pct(or_vpa_adj$estimate)`% lower: still an association, but noticeably weaker. Part of that gap is age. Older participants do less vigorous activity overall, and are more likely to die within ten years, for reasons that have nothing to do with the activity itself. So a crude comparison of the active against the inactive is partly a comparison of the young against the old. This is the same confounding story the chapter told with `sed`, moving the estimate the same way, toward the null: there the adjusted odds ratio moved from `r dp3(or_crude$estimate)` to `r dp3(or_adj$estimate)`, closer to 1; here it moves from `r dp3(or_vpa_crude$estimate)` to `r dp3(or_vpa_adj$estimate)`, also closer to 1, from further below it. Reporting the crude figure on its own would overstate the association with vigorous activity.
 
 **Exercise 3**
 
@@ -462,11 +467,11 @@ or_vpa_with <- tidy(m_vpa_t_with, exponentiate = TRUE, conf.int = TRUE) |>
   filter(term == 'vpa_t')
 ```
 
-The odds ratio for `vpa_t` moves a little between the two models: `r dp3(or_vpa_without$estimate)` (95% CI `r dp3(or_vpa_without$conf.low)` to `r dp3(or_vpa_without$conf.high)`, p < 0.001) without `blm.cvd`, and `r dp3(or_vpa_with$estimate)` (95% CI `r dp3(or_vpa_with$conf.low)` to `r dp3(or_vpa_with$conf.high)`, p < 0.001) with it. That's a smaller shift than the main adjustment step but still a real one. Without `blm.cvd`, the model assumes that any relationship between baseline CVD and mortality operates entirely through the explanatory variables already in the model; with it, the model assumes `blm.cvd` is a separate cause of death, worth adjusting for directly. Both are defensible readings of a single measurement taken at one study visit, and nothing in this dataset can say which one is correct.
+The odds ratio for `vpa_t` moves a little between the two models: `r pct(or_vpa_without$estimate)`% lower odds per hour/day without `blm.cvd` (OR `r dp3(or_vpa_without$estimate)`, 95% CI `r dp3(or_vpa_without$conf.low)` to `r dp3(or_vpa_without$conf.high)`, p < 0.001), and `r pct(or_vpa_with$estimate)`% lower with it (OR `r dp3(or_vpa_with$estimate)`, 95% CI `r dp3(or_vpa_with$conf.low)` to `r dp3(or_vpa_with$conf.high)`, p < 0.001). That's a smaller shift than the main adjustment step. Without `blm.cvd`, the model treats baseline CVD as a possible mediator, so the estimate keeps any part of the association that runs through it; with it, the model treats baseline CVD as a confounder, and that part is adjusted away. Both are defensible readings of a single measurement taken at one study visit, and nothing in this dataset can say which one is correct.
 
 **Writing exercise (sample answer)**
 
-Sedentary time was associated with total cholesterol after adjustment for age, gender, and education (slope `r dp5(adj_sed$estimate)` mmol/L per hour/day, 95% CI `r dp5(adj_sed$conf.low)` to `r dp5(adj_sed$conf.high)` mmol/L per hour/day, p = `r round(adj_sed$p.value, 3)`), and with higher odds of ten-year all-cause mortality (adjusted odds ratio `r dp3(or_adj$estimate)`, 95% CI `r dp3(or_adj$conf.low)` to `r dp3(or_adj$conf.high)`, p < 0.001). Both estimates adjust only for the variables included in this model; they cannot rule out confounding by factors that were never measured, such as overall frailty or comorbidity not captured here.
+Sedentary time was associated with total cholesterol after adjustment for age, gender, and education (slope `r dp5(adj_sed$estimate)` mmol/L per hour/day, 95% CI `r dp5(adj_sed$conf.low)` to `r dp5(adj_sed$conf.high)` mmol/L per hour/day, p = `r round(adj_sed$p.value, 3)`), and with `r pct(or_adj$estimate)`% higher odds of ten-year all-cause mortality per hour/day (adjusted odds ratio `r dp3(or_adj$estimate)`, 95% CI `r dp3(or_adj$conf.low)` to `r dp3(or_adj$conf.high)`, p < 0.001). Both estimates adjust only for the variables included in this model; they cannot rule out confounding by factors that were never measured, such as overall frailty or comorbidity not captured here.
 
-In a sensitivity analysis, the adjusted odds ratio for sedentary time and ten-year mortality was `r dp3(or_without$estimate)` (95% CI `r dp3(or_without$conf.low)` to `r dp3(or_without$conf.high)`, p < 0.001) without baseline cardiovascular disease in the model, and `r dp3(or_with$estimate)` (95% CI `r dp3(or_with$conf.low)` to `r dp3(or_with$conf.high)`, p < 0.001) with it included. The first model assumes baseline CVD's influence on mortality runs entirely through the other adjustment variables; the second treats it as an independent contributor to mortality risk worth adjusting for directly. Because sedentary behaviour and baseline CVD were both measured at the same study visit, this dataset cannot establish which assumption is correct, and both estimates are reported for that reason.
+In a sensitivity analysis, the adjusted odds ratio for sedentary time and ten-year mortality was `r dp3(or_without$estimate)`, or `r pct(or_without$estimate)`% higher odds per hour/day (95% CI `r dp3(or_without$conf.low)` to `r dp3(or_without$conf.high)`, p < 0.001) without baseline cardiovascular disease in the model, and `r dp3(or_with$estimate)`, or `r pct(or_with$estimate)`% higher (95% CI `r dp3(or_with$conf.low)` to `r dp3(or_with$conf.high)`, p < 0.001), with it included. The first model treats baseline CVD as a possible mediator, keeping any part of the association that runs through it; the second treats it as a confounder and adjusts that part away. Because sedentary behaviour and baseline CVD were both measured at the same study visit, this dataset cannot establish which assumption is correct, and both estimates are reported for that reason.
 :::

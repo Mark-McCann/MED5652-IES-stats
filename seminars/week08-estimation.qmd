@@ -134,10 +134,10 @@ width_points <- tibble(
 - **Stats, Week 7.** `sed` was described with a mean of 6.56 and an SD of 10.9 hours/day from 34,434 people, then the median (`r sed_median` hours/day) and the IQR (`r sed_q1` to `r sed_q3` hours/day).
 - **Epi.**
   - **Weeks 1 and 5.** External validity and selection bias. This week adds another source of problem: sampling variation, precision instead of bias and validity
-  - **Week 2.** Risk, odds, RR and OR calculated as point estimates. This week puts a confidence interval on a proportion and on a difference in proportions; Week 9 does the RR and OR
-  - **Week 3.** Underpower was discussed. This week does the sample size arithmetic behind it, and Week 9 returns to define power itself
+  - **Week 2.** Risk, odds, RR, and OR calculated as point estimates. This week puts a confidence interval on a proportion and on a difference in proportions; Week 9 does the RR and OR
+  - **Week 3.** Underpowered studies were discussed. This week does the sample size arithmetic behind it, and Week 9 returns to define power itself
 
-## By the end of this session, you will be able to {.smaller}
+## By the end of this week, you will be able to {.smaller}
 
 1. Understand the difference between population and sample, and why statistical inference focuses on the population
 2. Explain why a sample estimate varies from sample to sample, and state the practical consequence of the central limit theorem for the shape of that variation
@@ -174,8 +174,7 @@ width_points <- tibble(
 - The **estimator**: the method that produces a number from a sample
   - It is a random variable, because who ends up in the sample is random
 - The **estimate**: one particular result the estimator produced
-  - It is 'realised' (i.e., occurred), so it is fixed[]{.gap}
-- Abstract, but it is the foundation for how we define precision
+  - It is 'realised' (i.e., occurred), so it is fixed
 :::
 
 ::: {.column width="58%"}
@@ -313,12 +312,10 @@ ggplot() +
   - The results of these samples will have a distribution
   - **Sampling distribution**: each sample yields one estimate, a single fixed draw from it
 
-- Everything from here to the confidence interval rests on this distribution
-
 ## Seeing it happen {.smaller}
 
-- Three coins, fair (p = 0.5), biased (p = 0.25) and very biased (p = 0.1), and five sample sizes: n = 1, 5, 10, 30, 100
-- Buttons repeat 1, 5, 20, 100 or 1000 samples, so the shape of the sample mean builds live
+- Three coins, fair (p = 0.5), biased (p = 0.25), and very biased (p = 0.1), and five sample sizes: n = 1, 5, 10, 30, 100
+- Buttons repeat 1, 5, 20, 100, or 1000 samples, so the shape of the sample mean builds live
 - Head = 1; tail = 0, so the mean of a sample is the proportion of heads
 
 ```{r}
@@ -372,6 +369,17 @@ cat('
     return successes;
   }
 
+  function axisMax() {
+    var pmf = Math.pow(1 - p, n), top = pmf;
+    for (var k = 0; k < n; k++) {
+      pmf = pmf * (n - k) / (k + 1) * p / (1 - p);
+      if (pmf > top) top = pmf;
+    }
+    var raw = 100 * top * 1.2;
+    var nice = raw > 10 ? Math.ceil(raw / 5) * 5 : Math.ceil(raw);
+    return Math.min(nice, 100);
+  }
+
   function draw() {
     while (svg.firstChild) svg.removeChild(svg.firstChild);
     var w = 900, h = 190;
@@ -379,10 +387,10 @@ cat('
     var plotW = w - marginLeft - marginRight;
     var plotH = h - marginTop - marginBottom;
     var pct = counts.map(function(c) { return total > 0 ? (100 * c / total) : 0; });
-    var maxPct = Math.max.apply(null, pct.concat([1]));
+    var maxPct = axisMax();
     var barW = plotW / counts.length;
     pct.forEach(function(pv, k) {
-      var barH = (pv / maxPct) * plotH;
+      var barH = Math.min(pv / maxPct, 1) * plotH;
       var x = marginLeft + k * barW;
       var y = marginTop + (plotH - barH);
       var rect = document.createElementNS(ns, "rect");
@@ -545,7 +553,7 @@ tibble(
   - Built from the standard error
   - Its width is the margin of error
 - In its simplest form, a 95% CI is calculated as:
-  - estimate ± 1.96 * standard errors
+  - estimate ± 1.96 × standard error
 
 ## Why 95% and 1.96, and when t replaces it {.smaller}
 
@@ -553,7 +561,7 @@ tibble(
 
 ::: {.column width="58%"}
 - CIs are mostly reported as '95% CI'
-  - A 95% confidence level, i.e., a 5% (1-0.95) significance level
+  - A 95% confidence level: 5% of CIs built this way would miss the true value
   - Almost always fixed at this arbitrary level
   - 1.96 comes from the normal distribution the CLT delivers
 
@@ -623,7 +631,7 @@ tibble(
   gt()
 ```
 
-- Given the mean, SD and n above, find the standard error, then the 95% CI
+- Given the mean, SD, and n above, find the standard error, then the 95% CI
 - Three lines, five minutes
 
 ## Try it: the answer
@@ -877,7 +885,6 @@ tibble(
 
 - `r round(tb_stats$p_improved, 3)` ± 1.96 × `r round(tb_stats$se_improved, 4)`
 - `r round(tb_stats$ci_lower, 3)` to `r round(tb_stats$ci_upper, 3)`
-- Everything above about compatibility and interpretation applies here too
 
 ## Block 2: comparing two groups {background-image="assets/skyline.jpg" background-size="cover" .divider}
 
@@ -1031,7 +1038,7 @@ $$n = \frac{1.96^2 \times p(1-p)}{m^2}$$
 ## Try it: how does n respond? {.smaller}
 
 - A poll wants to estimate a proportion around p = 0.5, with a 95% CI
-- At a margin of error of 3 percentage points (m = 0.03), the formula above gives n ≈ 1,067
+- At a margin of error of 3 percentage points (m = 0.03), the formula above gives n ≈ 1,068
 - Tightening the margin to 1.5 percentage points (m = 0.015) multiplies n by about how much?
   - **A.** 2x
   - **B.** 4x
@@ -1041,7 +1048,7 @@ $$n = \frac{1.96^2 \times p(1-p)}{m^2}$$
 ## Try it: the answer
 
 - **B.** About 4x
-- Halving m halves the bottom of a squared term, so the whole fraction roughly quadruples: n ≈ 4,268
+- m is squared, so halving it divides the bottom of the fraction by four, and n quadruples: n ≈ 4,269
 - The same square-root relationship as the width curve, read the other way round
 
 ## Application {background-image="assets/skyline.jpg" background-size="cover" .divider}
@@ -1059,7 +1066,7 @@ $$n = \frac{1.96^2 \times p(1-p)}{m^2}$$
 | Williamson et al. (2020), Nature | HR 1.48 (1.29 to 1.69) Black; 1.45 (1.32 to 1.58) South Asian, vs white | 'Black and South Asian people were at higher risk, even after adjustment for other factors.' | [PubMed](https://pubmed.ncbi.nlm.nih.gov/32640463/) |
 
 
-- A hazard ratio (Williamson) is a ratio measure like the RR and OR from Week 2, with a null value of 1. More details in Week 9.
+- A hazard ratio (Williamson) is a ratio measure like the RR and OR from Week 2, with a null value of 1. Hazard ratios belong to survival analysis, in Advanced Statistics.
 
 ## Three claims, judged: Cao et al. {.smaller}
 
@@ -1090,6 +1097,6 @@ $$n = \frac{1.96^2 \times p(1-p)}{m^2}$$
 
 - An estimate from a sample is not the population value. The CI says how far off it might be
 - The SD describes the data. The SE describes the estimator
-- A 95% CI is the range of values the data are compatible with, and it covers the population value 95% of the time in the long run: not the same as being 95% sure about this one
+- A 95% CI is the range of values the data are compatible with, and 95% of CIs built this way cover the population value: not the same as being 95% sure about this one
 - Precision is bought with n, but scaled slowly
 - The lab builds every one of these CIs in R, on `nhanes_mph` and `strep_tb`, and reconciles the hand calculations from today against the software's answers

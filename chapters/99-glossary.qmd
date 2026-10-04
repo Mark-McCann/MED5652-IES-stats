@@ -7,7 +7,7 @@ This appendix is a reference: packages, functions, R syntax, and statistical ter
 | Package | What it's for | First appearance |
 |---|---|---|
 | base R | Comes with R itself, no `library()` needed: objects, vectors, arithmetic, comparisons, `data.frame()`, basic tests and models. | Chapter 1 |
-| `dplyr` | Manipulating data: filtering rows, building new columns, grouping and summarising. | Chapter 1 |
+| `dplyr` | Manipulating data: filtering rows, building new columns, and grouping and summarising. | Chapter 1 |
 | `readr` | Reading data files (e.g. CSV) into R. Faster than base R's own version, and doesn't silently guess wrong. | Chapter 2 |
 | `here` | Builds a file path from the project folder down to a file, so code runs on any machine. | Chapter 2 |
 | `ggplot2` | All the plotting in this book. | Chapter 2 |
@@ -39,9 +39,9 @@ This appendix is a reference: packages, functions, R syntax, and statistical ter
 | `levels()` | Lists a factor's categories, in their current order. | Chapter 3 |
 | `relevel()` | Reassigns a factor's reference level to the one named. | Chapter 3 |
 | `list()` | Bundles several (different) objects together. | Chapter 3 |
-| `nrow()` | Counts the rows in a data frame. | Chapter 4 |
+| `nrow()` | Counts the rows in a data frame. | Chapter 2 |
 | `set.seed()` | Fixes the sequence of 'random' numbers R uses, so a random draw repeats the same way every time. | Chapter 4 |
-| `as.numeric()` | Converts a value to a continuous number. | Chapter 6 |
+| `as.numeric()` | Converts a value to a number; an ordered factor becomes 1, 2, 3, … in level order. | Chapter 6 |
 
 ### Base R: summaries and maths
 
@@ -183,15 +183,14 @@ This appendix is a reference: packages, functions, R syntax, and statistical ter
 
 | Term | What it means | First appearance |
 |---|---|---|
-| Categorical variable | A variable that puts each observation into one of a fixed set of groups. Nominal categories have no order (`gender`); ordinal categories do (`edu`); binary is a two-category special case (`blm.cvd`), even where R has stored it as the numbers 0 and 1. | Chapter 3 |
+| Categorical variable | A variable that puts each observation into one of a fixed set of groups. Nominal categories have no order (`gender`); ordinal categories do (`phq.c`); binary is a two-category special case (`blm.cvd`), even where R has stored it as the numbers 0 and 1. | Chapter 3 |
 | Numeric variable | A variable whose values are numbers, in one of two shapes: count (0, 1, 2, 3, ...) or continuous (12.1, 13.5, ...). A binary variable coded 0/1 is categorical, not numeric, whatever class R has stored it as. | Chapter 3 |
 | Factor | R's way of storing a categorical variable, as a set of named levels. What class R stores a variable as (`glimpse()`'s `<dbl>`, `<chr>`, or a factor) is a separate question from what the variable statistically is. | Chapter 3 |
 | Reference level | The category everything else in a table or model is compared against. In R the default is the first level in a factor. | Chapter 3 |
 | Mean, median | Two measures of a distribution's centre: the arithmetic average, and the middle value when sorted. | Chapter 3 |
-| Standard deviation (SD) | A measure of a distribution's spread, usually paired with the mean. When used without context an SD can be assumed to describe the population. | Chapter 3 |
+| Standard deviation (SD) | A measure of a distribution's spread, usually paired with the mean. | Chapter 3 |
 | Interquartile range (IQR) | Another measure of a distribution's spread, usually paired with the median. Reported as the range it spans, the first quartile to the third, not as the single number the gap between them makes. | Chapter 3 |
 | Skew | A distribution with a longer tail on one side, where the mean and median differ. | Chapter 3 |
-| Complete-case | An analysis that keeps only the rows with no missing value on any variable it uses. | Chapter 3 |
 | Table 1 | The semi-standard first table of a paper: participant characteristics, often stratified by group. | Chapter 3 |
 
 ### Estimation and uncertainty
@@ -199,7 +198,6 @@ This appendix is a reference: packages, functions, R syntax, and statistical ter
 | Term | What it means | First appearance |
 |---|---|---|
 | Population | The entire group of individuals or items we want to draw conclusions about. | Chapter 4 |
-| Population distribution | How a specific measurement or characteristic is spread out across the entire population. | Chapter 4 |
 | Sample | A subset of individuals drawn from the population, which we observe and measure. | Chapter 4 |
 | Point estimate | A single number calculated from a sample (e.g. a sample mean or proportion), used as our best guess for the unknown population value. | Chapter 4 |
 | Sampling distribution | The theoretical distribution of point estimates we would get if we took infinite independent samples of the exact same size from the population. | Chapter 4 |
@@ -217,7 +215,7 @@ This appendix is a reference: packages, functions, R syntax, and statistical ter
 | Null hypothesis | The baseline assumption in a statistical test, typically stating there is no effect, no difference, or no association between variables in the population. | Chapter 5 |
 | Alternative hypothesis | The statement a test weighs the null hypothesis against: that there is an effect, a difference, or an association. A test never proves the null hypothesis true; it only asks whether the sample is surprising enough to reject it in favour of the alternative. | Chapter 5 |
 | p-value | The probability of observing a result as extreme as, or more extreme than, the one calculated from our sample, assuming the null hypothesis is completely true. As good practice, we should always report point and interval estimates along with p-values. | Chapter 5 |
-| Parametric, non-parametric | Parametric tests assume the underlying population data follows a specific distribution (e.g. t-distribution, in t-tests). Non-parametric tests make no such assumptions and often rely on ranking the data (e.g. Wilcoxon tests). | Chapter 5 |
+| Parametric, non-parametric | Parametric tests rely on an assumed distribution, e.g. a t-test relies on the sampling distribution of the mean being roughly normal (not the data themselves). Non-parametric tests make no such assumption and often work on ranks instead (e.g. Wilcoxon tests). | Chapter 5 |
 | Paired, independent samples | Paired (or dependent) samples involve measurements linked to each other (e.g. pre/post tests on the same patient, or matched twins). Independent samples involve completely separate, unrelated groups. | Chapter 5 |
 | 2x2 (contingency) table | A table summarising the relationship between two binary variables. In epidemiology, exposure is typically on the rows and the disease/outcome is on the columns. | Chapter 5 |
 | Risk, risk ratio | Risk is the probability of an event occurring: the number of cases divided by the total group. The risk ratio (or relative risk) divides the risk in the exposed group by the risk in the unexposed group. | Chapter 5 |
@@ -240,11 +238,16 @@ This appendix is a reference: packages, functions, R syntax, and statistical ter
 | Slope | How much the response changes per unit of an explanatory variable. | Chapter 6 |
 | Coefficient | The general name for intercept and slope. | Chapter 6 |
 | Residual | The vertical distance between an observed value and the model's fitted line. | Chapter 6 |
+| R² (multiple R-squared) | The proportion of the response's variation a model accounts for, from 0 to 1. With one explanatory variable it equals the square of Pearson's r. | Chapter 6 |
 | Residual standard error | The typical size of a residual, in the response's units: how far the points sit from the line, not how precise the line is. | Chapter 6 |
 | F-statistic | A test of a regression model as a whole. With one explanatory variable it answers the same question as the slope's own test. | Chapter 6 |
 | Linearity, constant variance, normally distributed residuals | The three assumptions a fitted line's trustworthiness rests on, checked with diagnostic plots. | Chapter 6 |
+| Prediction interval | The range for one individual's predicted value, always wider than the CI for the predicted mean. A different quantity from a CI, not a shortened name for one. | Chapter 6 |
 | Extrapolation | Using a model to predict outside the range of data it was fitted on. | Chapter 6 |
 | Multivariable | Several explanatory variables, one response. Some writers say 'multiple regression' for the same thing. 'Multivariate regression' is a different, formal term for several responses modelled together, not used in this course. | Summary |
+| Complete-case | An analysis that keeps only the rows with no missing value on any variable it uses. | Chapter 7 |
+| Logistic regression | A regression model for a binary (0/1) response, fitted with `glm(family = binomial)`. It models the log odds of the response, so its exponentiated coefficients are odds ratios. | Chapter 7 |
+| Log odds | The natural logarithm of the odds. Unlike a probability it has no upper or lower limit, which is why logistic regression works on this scale. | Chapter 7 |
 | Crude, adjusted | An association estimated on its own (crude), against one estimated alongside other variables that might confound it (adjusted). | Chapter 7 |
 
 ### Study design and causal language
@@ -255,7 +258,7 @@ This appendix is a reference: packages, functions, R syntax, and statistical ter
 | Mediator | A variable that sits on the causal path between an exposure and an outcome. Adjusting for one, unlike a confounder, removes part of the effect itself, not a distortion, which is why the same variable can't be treated both ways. | Chapter 7 |
 | Adjustment set | The variables chosen, before fitting a model, to adjust an association for. | Chapter 7 |
 | Sensitivity analysis | Fitting a model more than one way, on purpose, to see how much a result depends on an assumption that can't be settled from the data. | Chapter 7 |
-| Collider bias | Distortion introduced by adjusting for a variable that's a common *effect* of the exposure and the outcome, not a common cause. | Chapter 7 |
+| Collider bias | Distortion introduced by adjusting for a variable that's a common *effect* of the exposure and the outcome, not a common cause. | Summary |
 | Table 2 fallacy | Reading every coefficient in an adjusted regression table as if it had the same interpretation as the one the model was built to estimate. | Chapter 7 |
 
 ## Where to look things up

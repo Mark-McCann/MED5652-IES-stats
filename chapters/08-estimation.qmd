@@ -1,6 +1,6 @@
 # Estimation, precision, and sample size (Week 8) {#sec-08-estimation}
 
-Chapter 3 taught us to describe a variable with a mean and a standard deviation. Take a different sample from the same population and both numbers come out different. That wobble isn't a flaw in the method and it isn't something to apologise for in a write-up. It's measurable, and measuring it is what turns a number into an estimate we can defend. Sampling variability and the central limit theorem, from this week's interactive lecture, are what make it predictable enough to measure.
+Chapter 3 taught us to describe a variable with a mean and a standard deviation. Take a different sample from the same population and both numbers come out different. That wobble is measurable, and measuring it is what turns a number into an estimate we can defend. Sampling variability and the central limit theorem, from this week's interactive lecture, are what make it predictable enough to measure.
 
 Two terms that sound alike carry the whole chapter, and they aren't interchangeable. The standard deviation describes the spread of the *data*. The standard error describes the precision of an *estimate*. Out of the second comes the confidence interval, or CI, which we calculate by hand before checking it against R's own functions, since a formula met once from the inside is harder to misread later. The same CIs cover the difference between two groups as well as a single mean, and each one has to be stated in the units of the problem: a CI nobody can put into a sentence hasn't been interpreted. The machinery also runs backwards. A CI narrows as the sample grows, so fixing the width we want tells us the sample we need, which is how a study gets sized before anyone has collected anything.
 
@@ -34,7 +34,7 @@ nhanes <- read_csv(here('data', 'mph_nhanes_20241107.csv'))
 dictionary <- read_csv(here('data', 'mph_nhanes_20241107_dictionary.csv'))
 ```
 
-Two small things about that chunk. There's no `library(ggplot2)`, because this chapter draws no plots and there's no reason to load a package we aren't going to use. And `dictionary` is read in even though no code below refers to it, because it's the thing we reach for the moment we're unsure what a column means. Every chapter reads it for that reason, not because the chapter's own code needs it.
+There's no `library(ggplot2)`, because this chapter draws no plots and there's no reason to load a package we aren't going to use. And `dictionary` is read in even though no code below refers to it, because it's the thing we reach for the moment we're unsure what a column means.
 
 ```{r}
 #| label: setup-hidden
@@ -327,7 +327,7 @@ widths <- data.frame(
 widths
 ```
 
-Now the pattern is one column instead of six numbers on three screens. Cut the sample in half and the CI gets about 40% wider; cut it to a tenth and it's roughly three times wider than we started. That last number is the useful one to hold onto. Ten times less data did not make the CI ten times wider, it made it about three times wider, and three is roughly the square root of ten. That's the SE = SD/√n formula showing up in an actual result. Precision improves with the square root of the sample size, not with the sample size itself. That's why doubling a study's size buys much less than it feels like it should.
+Cut the sample in half and the CI gets about 40% wider; cut it to a tenth and it's roughly three times wider than we started. Ten times less data did not make the CI ten times wider, it made it about three times wider, and three is roughly the square root of ten. That's the SE = SD/√n formula showing up in an actual result. Precision improves with the square root of the sample size, not with the sample size itself. That's why doubling a study's size buys much less than it feels like it should.
 
 ## Sample size and the margin of error
 
@@ -378,7 +378,7 @@ Re-run the cholesterol calculation with a margin of 0.1 mmol/L, then 0.025 mmol/
 
 ## Worked example: a CI for age
 
-A mean on its own says nothing about how much confidence we should place in it. So how precisely can we pin down the average age of participants in this sample? `age` hasn't appeared elsewhere in this chapter, which makes it a fair test of the machinery just built.
+A mean on its own says nothing about how much confidence we should place in it. So how precisely can we pin down the average age of participants in this sample?
 
 ```{r}
 #| label: worked-age-hand

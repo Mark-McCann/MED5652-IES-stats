@@ -125,7 +125,8 @@ slope_sed <- tidy_sed |> filter(term == 'sed')
 # source deck's own Stata output, not recomputed (the raw data was never
 # digitised): slides_2025/Correlation and Regression AMcI 20251114.pptx,
 # slides 26, 27, 36 and 37. n = 31 babies, clearance (l/h) regressed on
-# weight (kg).
+# weight (kg). Lightest baby about 0.9 kg, read off the source deck's slide 25
+# scatterplot (image only, no data table), for the 300 g slide.
 # The gentamicin slide's markdown table retypes the intercept, slope, CIs and
 # p-values below by hand (no value on it is computed): keep the two in step.
 gent_n <- 31
@@ -150,13 +151,13 @@ app_estimate <- -0.46
 app_ci <- c(-0.69, -0.24)
 ```
 
-## What you have learnt so far 
+## What you have learnt so far
 
-- **Stats, Week 9.** We learnt t-tests for comparing a continuous variable between groups, and the chi-squared test for two categorical variables. But what if we want to examine the association between two continuous variables, e.g. cholesterol and age?
-- **Epi, Week 1.** Exposure and outcome as hypothetical causes and the health state of interest. How can we model them statistically? 
+- **Stats, Week 9.** We learnt t-tests for comparing a continuous variable between groups, and the chi-squared test for two categorical variables. But what if we want to examine the association between two continuous variables, e.g., cholesterol and age?
+- **Epi, Week 1.** Exposure and outcome as hypothetical causes and the health state of interest. How can we model them statistically?
 - **Epi, Week 4.** Correlation is not causation was mentioned but what exactly is 'correlation'?
 
-## By the end of this session, you will be able to
+## By the end of this week, you will be able to
 
 1. Select an appropriate correlation measure and interpret the findings
 2. Apply the simple linear regression model, and assess its assumptions using residual diagnostics
@@ -169,7 +170,7 @@ app_ci <- c(-0.69, -0.24)
 
 - We can compare two groups. Last week's exposure was gender, a two-category label
 - This week's exposures are age and sedentary time, both are continuous[]{.gap}
-- We can't apply t-test with these as exposure
+- We can't apply a t-test with these as exposure
 - But the question is still the same one we've been asking all term: does the outcome differ, and by how much, as the exposure changes
 
 ## Visualising two continuous variables at once {.smaller}
@@ -179,8 +180,7 @@ app_ci <- c(-0.69, -0.24)
 
 - Boxplot and histogram to examine distribution of a continuous variable by groups
 - Scatterplot is for two continuous variables
-- One point per participant, one variable on each axis
-- The first plot of two continuous variables together[]{.gap}
+- One point per participant, one variable on each axis[]{.gap}
 - The cloud slopes gently upward and is wide
 :::
 ::: {.column width="62%"}
@@ -457,7 +457,8 @@ tibble(
 
 - The response is the variable the question wants explained[]{.gap}
 - The explanatory variable is the one that could plausibly have come first
-- Study 4's complication is why it's included: age can't be explained by cholesterol, so the direction is obvious there. Nothing in the arithmetic would have objected to fitting it the other way round
+- Study 4: age cannot depend on cholesterol, so age has to be the explanatory variable
+- The software would fit it either way round: the direction comes from the question, not the arithmetic
 
 ## A regression model to answer these questions {.smaller}
 
@@ -470,7 +471,6 @@ tibble(
   - ε: the error the line doesn't capture[]{.gap}
 - X and Y are observed (the data)
 - α and β are model **coefficients** to be estimated
-- The assumptions ε carries come later
 
 ## Fitting the line: least squares {.smaller}
 
@@ -778,7 +778,6 @@ cat(tail(out_lines[nzchar(out_lines)], 3), sep = '\n')
 - R squared is `r round(glance_age$r.squared, 4)`: age accounts for under 1% of the variation in cholesterol between participants[]{.gap}
 - Set that against the slope's p-value, well below 0.001, on the same model
 - An association can be real, precisely estimated, and still leave almost all of the response unexplained
-- A low R squared doesn't mean there's no association, only that age alone explains little of the variation
 
 ## Can we trust the regression line?
 
@@ -828,8 +827,7 @@ ggplot(aug_age, aes(x = .fitted, y = .resid)) +
 ## The QQ plot
 
 - The standardised residuals, plotted against what a normal distribution would have produced, with a reference line
-- Points on the line are consistent with normally distributed residuals[]{.gap}
-- A systematic departure from it is not
+- Points on the line are consistent with normally distributed residuals
 
 ## Cholesterol and age: the QQ plot {.smaller}
 
@@ -904,9 +902,9 @@ tibble(
   - The 'reference category' (the category to compare with) is 0 on every indicator
   - The first 'active category' gets a 0/1 indicator (also known as *dummy variable*)
   - Each further 'active category' gets its own 0/1 indicator
-- All comparisons were made against the reference[]{.gap}
+- All comparisons are made against the reference[]{.gap}
 
-## Does cholesterol differ by education?
+## Does cholesterol differ by education? {.smaller}
 
 ```{r}
 #| label: lm-edu-table
@@ -930,12 +928,14 @@ tibble(
 
 - H0: a non-reference category's mean cholesterol equals the reference category's
 - H1: it differs[]{.gap}
-- Neither contrast is anywhere near significant. On this evidence, education isn't associated with cholesterol in this sample
+- 'High school graduate' against 'less than high school': a difference in mean cholesterol of `r round(hs_edu$estimate, 3)` mmol/L (95% CI `r round(hs_edu$conf.low, 3)` to `r round(hs_edu$conf.high, 3)` mmol/L, p = `r format(round(hs_edu$p.value, 3), nsmall = 3)`)
+- 'Above high school' against 'less than high school': `r round(above_edu$estimate, 3)` mmol/L (95% CI `r round(above_edu$conf.low, 3)` to `r round(above_edu$conf.high, 3)` mmol/L, p = `r format(round(above_edu$p.value, 3), nsmall = 3)`)[]{.gap}
+- Both 95% CIs include zero: these data show no clear association between education and cholesterol
 
 ## Changing the reference
 
 - A reference category is arbitrary and decided based on the research question and framing
-- It changes the numbers because the comparison changes, but the fit stays the same. Changing the reference doesn't provide more information
+- It changes the numbers because the comparison changes, but the fit stays the same
 - R squared (`r format(glance_edu$r.squared, scientific = TRUE, digits = 3)`, both parameterisations) and the residual standard error don't move at all[]{.gap}
 
 ## Try it: read the education table {.smaller}
@@ -995,10 +995,10 @@ tibble(
 
 ## Using the model to predict {.smaller}
 
-- 'Predict' is used loosely here. We are not really predicting what would happen in the future
+- 'Predict' is used loosely here. We are not predicting what would happen in the future
 - Instead, we are *interpolating* or *extrapolating*
 - Consider a toy example with 3 data points: cholesterol readings from people aged 30, 50, and 70
-  - Interpolation is to use the regression model to estimate the average cholesterol for 31, 40 and 60 year olds even if our data don't include these exact ages
+  - Interpolation is to use the regression model to estimate the average cholesterol for 31, 40, and 60 year olds even if our data don't include these exact ages
   - Extrapolation is to use the regression model to estimate the average cholesterol for 29 and 75 year olds
 
 ## Confidence and prediction intervals {.smaller}
@@ -1050,6 +1050,7 @@ tibble(
 
 - Gentamicin is an antibiotic given for serious infections in newborns, and the kidneys clear it, so the safe dose depends on the baby's clearance[]{.gap}
 - Gentamicin clearance (l/h) regressed on weight (kg), `r gent_n` babies. R squared `r gent_r2`[]{.gap}
+- Clearance was on average `r gent_slope` l/h higher per additional kg of weight (95% CI `r gent_slope_ci[1]` to `r gent_slope_ci[2]` l/h, p < 0.001)[]{.gap}
 - For a 3 kg baby, the predicted clearance is `r gent_pred_3kg` l/h, and the dose follows from it
 
 ## A 300 g baby: an impossible prediction
@@ -1057,10 +1058,10 @@ tibble(
 - What about a very preterm baby born at 25 weeks, weighing only 300 g?
 - The same formula for a 300 g baby returns a clearance of `r gent_pred_300g` l/h
 - A negative clearance is physically impossible[]{.gap}
-- This relates to the linear regression model assuming the response variable to change *linearly* with the explanatory variable
-- Likely this is also an extrapolation
+- The linear regression model assumes the response changes *linearly* with the explanatory variable
+- 300 g is also far below the lightest baby in the data, about 0.9 kg: an extrapolation
 
-## Is sedentary time associated with cholesterol?
+## Is sedentary time associated with cholesterol? {.smaller}
 
 ```{r}
 #| label: lm-sed-table
@@ -1073,13 +1074,14 @@ tibble(
 ) |>
   gt()
 ```
+- Each additional hour/day of sedentary time was associated with a difference in cholesterol of `r round(slope_sed$estimate, 4)` mmol/L (95% CI `r round(slope_sed$conf.low, 4)` to `r round(slope_sed$conf.high, 4)` mmol/L, p = `r format(round(slope_sed$p.value, 3), nsmall = 3)`)
 - The slope is close to zero, and small next to its own 95% CI[]{.gap}
 - The CI includes zero, so these data are consistent with no association. R squared is essentially zero
 - Cholesterol varies with age, and sedentary time might too
 - Is age a confounder? Can we deal with it in the regression model?
 - Next week answers that question
 
-## Application: write the sentence {background-image="assets/skyline.jpg" background-size="cover" .divider}
+## Application {background-image="assets/skyline.jpg" background-size="cover" .divider}
 
 ## Two numbers, no interpretation {.smaller}
 
@@ -1087,13 +1089,13 @@ tibble(
 |----------|----|--------|---|
 | BMI, per additional hour/day of sleep, kg/m² | -0.46 | -0.69 to -0.24 | < 0.001 |
 
-- Potter, Cade and Hardie (2017), *PLOS ONE*: [sleep duration and BMI in `r format(app_n, big.mark = ',')` UK adults](https://doi.org/10.1371/journal.pone.0182195), adjusted for age, ethnicity, sex, smoking, and socioeconomic status[]{.gap}
+- Potter, Cade, and Hardie (2017), *PLOS ONE*: [sleep duration and BMI in `r format(app_n, big.mark = ',')` UK adults](https://doi.org/10.1371/journal.pone.0182195), adjusted for age, ethnicity, sex, smoking, and socioeconomic status[]{.gap}
 - In pairs: write one sentence interpreting this coefficient in context and in its units, and one sentence stating what the model assumes
 - Five minutes
 
-## The sentences, and what the authors wrote 
+## The sentences, and what the authors wrote
 
-- BMI was on average 0.46 kg/m² lower for each additional hour/day of sleep (95% CI 0.69 to 0.24 kg/m² lower, p < 0.001), after adjustment for age, ethnicity, sex, smoking, and socioeconomic status[]{.gap}
+- BMI was on average 0.46 kg/m² lower for each additional hour/day of sleep (95% CI 0.24 to 0.69 kg/m² lower, p < 0.001), after adjustment for age, ethnicity, sex, smoking, and socioeconomic status[]{.gap}
 - The model assumes linearity, constant variance, normally distributed residuals, and independence between participants
 - The authors' own sentence: 'participants had 0.46 kg/m2 lower BMI values (95% CI -0.69 to -0.24 kg/m2, p < 0.001) per additional hour of sleep'
 - Also an accurate description

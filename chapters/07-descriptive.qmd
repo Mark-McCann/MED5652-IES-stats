@@ -127,7 +127,7 @@ The reference level decides which category a table or a chart reads everything e
 levels(nhanes$smoking)
 ```
 
-`'Never'` is first, so `'Never'` is the reference. Everything else gets read against it: 'Previous' means previous compared with never, and 'Current' means current compared with never. That's the sensible choice here, and it isn't an accident. It's what we asked for when we wrote `levels = c('Never', 'Previous', 'Current')` in the recode above. Change the order in that line and we change the reference.
+`'Never'` is first, so `'Never'` is the reference. Everything else gets read against it: 'Previous' means previous compared with never, and 'Current' means current compared with never. That's the sensible choice here, and it's what we asked for when we wrote `levels = c('Never', 'Previous', 'Current')` in the recode above. Change the order in that line and we change the reference.
 
 Sometimes we want a different reference without rebuilding the factor. `relevel()`, also from base R, takes a factor and moves the level named in `ref` to the front:
 
@@ -139,7 +139,7 @@ levels(eth_white_ref)
 
 `'White'` has moved to the front, so it would now be the reference, with the other four groups read against it. The rest keep their order, shifted along by one.
 
-Notice we assigned the result to a new object, `eth_white_ref`, instead of writing it back into `nhanes`. That's deliberate. Every chapter in this book rebuilds `nhanes` with the same recode. If we changed this factor here, this chapter's `nhanes` would stop matching the one later chapters build, and a table or model would come out different for no visible reason. When we're demonstrating something, we work on a copy.
+Notice we assigned the result to a new object, `eth_white_ref`, instead of writing it back into `nhanes`. Every chapter in this book rebuilds `nhanes` with the same recode. If we changed this factor here, this chapter's `nhanes` would stop matching the one later chapters build, and a table or model would come out different for no visible reason. When we're demonstrating something, we work on a copy.
 
 Right now the reference level only decides the order categories appear in a table, or along a bar chart's axis. Once a categorical variable enters a regression model in Chapter 6, it decides what every coefficient means.
 
@@ -312,7 +312,7 @@ ggplot(nhanes, aes(x = age, y = chol)) +
 ::: {.callout-note}
 ## Try it yourself: bin width and scale
 
-Take the histogram of `sed` above. Change `binwidth` to `0.1`, then to `5`, and re-run it each time. Then add `+ ylim(0, 500)` to the original plot. `ylim()`, from `ggplot2`, fixes the lower and upper limits of the y-axis by hand instead of letting the plot choose them to fit the data. Be careful with it: anything falling outside the limits you set is dropped from the plot altogether, not drawn cut off at the edge, so a bar taller than the limit doesn't get shortened, it disappears. For each change, write one sentence on what altered in the plot, and one sentence on what the data themselves did not change. This is the same distinction the lecture drew between a plot design choice and the underlying distribution.
+Take the histogram of `sed` above. Change `binwidth` to `0.1`, then to `5`, and re-run it each time. Then add `+ ylim(0, 500)` to the original plot. `ylim()`, from `ggplot2`, fixes the lower and upper limits of the y-axis by hand instead of letting the plot choose them to fit the data. Be careful with it: anything falling outside the limits you set is dropped from the plot altogether, not drawn cut off at the edge, so a bar taller than the limit doesn't get shortened, it disappears. For each change, write one sentence on what altered in the plot, and one sentence on what the data themselves did not change. This is the same distinction the interactive lecture drew between a plot design choice and the underlying distribution.
 
 This is the first of several 'Try it yourself' boxes in the book, and none of them has a written solution. Running the code is the answer.
 :::
@@ -355,7 +355,7 @@ Three things in that line are new. `list()`, from base R, bundles several settin
 
 ## Worked example: describing age
 
-How old are the participants in this sample, and how much does that vary? `age` hasn't come up elsewhere in this chapter, so it's a clean place to put everything above to work at once.
+How old are the participants in this sample, and how much does that vary?
 
 ```{r}
 #| label: worked-summary
@@ -392,7 +392,7 @@ nhanes |>
   tbl_summary(by = gender)
 ```
 
-Age looks similar across the two gender groups, both in the boxplot and in the Table 1. There's no obvious difference to report here, and it would be wrong to manufacture one.
+Age looks similar across the two gender groups, both in the boxplot and in the Table 1. There's no obvious difference to report here.
 
 ## Exercises
 
@@ -412,7 +412,7 @@ Then answer this question using whichever of the two is appropriate: *among peop
 
 ## Writing exercise
 
-Every chapter in this book ends with one of these. The course's assessment is a structured paper on a dataset you haven't seen, where every question asks for an analysis *and* an interpretation, so these exercises can be treated as formative assessments.
+The course's assessment is a structured paper on a dataset you haven't seen, where every question asks for an analysis *and* an interpretation, so these exercises can be treated as formative assessments.
 
 Using the Table 1 from Exercise 5, write a short paragraph of a maximum of 150 words. Describe how participant characteristics differ, or don't, across the three depression classification groups. State which characteristics look similar across groups and which look different, and avoid overstating a difference the table doesn't support.
 
@@ -475,7 +475,7 @@ ggplot(nhanes, aes(x = sed, y = chol)) +
        y = 'Total cholesterol (mmol/L)')
 ```
 
-The scatterplot shows no clear relationship. The cloud of points is roughly the same height right across the range of sedentary time, not drifting up or down as we move left to right. Whatever else is associated with cholesterol here, sedentary time on its own doesn't look like much of it. Chapter 6 puts a number and a confidence interval on that impression instead of leaving it to the eye.
+The scatterplot shows no clear relationship. The cloud of points is roughly the same height right across the range of sedentary time, not drifting up or down as we move left to right. Chapter 6 puts a number and a confidence interval on that impression instead of leaving it to the eye.
 
 **Exercise 3**
 
@@ -559,7 +559,7 @@ prop.table(smoking_edu, margin = 2)
 
 The row percentages are the ones that answer the question. `smoking` was given to `table()` first, so smoking is the rows, and `margin = 1` divides each row by its own total. The 'Never' row then reads as the education breakdown *within* people who never smoked, which is what was asked, and those three numbers add to 100%.
 
-The column percentages answer a different question: within each education group, what share smoke, used to smoke, and never smoked. That's a perfectly good question, just not this one. Both tables come from the same counts, so neither is more correct than the other in the abstract. What decides it is which total we want the percentages to be a share of, and that comes from the question, not from the data.
+The column percentages answer a different question: within each education group, what share smoke, used to smoke, and never smoked. Both tables come from the same counts, so neither is more correct than the other in the abstract. What decides it is which total we want the percentages to be a share of, and that comes from the question, not from the data.
 
 ```{r}
 #| label: sol-ex6-bar

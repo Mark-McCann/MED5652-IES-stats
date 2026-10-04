@@ -12,8 +12,6 @@ The first two preparatory sessions will help us become familiar with the R analy
 
 Each chapter of this ebook is one teaching week. The week number is in the chapter title, and the chapters run in week order. Week 6 is reading week and there is no teaching. The two preparatory chapters come before the statistics lectures begin, so they have no lecture of their own to link to.
 
-The table below is the whole course in one place: what each week covers, where that week's lecture slides live, and which chapter in this ebook is the matching lab.
-
 | Week | What it covers | Lecture slides | Chapter |
 |---|---|---|---|
 | 4 | R and R Studio | None | [Chapter 1](chapters/04-prep1.qmd) |
@@ -22,7 +20,7 @@ The table below is the whole course in one place: what each week covers, where t
 | 8 | Estimation, precision, and sample size | [[Slides](seminars/week08-estimation.html)]{.content-hidden when-format="pdf"}[[Slides](https://fredho-42.github.io/MED5652-IES-stats/seminars/week08-estimation.html)]{.content-visible when-format="pdf"} | [Chapter 4](chapters/08-estimation.qmd) |
 | 9 | Hypothesis tests and measures of association | [[Slides](seminars/week09-comparison.html)]{.content-hidden when-format="pdf"}[[Slides](https://fredho-42.github.io/MED5652-IES-stats/seminars/week09-comparison.html)]{.content-visible when-format="pdf"} | [Chapter 5](chapters/09-comparison.qmd) |
 | 10 | Correlation and simple linear regression | [[Slides](seminars/week10-regression.html)]{.content-hidden when-format="pdf"}[[Slides](https://fredho-42.github.io/MED5652-IES-stats/seminars/week10-regression.html)]{.content-visible when-format="pdf"} | [Chapter 6](chapters/10-regression.qmd) |
-| 11 | Multiple linear and logistic regression | To follow | [Chapter 7](chapters/11-adjustment.qmd) |
+| 11 | Multiple linear and logistic regression | [[Slides](seminars/week11-adjustment.html)]{.content-hidden when-format="pdf"}[[Slides](https://fredho-42.github.io/MED5652-IES-stats/seminars/week11-adjustment.html)]{.content-visible when-format="pdf"} | [Chapter 7](chapters/11-adjustment.qmd) |
 
 ## Course intended learning outcomes
 
@@ -49,7 +47,7 @@ Every chapter has its intended learning outcomes, and all contents are centred a
 
 ## The two datasets
 
-Most of this ebook runs on one of two datasets. `nhanes_mph` is a curated extract of real health survey data in the US, linked to mortality records. Chapter 2 reads it in for the first time and gets us comfortable with it as data; Chapter 3 introduces it properly and is where it becomes the dataset the rest of the ebook runs on. `strep_tb`, from the `medicaldata` package, is the 1948 Medical Research Council (MRC) streptomycin trial, a historic randomised controlled trial, used from Chapter 4 onward wherever a binary outcome and a genuine trial design are useful. Both get introduced properly, in context, the first time that matters.
+Most of this ebook runs on one of two datasets. `nhanes_mph` is a curated extract of real health survey data in the US, linked to mortality records. Chapter 2 reads it in for the first time and gets us comfortable with it as data; Chapter 3 introduces it properly and is where it becomes the dataset the rest of the ebook runs on. `strep_tb`, from the `medicaldata` package, is the 1948 Medical Research Council (MRC) streptomycin trial, a historic randomised controlled trial, used from Chapter 4 onward wherever a binary outcome and a genuine trial design are useful.
 
 ## How to use the ebook
 

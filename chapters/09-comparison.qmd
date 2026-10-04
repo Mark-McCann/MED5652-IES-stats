@@ -76,7 +76,7 @@ A classical hypothesis test starts from two competing statements about the **pop
 
 A test turns the sample data into a single number, a **test statistic**, that measures how far the data sit from what the null hypothesis predicts under the sampling distribution. R then converts that statistic into a **p-value**: the probability of seeing that test statistic at least this extreme, if the null hypothesis were true. A p-value is not the probability that the null hypothesis is true, and it's not the probability the result happened by chance. A small p-value, conventionally below 0.05, means the data would be unusual under the null hypothesis, so we reject it in favour of the alternative. That 0.05 cut-off is the **significance level**, and a result with a p-value below it is called **statistically significant**. A p-value alone says nothing about how large an effect is, only about how surprising it is.
 
-A CI and a hypothesis test carry the same information, read two different ways. If a 95% CI for a difference excludes the null value, 0 for a difference, 1 for a risk ratio or odds ratio, the matching test rejects the null hypothesis at the 5% level, and vice versa. That's why Chapter 4 could already show us a real effect using CIs alone, before this chapter ever named a null hypothesis. From here on, every test in this book states its null and alternative hypothesis in words before running the test, always as a statement about the population, never about the sample or the particular study, and every result is reported the way the lecture set out: an effect size, a CI, and a p-value, together.
+A CI and a hypothesis test carry the same information, read two different ways. If a 95% CI for a difference excludes the null value, 0 for a difference, 1 for a risk ratio or odds ratio, the matching test rejects the null hypothesis at the 5% level, and vice versa. From here on, every test in this book states its null and alternative hypothesis in words before running the test, always as a statement about the population, never about the sample or the particular study, and every result is reported the way the interactive lecture set out: an effect size, a CI, and a p-value, together.
 
 ## One-sample t-test: total cholesterol against a clinical benchmark
 
@@ -93,9 +93,9 @@ Guideline bodies often set a single reference value for a measurement: a 'desira
 t.test(nhanes$chol, mu = 5.2)
 ```
 
-R prints a 95% CI for the mean itself, 4.96 to 4.98 mmol/L, not for the quantity the test is about, which is how far that mean sits from the 5.2 mmol/L benchmark. Subtracting 5.2 from both ends turns it into the effect size we want: mean total cholesterol in this sample is about 4.97 mmol/L, 0.23 mmol/L below the 5.2 mmol/L benchmark (95% CI: 0.22 to 0.24 mmol/L below, p < 0.001). This is the same move the independent-samples section further on makes with its own CI: read what R printed, then work out what it means for the comparison being asked.
+R prints a 95% CI for the mean itself, 4.96 to 4.98 mmol/L, not for the quantity the test is about, which is how far that mean sits from the 5.2 mmol/L benchmark. Subtracting 5.2 from both ends turns it into the effect size we want: mean total cholesterol in this sample is about 4.97 mmol/L, 0.23 mmol/L below the 5.2 mmol/L benchmark (95% CI: 0.22 to 0.24 mmol/L below, p < 0.001).
 
-A one-sample t-test assumes the **sampling distribution** of the mean is roughly normally distributed, not that `chol` itself is. We never see a sampling distribution directly, since we only have the one sample, so the shape of the data is the evidence we have about it. The central limit theorem says the sampling distribution of the mean gets closer to normal as the sample grows, whatever shape the data themselves have, and the more skewed the data, the larger a sample that takes. Chapter 3's histogram of `chol` showed a distribution with a mild right skew, not a perfectly symmetric bell shape, but with a sample this large, tens of thousands of participants, that skew is easily large enough for the theorem to apply. So the question a histogram answers here is not 'is `chol` normal?' but 'is this sample large enough, given how skewed `chol` is?', and for `chol` the answer is a comfortable yes. `wilcox.test()` is the **non-parametric** alternative, meaning it doesn't rely on the sampling distribution being normal at all. It's the one to reach for with a smaller sample (typically <30) or a more pronounced skew where that reassurance is less safe.
+A one-sample t-test assumes the **sampling distribution** of the mean is roughly normally distributed, not that `chol` itself is. We never see a sampling distribution directly, since we only have the one sample, so the shape of the data is the evidence we have about it. The central limit theorem says the sampling distribution of the mean gets closer to normal as the sample grows, whatever shape the data themselves have, and the more skewed the data, the larger a sample that takes. Chapter 3's histogram of `chol` showed a distribution with a mild right skew, not a perfectly symmetric bell shape, but with a sample this large, tens of thousands of participants, the sample is easily large enough for the theorem to apply. So the question a histogram answers here is not 'is `chol` normal?' but 'is this sample large enough, given how skewed `chol` is?', and for `chol` the answer is a comfortable yes. `wilcox.test()` is the **non-parametric** alternative, meaning it doesn't rely on the sampling distribution being normal at all. It's the one to reach for with a smaller sample (typically <30) or a more pronounced skew where that reassurance is less safe.
 
 **Null hypothesis (`wilcox.test()`).** The population median of `chol` is 5.2 mmol/L.
 
@@ -108,7 +108,7 @@ A one-sample t-test assumes the **sampling distribution** of the mean is roughly
 wilcox.test(nhanes$chol, mu = 5.2)
 ```
 
-`wilcox.test()` returns a p-value and nothing else, no effect size, so the size of the effect has to come from a descriptive statistic that matches what the test is about: a median, not a mean. The sample median of `chol` is 4.89 mmol/L (IQR: 4.22 to 5.61 mmol/L), below the 5.2 mmol/L benchmark, consistent with the p-value far below 0.001. Typical cholesterol in this sample sits below the clinical benchmark whichever way we measure the middle of the distribution. With a sample this large, a t-test and its non-parametric alternative usually agree, but we should stay alert for when the central limit theorem's reassurance runs thin, in a smaller sample or a more skewed one.
+`wilcox.test()` returns a p-value and nothing else, no effect size, so the size of the effect has to come from a descriptive statistic that matches what the test is about: a median, not a mean. The sample median of `chol` is 4.89 mmol/L (IQR: 4.22 to 5.61 mmol/L), below the 5.2 mmol/L benchmark, consistent with the p-value far below 0.001. Typical cholesterol in this sample sits below the clinical benchmark whichever way we measure the middle of the distribution.
 
 ## Paired t-test: two domains of activity in one person
 
@@ -181,7 +181,7 @@ Unlike the paired comparison just above, an independent-samples t-test compares 
 t.test(chol ~ gender, data = nhanes |> filter(!is.na(gender)))
 ```
 
-This is the exact same call as Chapter 4's. `t.test()` was already giving us a hypothesis test; Chapter 4 hadn't introduced hypothesis testing yet, so we only looked at the CI. Now we bring the rest into view: a t-statistic, degrees of freedom, and a p-value.
+This is the same call as Chapter 4's, where we only read the CI. Now we read the rest: a t-statistic, degrees of freedom, and a p-value.
 
 Before trusting a t-test, we check that the two groups aren't wildly different in spread or shape, the way Chapter 3's boxplot of `chol` by `gender` already let us do. This is a different check from the sampling-distribution question the one-sample and paired sections asked: there, the concern was whether one sampling distribution was close to normal; here, with two separate groups, the concern is whether the two groups look comparable enough in spread and shape for a difference in their means to be meaningful.
 
@@ -194,7 +194,7 @@ ggplot(nhanes |> filter(!is.na(gender)), aes(x = gender, y = chol)) +
 
 The two boxplots are similar in spread and shape, just shifted slightly. Nothing here rules out a t-test. If, instead, the shape of the boxplot looks very different between the two groups, a t-test might not be appropriate, since it only compares the sample means. `t.test()` also doesn't assume equal variance between the two groups by default, which protects us even where the spreads differ more than they do here.
 
-Before reading the CI, check the direction, as Chapter 4 set out. The alternative-hypothesis line says *group Male and group Female*, because `'Male'` is the first level of `gender`, so R has printed men minus women and both ends come out negative. Reversing every sign together turns it into the more natural reading: mean total cholesterol was about 0.17 mmol/L higher in women than in men (95% CI: 0.15 to 0.19 mmol/L, p < 0.001). The two statements are the same result written from a different perspective. This is the reporting standard the lecture introduced: effect size, CI, and p-value, together, every time, from here on. `p < 0.001` is how we write a p-value that R prints as something like `< 2.2e-16`. Convention in public health (or clinical medicine) reports a very small p-value this way instead of typing out the scientific notation.
+Before reading the CI, check the direction, as Chapter 4 set out. The alternative-hypothesis line says *group Male and group Female*, because `'Male'` is the first level of `gender`, so R has printed men minus women and both ends come out negative. Reversing every sign together turns it into the more natural reading: mean total cholesterol was about 0.17 mmol/L higher in women than in men (95% CI: 0.15 to 0.19 mmol/L, p < 0.001). `p < 0.001` is how we write a p-value that R prints as something like `< 2.2e-16`. Convention in public health (or clinical medicine) reports a very small p-value this way instead of typing out the scientific notation.
 
 ## A non-parametric alternative: the Mann-Whitney test
 
@@ -235,7 +235,7 @@ mw_m <- chol_gender_medians |> filter(gender == 'Male')
 mw_f <- chol_gender_medians |> filter(gender == 'Female')
 ```
 
-Median total cholesterol was `r round(mw_f$median_chol, 2)` mmol/L in women (IQR: `r round(mw_f$q1_chol, 2)` to `r round(mw_f$q3_chol, 2)` mmol/L) and `r round(mw_m$median_chol, 2)` mmol/L in men (IQR: `r round(mw_m$q1_chol, 2)` to `r round(mw_m$q3_chol, 2)` mmol/L), `r if (mw_p < 0.001) 'p < 0.001' else paste('p =', round(mw_p, 3))`. That's the same conclusion as the t-test, which is what we'd expect from two large groups with similar spread and shape. The Mann-Whitney test earns its place when those conditions don't hold.
+Median total cholesterol was `r round(mw_f$median_chol, 2)` mmol/L in women (IQR: `r round(mw_f$q1_chol, 2)` to `r round(mw_f$q3_chol, 2)` mmol/L) and `r round(mw_m$median_chol, 2)` mmol/L in men (IQR: `r round(mw_m$q1_chol, 2)` to `r round(mw_m$q3_chol, 2)` mmol/L), `r if (mw_p < 0.001) 'p < 0.001' else paste('p =', round(mw_p, 3))`. That's the same conclusion as the t-test, which is what we'd expect from two large groups with similar spread and shape.
 
 ## Chi-squared test: `strep_tb`'s primary result
 
@@ -283,7 +283,7 @@ Chapter 4's `prop.test()` compares two proportions; this section's `chisq.test()
 
 ## Fisher's exact test
 
-This is the test to reach for when a chi-squared test's expected-count assumption fails, which in public health work usually means a small trial or a rare outcome, both common enough that knowing the fix in advance pays off. It tests the same null and alternative hypothesis as the chi-squared test above, independence versus dependence between arm and improvement, by an exact calculation instead of an approximation. Let's try `fisher.test()` on this table too, even though nothing here required it. The call looks just like `chisq.test()`:
+This is the test to reach for when a chi-squared test's expected-count assumption fails, which in public health work usually means a small trial or a rare outcome. It tests the same null and alternative hypothesis as the chi-squared test above, independence versus dependence between arm and improvement, by an exact calculation instead of an approximation. Let's try `fisher.test()` on this table too, even though nothing here required it. The call looks just like `chisq.test()`:
 
 ```{r}
 #| label: fisher
@@ -323,7 +323,7 @@ arm_control_ref <- relevel(strep_tb$arm, ref = 'Control')
 levels(arm_control_ref)
 ```
 
-`Control` is now first, so it becomes the reference row: the one everything else is compared against. This is the same reference level idea we met with factors in Chapter 3, now used in an analysis instead of being demonstrated on a copy. Using it here, a second time before Chapter 6, is good practice: setting a sensible reference level is part of fitting a regression model there too.
+`Control` is now first, so it becomes the reference row: the one everything else is compared against.
 
 We rebuild the table with the releveled factor, and pass it to `riskratio()`:
 
@@ -389,7 +389,7 @@ power.t.test(delta = 0.5, sd = chol_sd, sig.level = 0.05, power = 0.8)
 power.t.test(delta = 0.2, sd = chol_sd, sig.level = 0.05, power = 0.8)
 ```
 
-Both functions size a study *before* it is run, from an assumed effect. Power calculated after the fact, from the effect a study actually observed, is circular: once the data are in, the estimate and its CI already say what the study could resolve, and 'post-hoc power' only re-expresses the p-value we already have. This applies to `power.prop.test()` and `power.t.test()` equally.
+Both functions size a study *before* it is run, from an assumed effect. Power calculated after the fact, from the effect a study actually observed, is circular: once the data are in, the estimate and its CI already say what the study could resolve, and 'post-hoc power' only re-expresses the p-value we already have.
 
 ::: {.callout-note}
 ## Try it yourself: assumed effect size
@@ -419,7 +419,7 @@ Using `slice_sample()` from Chapter 4, take a 10% random subsample of `nhanes` (
 
 ## Worked example: sedentary time by gender
 
-Let's bring the independent-samples t-test together on a research question we haven't asked elsewhere in this chapter: does sedentary time (`sed`, in hours/day) differ between men and women?
+Let's bring the independent-samples t-test together on one more research question: does sedentary time (`sed`, in hours/day) differ between men and women?
 
 ```{r}
 #| label: worked-boxplot-sed
@@ -468,7 +468,7 @@ t.test(nhanes$sed, mu = 6)
 wilcox.test(nhanes$sed, mu = 6)
 ```
 
-R's CI, 6.45 to 6.68 hours/day, is for the mean itself; subtracting the 6-hour benchmark from both ends gives the effect size: mean sedentary time is about 6.56 hours/day, 0.56 hours/day above 6 hours/day (95% CI: 0.45 to 0.68 hours/day above, p < 0.001). The Wilcoxon test is significant too (p < 0.001), but it's testing a different quantity, so its effect size is a median, not a mean: sample median 5 hours/day (IQR: 3 to 8 hours/day), *below* the 6-hour benchmark. The mean and the median disagree on which side of 6 hours 'typical' sedentary time falls. Sedentary time is right-skewed: a small number of participants report very high values, which pulls the mean up above the median, and above the benchmark, while the middle of the distribution, where most participants sit, remains below it. A typical participant, in the middle of the distribution, reports noticeably less sedentary time than the mean alone would suggest.
+R's CI, 6.45 to 6.68 hours/day, is for the mean itself; subtracting the 6-hour benchmark from both ends gives the effect size: mean sedentary time is about 6.56 hours/day, 0.56 hours/day above 6 hours/day (95% CI: 0.45 to 0.68 hours/day above, p < 0.001). The Wilcoxon test is significant too (p < 0.001), but it's testing a different quantity, so its effect size is a median, not a mean: sample median 5 hours/day (IQR: 3 to 8 hours/day), *below* the 6-hour benchmark. The mean and the median disagree on which side of 6 hours 'typical' sedentary time falls. Sedentary time is right-skewed: a small number of participants report very high values, which pulls the mean up above the median, and above the benchmark, while the middle of the distribution, where most participants sit, remains below it.
 
 **Exercise 2**
 
@@ -521,7 +521,7 @@ chisq.test(tab_cavitation, correct = FALSE)$expected
 
 All expected counts are comfortably above 5, the smallest being just under 22, so `correct = FALSE` is the right call here, for the same reason it was for the `arm` table.
 
-The chi-squared test gives a p-value of about 0.056. That's above the conventional 0.05 threshold, but only just, and it would be a mistake to read much into which side of it the number landed on. The proportions behind it: 62% improved among patients without baseline cavitation, against 44% among those with it, an 18 percentage point gap the test can't confirm at this sample size. The honest reading is the same either way: this is weak evidence of an association between baseline cavitation and improvement. The data don't establish a relationship, but they don't rule one out either. A trial of 107 patients cannot settle a question this size, and the result is best reported as inconclusive.
+The chi-squared test gives a p-value of about 0.056. That's above the conventional 0.05 threshold, but only just, and it would be a mistake to read much into which side of it the number landed on. The proportions behind it: 62% improved among patients without baseline cavitation, against 44% among those with it, an 18 percentage point gap the test can't confirm at this sample size. The honest reading is the same either way: this is weak evidence of an association between baseline cavitation and improvement. A trial of 107 patients cannot settle a question this size, and the result is best reported as inconclusive.
 
 **Exercise 5**
 

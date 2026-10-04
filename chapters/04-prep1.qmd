@@ -2,7 +2,7 @@
 
 We all know how to work with a spreadsheet, but a spreadsheet is not the best way to record, manage, and analyse data. A copy-and-paste error in an Excel-based model contributed to JPMorgan Chase's \$6 billion loss in 2012. Public Health England failed to log over 15,000 positive coronavirus test results in 2020, because they used an older Excel format template. A spreadsheet is useful for looking at data and for some simple calculations, but it isn't designed for reproducible work: the work done in one doesn't normally get tracked, and there's no way to tell what has been done to a file just by looking at it. Statistical software like R can take the same information and handle it in a different way, keeping a clearer record and making the process more reproducible, which is why public health and statistics use it for data management and analysis. We will examine how to properly interact with R and RStudio, and use it to build an example clinic record.
 
-We need somewhere to save R, RStudio, and our clinic record on the computer, so an installation and a project folder come first. After that, the chapter is mostly about learning R's vocabulary: objects hold values, values have types, functions act on them, and an error message tells us which of the three we got wrong. Running underneath all of it is one habit that matters more than any of the vocabulary. A saved script can be run again; a line typed into the console is lost and cannot be run again. Reproducibility, replicability, and transparency are key scientific principles, and saving scripts is how we keep our public health science true to them. Everything we learn goes into a small clinic visit log, built one column at a time until it's a dataset we can ask questions of. Nothing in this chapter is statistics yet; all of it is learning the language we will use to run statistics.
+We need somewhere to save R, RStudio, and our clinic record on the computer, so an installation and a project folder come first. After that, the chapter is mostly about learning R's vocabulary: objects hold values, values have types, functions act on them, and an error message tells us which of the three we got wrong. Running underneath all of it is one habit that matters more than any of the vocabulary. A saved script can be run again; a line typed into the console is lost and cannot be run again. Reproducibility, replicability, and transparency are key scientific principles, and saving scripts is how we keep our public health science true to them. Everything we learn goes into a small clinic visit log, built one column at a time until it's a dataset we can ask questions of.
 
 ## Chapter intended learning outcomes
 
@@ -42,7 +42,7 @@ R is the programming language itself, and is the software program that runs our 
 
 RStudio's window is split into four panes, and where each one sits stays consistent no matter what we're doing.
 
--   **Top-left: the source pane.** This only shows when a script is open, so it likely won't appear in RStudio fresh out of the box. Click File > New File > R Script and the pane appears, as in the image below. We write and save scripts here, the `.R` files that keep a record of all the statistics we ask R to conduct. Code typed here doesn't run on its own; we have to tell RStudio to run it, which the Console versus script section below covers.
+-   **Top-left: the source pane.** This only shows when a script is open, so it likely won't appear in RStudio fresh out of the box. Click **File → New File → R Script** and the pane appears, as in the image below. We write and save scripts here, the `.R` files that keep a record of all the statistics we ask R to conduct. Code typed here doesn't run on its own; we have to tell RStudio to run it, which the Console versus script section below covers.
 -   **Bottom-left: the console.** Code executes here, one line at a time, with its output appearing right below. We can type directly into the console, but anything typed there is gone once RStudio closes. We use the console to check whether a line of code works before deciding to keep it, and the source pane to keep a permanent record of the code we've decided to keep.
 -   **Top-right: the environment pane.** This lists every object that currently exists in our R session, its type, and a preview of its contents. Every time we create something, it appears here. When something we expected to see isn't listed, that's usually the first clue something went wrong.
 -   **Bottom-right: a tabbed pane.** This holds the file browser, the plot viewer, the list of installed packages, and the help viewer, one tab each.
@@ -51,7 +51,7 @@ RStudio's window is split into four panes, and where each one sits stays consist
 
 ### Building a project folder
 
-Working with R means managing at least a couple of files, most likely some data files and some R script files. It is usually a good idea to put them into a 'project folder'. Pick somewhere sensible on your machine, for example inside Documents. Create a new folder there and give it a short, sensible name, for example `ies_mph`. We will follow a format for naming all files and folders in this course from here on. These naming conventions help ensure the names can be easily read by computers, and reduce errors in how humans write the code. The conventions are: no spaces, no `&`, `#`, or `%`, consistent case, and a date written as `YYYY-MM-DD`. This date format ensures files are listed in chronological order when sorted by filename. Inside the folder you've created, create three subfolders: `data`, for anything you read in; `scripts`, for the `.R` files you write; and `outputs`, for anything you save out, a plot or a table. Keeping these three separate means you always know where to look for something later, in this course and beyond it. This folder structure isn't compulsory, just a suggestion. We'd still recommend sticking with it throughout the course, just to build the habit. Once you're more familiar with R and RStudio, feel free to work with whatever folder structure works for you. Some employers, particularly in sectors like data science, have their own naming conventions and folder structures, so it's good professional practice to get used to following coding conventions and structures.
+Working with R means managing at least a couple of files, most likely some data files and some R script files. It is usually a good idea to put them into a 'project folder'. Pick somewhere sensible on your machine, for example inside Documents. Create a new folder there and give it a short, sensible name, for example `ies_mph`. We will follow a format for naming all files and folders in this course from here on. These naming conventions help ensure the names can be easily read by computers, and reduce errors in how humans write the code. The conventions are: no spaces, no `&`, `#`, or `%`, consistent case, and a date written as `YYYY-MM-DD`. This date format ensures files are listed in chronological order when sorted by filename. Inside the folder you've created, create three subfolders: `data`, for anything you read in; `scripts`, for the `.R` files you write; and `outputs`, for anything you save out, a plot or a table. Keeping these three separate means you always know where to look for something later, in this course and beyond it. This folder structure is a suggestion, not a requirement, but we recommend sticking with it throughout the course to build the habit. Once you're more familiar with R and RStudio, feel free to use whatever structure works for you. Some employers, particularly in sectors like data science, have their own naming conventions and folder structures, so it's good professional practice to get used to following coding conventions and structures.
 
 ### Creating an RStudio Project
 
@@ -89,7 +89,7 @@ From here on, every section in this chapter adds one real piece to a small datas
 | P03        | 45  | No     | 65        | NA   |
 | P04        | 29  | Yes    | 59        | 4.8  |
 
-Four patients, four pieces of information about each. Using R's language: assignment gives us one value. A vector strings several values into one column. A data frame lines several columns up side by side, and the table above shows a data frame. Every section that follows explains the R terminology, and builds one more piece of the table in R itself, instead of a table drawn on a page or typed into a spreadsheet.
+Four patients, four pieces of information about each. Using R's language: assignment gives us one value. A vector strings several values into one column. A data frame lines several columns up side by side, and the table above shows a data frame.
 
 ## Objects and assignment
 
@@ -105,7 +105,7 @@ age
 
 ## Vectors and a first look at data frames
 
-Most of what we do with data in this course means handling many values of the same variable at once, everyone's age in a sample, say, not just one person's. `c()` combines several values into one object like that, called a **vector**. The single `age` we assigned a moment ago only records one patient; the log needs all four. The code below combines all four ages and assigns the result to `age`, overwriting the single value from before, the way the Objects and assignment section said an object could be overwritten:
+Most of what we do with data in this course means handling many values of the same variable at once, everyone's age in a sample, say, not just one person's. `c()` combines several values into one object like that, called a **vector**. The single `age` we assigned a moment ago only records one patient; the log needs all four. The code below combines all four ages and assigns the result to `age`, overwriting the single value from before:
 
 ```{r}
 #| label: vector-demo
@@ -127,7 +127,7 @@ Note that all three vectors have to have the same length of data (4 values each)
 
 ## Data types
 
-R keeps track of what kind of value an object holds, and it matters: R decides what it will let us do with a value based on its type, for example refusing to calculate a mean for text. Knowing a column's type is knowing what's possible on it. `class()` reports it, and our own log is the fastest way to see two of the four:
+R keeps track of what kind of value an object holds, and it matters: R decides what it will let us do with a value based on its type, for example refusing to calculate a mean for text. `class()` reports it, and our own log is the fastest way to see two of the four:
 
 ```{r}
 #| label: class-demo
@@ -146,7 +146,7 @@ Four types matter throughout this course:
 
 ## Functions and arguments
 
-Nearly everything we do in R, from here to the last chapter, is calling a function, so we look at the shape of one properly now. A function is a machine that takes some input, processes it, and produces some output. Our log needs one more column: what each patient weighed on the clinic scale, in kilograms, before rounding. P01's reading was 71.83 kg. In the example below, `round()` takes that reading and rounds it to a specific precision, whole kilograms, which is the precision we want in the log. Note that a function is always followed by a pair of parentheses `()`.
+Nearly everything we do in R is calling a function. A function is a machine that takes some input, processes it, and produces some output. Our log needs one more column: what each patient weighed on the clinic scale, in kilograms, before rounding. P01's reading was 71.83 kg. In the example below, `round()` takes that reading and rounds it to a specific precision, whole kilograms, which is the precision we want in the log. Note that a function is always followed by a pair of parentheses `()`.
 
 A function takes different **arguments**, basically the inputs the machine runs on. A function's arguments can be matched two ways: by **position**, in the order the function expects them, or by **name**, in any order at all.
 
@@ -353,11 +353,11 @@ The warning line above states the actual reason, a missing file, before the erro
 
 ## Getting help
 
-Every function used in this course has a help page. Typing `?mean` in the console and pressing Enter opens `mean()`'s help page in the Help pane, bottom-right, which shows what arguments it takes and what it returns. It's usually faster than searching online, and it's always correct for the version of R installed. RStudio also keeps a set of cheat sheets under **Help → Cheatsheets**, one per major package. Beyond that, this book itself stays the main reference for the rest of the course.
+Every function used in this course has a help page. Typing `?mean` in the console and pressing Enter opens `mean()`'s help page in the Help pane, bottom-right, which shows what arguments it takes and what it returns. It's usually faster than searching online, and it's always correct for the version of R installed. RStudio also keeps a set of cheat sheets under **Help → Cheatsheets**, one per major package.
 
 ## The finished log
 
-Four sections ago we had nothing but an idea for a table. This is what we built, one piece at a time: patient IDs, ages, smoking status, rounded weights, and cholesterol.
+This is the log we built, one piece at a time: patient IDs, ages, smoking status, rounded weights, and cholesterol.
 
 ```{r}
 #| label: worked-print
@@ -409,7 +409,7 @@ Left out, `write.csv()` adds an extra column at the front of the file, numbering
 
 That line just wrote a real file, `visits.csv`, sitting on disk the moment this page rendered, independent of R and of this book. In our own project, following the `data`/`scripts`/`outputs` structure from earlier in this chapter, this is what the `outputs` subfolder is for: a file we saved out, not one we're about to read back in. Opening it, in a spreadsheet application or a plain text editor, shows what `visits` held in R: patient IDs, ages, smoking status, weight, and cholesterol, one row per patient, values separated by commas, no formatting or formulas hidden behind them. Chapter 2 explains why that matters, the moment we start reading files back in instead of writing them out.
 
-Every idea used to build this log, a vector, a data frame, `$`, a comparison, loading a package, the pipe, comes back constantly from Chapter 2 onward. Only the data changes: Chapter 2 brings in this same clinic's real log, all eight patients, kept as messy as real logs are.
+Chapter 2 brings in this same clinic's real log, all eight patients, kept as messy as real logs are.
 
 ## Exercises
 
@@ -425,7 +425,7 @@ Then open `round()`'s help page by typing `?round` in the console. Find the **Us
 
 ## Self-check
 
-A short multiple-choice check, not a writing exercise. There's no statistical result yet to interpret in a sentence. That starts in Chapter 3. Instead, these five questions target the places students most often get tripped up in R's syntax. Answers are in the Solutions callout below.
+A short multiple-choice check, not a writing exercise, since there's no statistical result to interpret until Chapter 3. These five questions target the places students most often get tripped up in R's syntax. Answers are in the Solutions callout below.
 
 **1.** In `mean_x <- mean(x, na.rm = TRUE)`, what's the difference between `<-` and `=`?
 
@@ -490,7 +490,7 @@ round(visits$chol)
 round(visits$chol, digits = 0)
 ```
 
-The two lines give identical results, which is what a default argument means in practice. The help page is the fastest way to find out what a function does when we don't tell it, and it's always right for the version of R we have installed.
+The two lines give identical results, which is what a default argument means in practice.
 
 **Exercise 3**
 
