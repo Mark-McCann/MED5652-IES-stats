@@ -324,7 +324,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 data-number="5.3" class="anchored" data-anchor-id="the-logic-of-a-test"><span class="header-section-number">5.3</span> The logic of a test</h2>
 <p>A classical hypothesis test starts from two competing statements about the <strong>population</strong>. The <strong>null hypothesis</strong>, written H0, says there’s nothing going on: no difference between groups, or no association between variables. The exact wording depends on what is being tested, but it always describes the population, never the sample we happen to have measured. The <strong>alternative hypothesis</strong>, H1, says there is a difference. A one-sided alternative hypothesis, specifying the direction of the difference in advance, exists too, but is rarely used in practice; every test in this chapter uses the two-sided form. A test never proves the null hypothesis true. It only asks whether the pattern shown from the sample is surprising enough to reject the null hypothesis.</p>
 <p>A test turns the sample data into a single number, a <strong>test statistic</strong>, that measures how far the data sit from what the null hypothesis predicts under the sampling distribution. R then converts that statistic into a <strong>p-value</strong>: the probability of seeing that test statistic at least this extreme, if the null hypothesis were true. A p-value is not the probability that the null hypothesis is true, and it’s not the probability the result happened by chance. A small p-value, conventionally below 0.05, means the data would be unusual under the null hypothesis, so we reject it in favour of the alternative. That 0.05 cut-off is the <strong>significance level</strong>, and a result with a p-value below it is called <strong>statistically significant</strong>. A p-value alone says nothing about how large an effect is, only about how surprising it is.</p>
-<p>A CI and a hypothesis test carry the same information, read two different ways. If a 95% CI for a difference excludes the null value, 0 for a difference, 1 for a risk ratio or odds ratio, the matching test rejects the null hypothesis at the 5% level, and vice versa. That’s why Chapter 4 could already show us a real effect using CIs alone, before this chapter ever named a null hypothesis. From here on, every test in this book states its null and alternative hypothesis in words before running the test, always as a statement about the population, never about the sample or the particular study, and every result is reported the way the lecture set out: an effect size, a CI, and a p-value, together.</p>
+<p>A CI and a hypothesis test carry the same information, read two different ways. If a 95% CI for a difference excludes the null value, 0 for a difference, 1 for a risk ratio or odds ratio, the matching test rejects the null hypothesis at the 5% level, and vice versa. From here on, every test in this book states its null and alternative hypothesis in words before running the test, always as a statement about the population, never about the sample or the particular study, and every result is reported the way the interactive lecture set out: an effect size, a CI, and a p-value, together.</p>
 </section>
 <section id="one-sample-t-test-total-cholesterol-against-a-clinical-benchmark" class="level2" data-number="5.4">
 <h2 data-number="5.4" class="anchored" data-anchor-id="one-sample-t-test-total-cholesterol-against-a-clinical-benchmark"><span class="header-section-number">5.4</span> One-sample t-test: total cholesterol against a clinical benchmark</h2>
@@ -348,8 +348,8 @@ mean of x
  4.973316 </code></pre>
 </div>
 </div>
-<p>R prints a 95% CI for the mean itself, 4.96 to 4.98 mmol/L, not for the quantity the test is about, which is how far that mean sits from the 5.2 mmol/L benchmark. Subtracting 5.2 from both ends turns it into the effect size we want: mean total cholesterol in this sample is about 4.97 mmol/L, 0.23 mmol/L below the 5.2 mmol/L benchmark (95% CI: 0.22 to 0.24 mmol/L below, p &lt; 0.001). This is the same move the independent-samples section further on makes with its own CI: read what R printed, then work out what it means for the comparison being asked.</p>
-<p>A one-sample t-test assumes the <strong>sampling distribution</strong> of the mean is roughly normally distributed, not that <code>chol</code> itself is. We never see a sampling distribution directly, since we only have the one sample, so the shape of the data is the evidence we have about it. The central limit theorem says the sampling distribution of the mean gets closer to normal as the sample grows, whatever shape the data themselves have, and the more skewed the data, the larger a sample that takes. Chapter 3’s histogram of <code>chol</code> showed a distribution with a mild right skew, not a perfectly symmetric bell shape, but with a sample this large, tens of thousands of participants, that skew is easily large enough for the theorem to apply. So the question a histogram answers here is not ‘is <code>chol</code> normal?’ but ‘is this sample large enough, given how skewed <code>chol</code> is?’, and for <code>chol</code> the answer is a comfortable yes. <code>wilcox.test()</code> is the <strong>non-parametric</strong> alternative, meaning it doesn’t rely on the sampling distribution being normal at all. It’s the one to reach for with a smaller sample (typically &lt;30) or a more pronounced skew where that reassurance is less safe.</p>
+<p>R prints a 95% CI for the mean itself, 4.96 to 4.98 mmol/L, not for the quantity the test is about, which is how far that mean sits from the 5.2 mmol/L benchmark. Subtracting 5.2 from both ends turns it into the effect size we want: mean total cholesterol in this sample is about 4.97 mmol/L, 0.23 mmol/L below the 5.2 mmol/L benchmark (95% CI: 0.22 to 0.24 mmol/L below, p &lt; 0.001).</p>
+<p>A one-sample t-test assumes the <strong>sampling distribution</strong> of the mean is roughly normally distributed, not that <code>chol</code> itself is. We never see a sampling distribution directly, since we only have the one sample, so the shape of the data is the evidence we have about it. The central limit theorem says the sampling distribution of the mean gets closer to normal as the sample grows, whatever shape the data themselves have, and the more skewed the data, the larger a sample that takes. Chapter 3’s histogram of <code>chol</code> showed a distribution with a mild right skew, not a perfectly symmetric bell shape, but with a sample this large, tens of thousands of participants, the sample is easily large enough for the theorem to apply. So the question a histogram answers here is not ‘is <code>chol</code> normal?’ but ‘is this sample large enough, given how skewed <code>chol</code> is?’, and for <code>chol</code> the answer is a comfortable yes. <code>wilcox.test()</code> is the <strong>non-parametric</strong> alternative, meaning it doesn’t rely on the sampling distribution being normal at all. It’s the one to reach for with a smaller sample (typically &lt;30) or a more pronounced skew where that reassurance is less safe.</p>
 <p><strong>Null hypothesis (<code>wilcox.test()</code>).</strong> The population median of <code>chol</code> is 5.2 mmol/L.</p>
 <p><strong>Alternative hypothesis.</strong> The population median is not 5.2 mmol/L.</p>
 <p><code>wilcox.test()</code>, from base R, takes the same <code>mu</code> argument for a one-sample test. Instead of a mean, it tests a <strong>median</strong>, using the ranks of how far each value sits from <code>mu</code>, so one extreme value can’t dominate the result the way it can dominate a mean:</p>
@@ -364,7 +364,7 @@ V = 268972135, p-value &lt; 2.2e-16
 alternative hypothesis: true location is not equal to 5.2</code></pre>
 </div>
 </div>
-<p><code>wilcox.test()</code> returns a p-value and nothing else, no effect size, so the size of the effect has to come from a descriptive statistic that matches what the test is about: a median, not a mean. The sample median of <code>chol</code> is 4.89 mmol/L (IQR: 4.22 to 5.61 mmol/L), below the 5.2 mmol/L benchmark, consistent with the p-value far below 0.001. Typical cholesterol in this sample sits below the clinical benchmark whichever way we measure the middle of the distribution. With a sample this large, a t-test and its non-parametric alternative usually agree, but we should stay alert for when the central limit theorem’s reassurance runs thin, in a smaller sample or a more skewed one.</p>
+<p><code>wilcox.test()</code> returns a p-value and nothing else, no effect size, so the size of the effect has to come from a descriptive statistic that matches what the test is about: a median, not a mean. The sample median of <code>chol</code> is 4.89 mmol/L (IQR: 4.22 to 5.61 mmol/L), below the 5.2 mmol/L benchmark, consistent with the p-value far below 0.001. Typical cholesterol in this sample sits below the clinical benchmark whichever way we measure the middle of the distribution.</p>
 </section>
 <section id="paired-t-test-two-domains-of-activity-in-one-person" class="level2" data-number="5.5">
 <h2 data-number="5.5" class="anchored" data-anchor-id="paired-t-test-two-domains-of-activity-in-one-person"><span class="header-section-number">5.5</span> Paired t-test: two domains of activity in one person</h2>
@@ -468,7 +468,7 @@ sample estimates:
             4.885939             5.054489 </code></pre>
 </div>
 </div>
-<p>This is the exact same call as Chapter 4’s. <code>t.test()</code> was already giving us a hypothesis test; Chapter 4 hadn’t introduced hypothesis testing yet, so we only looked at the CI. Now we bring the rest into view: a t-statistic, degrees of freedom, and a p-value.</p>
+<p>This is the same call as Chapter 4’s, where we only read the CI. Now we read the rest: a t-statistic, degrees of freedom, and a p-value.</p>
 <p>Before trusting a t-test, we check that the two groups aren’t wildly different in spread or shape, the way Chapter 3’s boxplot of <code>chol</code> by <code>gender</code> already let us do. This is a different check from the sampling-distribution question the one-sample and paired sections asked: there, the concern was whether one sampling distribution was close to normal; here, with two separate groups, the concern is whether the two groups look comparable enough in spread and shape for a difference in their means to be meaningful.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(gender)), <span class="fu">aes</span>(<span class="at">x =</span> gender, <span class="at">y =</span> chol)) <span class="sc">+</span></span>
@@ -487,7 +487,7 @@ sample estimates:
 </div>
 </div>
 <p>The two boxplots are similar in spread and shape, just shifted slightly. Nothing here rules out a t-test. If, instead, the shape of the boxplot looks very different between the two groups, a t-test might not be appropriate, since it only compares the sample means. <code>t.test()</code> also doesn’t assume equal variance between the two groups by default, which protects us even where the spreads differ more than they do here.</p>
-<p>Before reading the CI, check the direction, as Chapter 4 set out. The alternative-hypothesis line says <em>group Male and group Female</em>, because <code>'Male'</code> is the first level of <code>gender</code>, so R has printed men minus women and both ends come out negative. Reversing every sign together turns it into the more natural reading: mean total cholesterol was about 0.17 mmol/L higher in women than in men (95% CI: 0.15 to 0.19 mmol/L, p &lt; 0.001). The two statements are the same result written from a different perspective. This is the reporting standard the lecture introduced: effect size, CI, and p-value, together, every time, from here on. <code>p &lt; 0.001</code> is how we write a p-value that R prints as something like <code>&lt; 2.2e-16</code>. Convention in public health (or clinical medicine) reports a very small p-value this way instead of typing out the scientific notation.</p>
+<p>Before reading the CI, check the direction, as Chapter 4 set out. The alternative-hypothesis line says <em>group Male and group Female</em>, because <code>'Male'</code> is the first level of <code>gender</code>, so R has printed men minus women and both ends come out negative. Reversing every sign together turns it into the more natural reading: mean total cholesterol was about 0.17 mmol/L higher in women than in men (95% CI: 0.15 to 0.19 mmol/L, p &lt; 0.001). <code>p &lt; 0.001</code> is how we write a p-value that R prints as something like <code>&lt; 2.2e-16</code>. Convention in public health (or clinical medicine) reports a very small p-value this way instead of typing out the scientific notation.</p>
 </section>
 <section id="a-non-parametric-alternative-the-mann-whitney-test" class="level2" data-number="5.8">
 <h2 data-number="5.8" class="anchored" data-anchor-id="a-non-parametric-alternative-the-mann-whitney-test"><span class="header-section-number">5.8</span> A non-parametric alternative: the Mann-Whitney test</h2>
@@ -526,7 +526,7 @@ alternative hypothesis: true location shift is not equal to 0</code></pre>
 2 Female        4.97    4.29    5.69</code></pre>
 </div>
 </div>
-<p>Median total cholesterol was 4.97 mmol/L in women (IQR: 4.29 to 5.69 mmol/L) and 4.81 mmol/L in men (IQR: 4.14 to 5.53 mmol/L), p &lt; 0.001. That’s the same conclusion as the t-test, which is what we’d expect from two large groups with similar spread and shape. The Mann-Whitney test earns its place when those conditions don’t hold.</p>
+<p>Median total cholesterol was 4.97 mmol/L in women (IQR: 4.29 to 5.69 mmol/L) and 4.81 mmol/L in men (IQR: 4.14 to 5.53 mmol/L), p &lt; 0.001. That’s the same conclusion as the t-test, which is what we’d expect from two large groups with similar spread and shape.</p>
 </section>
 <section id="chi-squared-test-strep_tbs-primary-result" class="level2" data-number="5.9">
 <h2 data-number="5.9" class="anchored" data-anchor-id="chi-squared-test-strep_tbs-primary-result"><span class="header-section-number">5.9</span> Chi-squared test: <code>strep_tb</code>’s primary result</h2>
@@ -585,7 +585,7 @@ X-squared = 14.176, df = 1, p-value = 0.0001665</code></pre>
 </section>
 <section id="fishers-exact-test" class="level2" data-number="5.10">
 <h2 data-number="5.10" class="anchored" data-anchor-id="fishers-exact-test"><span class="header-section-number">5.10</span> Fisher’s exact test</h2>
-<p>This is the test to reach for when a chi-squared test’s expected-count assumption fails, which in public health work usually means a small trial or a rare outcome, both common enough that knowing the fix in advance pays off. It tests the same null and alternative hypothesis as the chi-squared test above, independence versus dependence between arm and improvement, by an exact calculation instead of an approximation. Let’s try <code>fisher.test()</code> on this table too, even though nothing here required it. The call looks just like <code>chisq.test()</code>:</p>
+<p>This is the test to reach for when a chi-squared test’s expected-count assumption fails, which in public health work usually means a small trial or a rare outcome. It tests the same null and alternative hypothesis as the chi-squared test above, independence versus dependence between arm and improvement, by an exact calculation instead of an approximation. Let’s try <code>fisher.test()</code> on this table too, even though nothing here required it. The call looks just like <code>chisq.test()</code>:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fisher.test</span>(tab_arm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -628,7 +628,7 @@ odds ratio
 <pre><code>[1] "Control"      "Streptomycin"</code></pre>
 </div>
 </div>
-<p><code>Control</code> is now first, so it becomes the reference row: the one everything else is compared against. This is the same reference level idea we met with factors in Chapter 3, now used in an analysis instead of being demonstrated on a copy. Using it here, a second time before Chapter 6, is good practice: setting a sensible reference level is part of fitting a regression model there too.</p>
+<p><code>Control</code> is now first, so it becomes the reference row: the one everything else is compared against.</p>
 <p>We rebuild the table with the releveled factor, and pass it to <code>riskratio()</code>:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>tab_arm_releveled <span class="ot">&lt;-</span> <span class="fu">table</span>(arm_control_ref, strep_tb<span class="sc">$</span>improved)</span>
@@ -779,7 +779,7 @@ NOTE: n is number in *each* group</code></pre>
 NOTE: n is number in *each* group</code></pre>
 </div>
 </div>
-<p>Both functions size a study <em>before</em> it is run, from an assumed effect. Power calculated after the fact, from the effect a study actually observed, is circular: once the data are in, the estimate and its CI already say what the study could resolve, and ‘post-hoc power’ only re-expresses the p-value we already have. This applies to <code>power.prop.test()</code> and <code>power.t.test()</code> equally.</p>
+<p>Both functions size a study <em>before</em> it is run, from an assumed effect. Power calculated after the fact, from the effect a study actually observed, is circular: once the data are in, the estimate and its CI already say what the study could resolve, and ‘post-hoc power’ only re-expresses the p-value we already have.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -809,23 +809,23 @@ Table&nbsp;5.1
 </figcaption>
 <div aria-describedby="tbl-summary-addp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="tqdisgtbnu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#tqdisgtbnu table {
+<div id="vectaztwtr" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#vectaztwtr table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#tqdisgtbnu thead, #tqdisgtbnu tbody, #tqdisgtbnu tfoot, #tqdisgtbnu tr, #tqdisgtbnu td, #tqdisgtbnu th {
+#vectaztwtr thead, #vectaztwtr tbody, #vectaztwtr tfoot, #vectaztwtr tr, #vectaztwtr td, #vectaztwtr th {
   border-style: none;
 }
 
-#tqdisgtbnu p {
+#vectaztwtr p {
   margin: 0;
   padding: 0;
 }
 
-#tqdisgtbnu .gt_table {
+#vectaztwtr .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -851,12 +851,12 @@ Table&nbsp;5.1
   border-left-color: #D3D3D3;
 }
 
-#tqdisgtbnu .gt_caption {
+#vectaztwtr .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#tqdisgtbnu .gt_title {
+#vectaztwtr .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -868,7 +868,7 @@ Table&nbsp;5.1
   border-bottom-width: 0;
 }
 
-#tqdisgtbnu .gt_subtitle {
+#vectaztwtr .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -880,7 +880,7 @@ Table&nbsp;5.1
   border-top-width: 0;
 }
 
-#tqdisgtbnu .gt_heading {
+#vectaztwtr .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -892,13 +892,13 @@ Table&nbsp;5.1
   border-right-color: #D3D3D3;
 }
 
-#tqdisgtbnu .gt_bottom_border {
+#vectaztwtr .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#tqdisgtbnu .gt_col_headings {
+#vectaztwtr .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -913,7 +913,7 @@ Table&nbsp;5.1
   border-right-color: #D3D3D3;
 }
 
-#tqdisgtbnu .gt_col_heading {
+#vectaztwtr .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -933,7 +933,7 @@ Table&nbsp;5.1
   overflow-x: hidden;
 }
 
-#tqdisgtbnu .gt_column_spanner_outer {
+#vectaztwtr .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -945,15 +945,15 @@ Table&nbsp;5.1
   padding-right: 4px;
 }
 
-#tqdisgtbnu .gt_column_spanner_outer:first-child {
+#vectaztwtr .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#tqdisgtbnu .gt_column_spanner_outer:last-child {
+#vectaztwtr .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#tqdisgtbnu .gt_column_spanner {
+#vectaztwtr .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -965,11 +965,11 @@ Table&nbsp;5.1
   width: 100%;
 }
 
-#tqdisgtbnu .gt_spanner_row {
+#vectaztwtr .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#tqdisgtbnu .gt_group_heading {
+#vectaztwtr .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -995,7 +995,7 @@ Table&nbsp;5.1
   text-align: left;
 }
 
-#tqdisgtbnu .gt_empty_group_heading {
+#vectaztwtr .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1010,15 +1010,15 @@ Table&nbsp;5.1
   vertical-align: middle;
 }
 
-#tqdisgtbnu .gt_from_md > :first-child {
+#vectaztwtr .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#tqdisgtbnu .gt_from_md > :last-child {
+#vectaztwtr .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#tqdisgtbnu .gt_row {
+#vectaztwtr .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1037,7 +1037,7 @@ Table&nbsp;5.1
   overflow-x: hidden;
 }
 
-#tqdisgtbnu .gt_stub {
+#vectaztwtr .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1050,7 +1050,7 @@ Table&nbsp;5.1
   padding-right: 5px;
 }
 
-#tqdisgtbnu .gt_stub_row_group {
+#vectaztwtr .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1064,15 +1064,15 @@ Table&nbsp;5.1
   vertical-align: top;
 }
 
-#tqdisgtbnu .gt_row_group_first td {
+#vectaztwtr .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#tqdisgtbnu .gt_row_group_first th {
+#vectaztwtr .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#tqdisgtbnu .gt_summary_row {
+#vectaztwtr .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1082,16 +1082,16 @@ Table&nbsp;5.1
   padding-right: 5px;
 }
 
-#tqdisgtbnu .gt_first_summary_row {
+#vectaztwtr .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#tqdisgtbnu .gt_first_summary_row.thick {
+#vectaztwtr .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#tqdisgtbnu .gt_last_summary_row {
+#vectaztwtr .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1101,7 +1101,7 @@ Table&nbsp;5.1
   border-bottom-color: #D3D3D3;
 }
 
-#tqdisgtbnu .gt_grand_summary_row {
+#vectaztwtr .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1111,7 +1111,7 @@ Table&nbsp;5.1
   padding-right: 5px;
 }
 
-#tqdisgtbnu .gt_first_grand_summary_row {
+#vectaztwtr .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1121,7 +1121,7 @@ Table&nbsp;5.1
   border-top-color: #D3D3D3;
 }
 
-#tqdisgtbnu .gt_last_grand_summary_row_top {
+#vectaztwtr .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1131,11 +1131,11 @@ Table&nbsp;5.1
   border-bottom-color: #D3D3D3;
 }
 
-#tqdisgtbnu .gt_striped {
+#vectaztwtr .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#tqdisgtbnu .gt_table_body {
+#vectaztwtr .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1144,7 +1144,7 @@ Table&nbsp;5.1
   border-bottom-color: #D3D3D3;
 }
 
-#tqdisgtbnu .gt_footnotes {
+#vectaztwtr .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1158,7 +1158,7 @@ Table&nbsp;5.1
   border-right-color: #D3D3D3;
 }
 
-#tqdisgtbnu .gt_footnote {
+#vectaztwtr .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1167,7 +1167,7 @@ Table&nbsp;5.1
   padding-right: 5px;
 }
 
-#tqdisgtbnu .gt_sourcenotes {
+#vectaztwtr .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1181,7 +1181,7 @@ Table&nbsp;5.1
   border-right-color: #D3D3D3;
 }
 
-#tqdisgtbnu .gt_sourcenote {
+#vectaztwtr .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1189,72 +1189,72 @@ Table&nbsp;5.1
   padding-right: 5px;
 }
 
-#tqdisgtbnu .gt_left {
+#vectaztwtr .gt_left {
   text-align: left;
 }
 
-#tqdisgtbnu .gt_center {
+#vectaztwtr .gt_center {
   text-align: center;
 }
 
-#tqdisgtbnu .gt_right {
+#vectaztwtr .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#tqdisgtbnu .gt_font_normal {
+#vectaztwtr .gt_font_normal {
   font-weight: normal;
 }
 
-#tqdisgtbnu .gt_font_bold {
+#vectaztwtr .gt_font_bold {
   font-weight: bold;
 }
 
-#tqdisgtbnu .gt_font_italic {
+#vectaztwtr .gt_font_italic {
   font-style: italic;
 }
 
-#tqdisgtbnu .gt_super {
+#vectaztwtr .gt_super {
   font-size: 65%;
 }
 
-#tqdisgtbnu .gt_footnote_marks {
+#vectaztwtr .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#tqdisgtbnu .gt_asterisk {
+#vectaztwtr .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#tqdisgtbnu .gt_indent_1 {
+#vectaztwtr .gt_indent_1 {
   text-indent: 5px;
 }
 
-#tqdisgtbnu .gt_indent_2 {
+#vectaztwtr .gt_indent_2 {
   text-indent: 10px;
 }
 
-#tqdisgtbnu .gt_indent_3 {
+#vectaztwtr .gt_indent_3 {
   text-indent: 15px;
 }
 
-#tqdisgtbnu .gt_indent_4 {
+#vectaztwtr .gt_indent_4 {
   text-indent: 20px;
 }
 
-#tqdisgtbnu .gt_indent_5 {
+#vectaztwtr .gt_indent_5 {
   text-indent: 25px;
 }
 
-#tqdisgtbnu .katex-display {
+#vectaztwtr .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#tqdisgtbnu div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#vectaztwtr div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1317,7 +1317,7 @@ N = 52<span class="gt_footnote_marks" style="white-space:nowrap;font-style:itali
 </section>
 <section id="worked-example-sedentary-time-by-gender" class="level2" data-number="5.14">
 <h2 data-number="5.14" class="anchored" data-anchor-id="worked-example-sedentary-time-by-gender"><span class="header-section-number">5.14</span> Worked example: sedentary time by gender</h2>
-<p>Let’s bring the independent-samples t-test together on a research question we haven’t asked elsewhere in this chapter: does sedentary time (<code>sed</code>, in hours/day) differ between men and women?</p>
+<p>Let’s bring the independent-samples t-test together on one more research question: does sedentary time (<code>sed</code>, in hours/day) differ between men and women?</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(gender)), <span class="fu">aes</span>(<span class="at">x =</span> gender, <span class="at">y =</span> sed)) <span class="sc">+</span></span>
 <span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
@@ -1404,7 +1404,7 @@ V = 216498063, p-value &lt; 2.2e-16
 alternative hypothesis: true location is not equal to 6</code></pre>
 </div>
 </div>
-<p>R’s CI, 6.45 to 6.68 hours/day, is for the mean itself; subtracting the 6-hour benchmark from both ends gives the effect size: mean sedentary time is about 6.56 hours/day, 0.56 hours/day above 6 hours/day (95% CI: 0.45 to 0.68 hours/day above, p &lt; 0.001). The Wilcoxon test is significant too (p &lt; 0.001), but it’s testing a different quantity, so its effect size is a median, not a mean: sample median 5 hours/day (IQR: 3 to 8 hours/day), <em>below</em> the 6-hour benchmark. The mean and the median disagree on which side of 6 hours ‘typical’ sedentary time falls. Sedentary time is right-skewed: a small number of participants report very high values, which pulls the mean up above the median, and above the benchmark, while the middle of the distribution, where most participants sit, remains below it. A typical participant, in the middle of the distribution, reports noticeably less sedentary time than the mean alone would suggest.</p>
+<p>R’s CI, 6.45 to 6.68 hours/day, is for the mean itself; subtracting the 6-hour benchmark from both ends gives the effect size: mean sedentary time is about 6.56 hours/day, 0.56 hours/day above 6 hours/day (95% CI: 0.45 to 0.68 hours/day above, p &lt; 0.001). The Wilcoxon test is significant too (p &lt; 0.001), but it’s testing a different quantity, so its effect size is a median, not a mean: sample median 5 hours/day (IQR: 3 to 8 hours/day), <em>below</em> the 6-hour benchmark. The mean and the median disagree on which side of 6 hours ‘typical’ sedentary time falls. Sedentary time is right-skewed: a small number of participants report very high values, which pulls the mean up above the median, and above the benchmark, while the middle of the distribution, where most participants sit, remains below it.</p>
 <p><strong>Exercise 2</strong></p>
 <p><strong>Null hypothesis.</strong> In the population of participants in this more sedentary subgroup, the mean within-person difference between <code>met_w</code> and <code>met_r</code> is zero.</p>
 <p><strong>Alternative hypothesis.</strong> The mean within-person difference is not zero.</p>
@@ -1497,7 +1497,7 @@ X-squared = 3.6399, df = 1, p-value = 0.05641</code></pre>
 </div>
 </div>
 <p>All expected counts are comfortably above 5, the smallest being just under 22, so <code>correct = FALSE</code> is the right call here, for the same reason it was for the <code>arm</code> table.</p>
-<p>The chi-squared test gives a p-value of about 0.056. That’s above the conventional 0.05 threshold, but only just, and it would be a mistake to read much into which side of it the number landed on. The proportions behind it: 62% improved among patients without baseline cavitation, against 44% among those with it, an 18 percentage point gap the test can’t confirm at this sample size. The honest reading is the same either way: this is weak evidence of an association between baseline cavitation and improvement. The data don’t establish a relationship, but they don’t rule one out either. A trial of 107 patients cannot settle a question this size, and the result is best reported as inconclusive.</p>
+<p>The chi-squared test gives a p-value of about 0.056. That’s above the conventional 0.05 threshold, but only just, and it would be a mistake to read much into which side of it the number landed on. The proportions behind it: 62% improved among patients without baseline cavitation, against 44% among those with it, an 18 percentage point gap the test can’t confirm at this sample size. The honest reading is the same either way: this is weak evidence of an association between baseline cavitation and improvement. A trial of 107 patients cannot settle a question this size, and the result is best reported as inconclusive.</p>
 <p><strong>Exercise 5</strong></p>
 <p><strong>Null hypothesis.</strong> In the population, the risk ratio is 1 and the odds ratio is 1: no association between gender and improvement.</p>
 <p><strong>Alternative hypothesis.</strong> The risk ratio, and the odds ratio, differ from 1. Both nulls sit at 1, not 0, since these are ratios instead of differences.</p>

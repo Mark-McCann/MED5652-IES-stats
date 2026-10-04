@@ -152,7 +152,7 @@ Fred Ho
 <li class="fragment">Non-causal explanations of associations
 <ul>
 <li class="fragment">Confounding bias</li>
-<li class="fragment">Mediator bias</li>
+<li class="fragment">Overadjustment bias (adjusting for a mediator)</li>
 <li class="fragment">Collider bias</li>
 </ul></li>
 </ul></li>
@@ -162,8 +162,8 @@ Fred Ho
 </ul></li>
 </ul>
 </section>
-<section id="by-the-end-of-this-session-you-will-be-able-to" class="slide level2">
-<h2>By the end of this session, you will be able to</h2>
+<section id="by-the-end-of-this-week-you-will-be-able-to" class="slide level2">
+<h2>By the end of this week, you will be able to</h2>
 <ol type="1">
 <li class="fragment">Classify a variable as nominal, ordinal, binary, count, or continuous, and explain how variable type constrains the analysis available</li>
 <li class="fragment">Select and construct an appropriate table or plot for one or more variables of a given type</li>
@@ -213,9 +213,6 @@ Fred Ho
 <li class="fragment">How spread out the values are around the mean, in the variable’s own units</li>
 </ul>
 <p><span class="math display">\[s = \sqrt{\frac{1}{n-1}\sum_{i=1}^{n} (x_i - \bar{x})^2}\]</span></p>
-<ul>
-<li class="fragment">How much individuals typically differ from the mean</li>
-</ul>
 </section>
 <section id="median-and-iqr" class="slide level2 smaller">
 <h2>Median and IQR</h2>
@@ -237,9 +234,9 @@ Fred Ho
 <ul>
 <li class="fragment">A variable’s <strong>distribution</strong> is how its values are spread out</li>
 <li class="fragment">Which values are common, which are rare, and how far apart they reach</li>
-<li class="fragment">Mean, SD, median and IQR are all attempts to describe it in a few numbers</li>
+<li class="fragment">Mean, SD, median, and IQR are all attempts to describe it in a few numbers</li>
 <li class="fragment">The shape itself decides which of those numbers is honest</li>
-<li class="fragment">We see shape by counting values into bins and plotting the counts, named properly later</li>
+<li class="fragment">We see shape by counting values into bins and plotting the counts</li>
 </ul>
 </section>
 <section id="three-shapes-three-variables" class="slide level2">
@@ -326,7 +323,6 @@ Fred Ho
 <ul>
 <li class="fragment">Altman and Bland (1996), BMJ <em>Statistics Notes</em>: ‘Detecting skewness from summary information’</li>
 <li class="fragment">Tells skew from summary numbers alone</li>
-<li class="fragment">Reused across the course</li>
 </ul>
 </div><div class="column" style="width:58%;">
 <div class="cell">
@@ -346,7 +342,7 @@ Fred Ho
 <section id="the-five-number-summary" class="slide level2">
 <h2>The five-number summary</h2>
 <ul>
-<li class="fragment">Mean, SD, median and IQR give a crude description</li>
+<li class="fragment">Mean, SD, median, and IQR give a crude description</li>
 <li class="fragment">Five numbers give a fuller picture: minimum, Q1, median, Q3, maximum<span class="gap"></span></li>
 <li class="fragment"><strong>Q1</strong> is also called the 25th percentile: a quarter of the data falls at or below it</li>
 <li class="fragment"><strong>Q3</strong> is the 75th percentile: three quarters of the data falls at or below it</li>
@@ -1396,10 +1392,8 @@ Fred Ho
 <section id="which-plot-for-which-variable" class="slide level2">
 <h2>Which plot, for which variable?</h2>
 <ul>
-<li class="fragment">We have used plots already: to see shape, and to compare groups</li>
 <li class="fragment">Which plot works depends on the kind of variable</li>
 <li class="fragment">Some variables are measured on a scale; some record which group someone is in</li>
-<li class="fragment">Next: a plot for each kind</li>
 <li class="fragment">The proper names for those kinds come after the break</li>
 </ul>
 </section>
@@ -1435,7 +1429,7 @@ Fred Ho
 </div>
 </div>
 <ul>
-<li class="fragment">If in doubt, look at more than one bins before choosing</li>
+<li class="fragment">If in doubt, look at more than one bin width before choosing</li>
 </ul>
 </div></div>
 </section>
@@ -1942,7 +1936,6 @@ Fred Ho
 <li class="fragment">A <strong>bar chart</strong>: one bar per group, count or percentage</li>
 <li class="fragment">Bars separated, axis has no numeric meaning between categories</li>
 <li class="fragment">Unlike a histogram: bars touch, drawn along one scale</li>
-<li class="fragment">The gap indicates the variable is not a scale</li>
 </ul>
 </div><div class="column" style="width:60%;">
 <div class="cell">
@@ -5675,7 +5668,7 @@ Fred Ho
 <li class="fragment">Gender by baseline cardiovascular disease</li>
 <li class="fragment">The same layout from epi weeks 1 to 5, reactivated here</li>
 <li class="fragment">No risk ratio or odds ratio here: <code>blm.cvd</code> was recorded at the same visit, so the table shows who already had CVD, not who went on to develop it</li>
-<li class="fragment">Week 9 covers the formulae</li>
+<li class="fragment">Week 9 puts a 95% CI on them</li>
 </ul>
 </section>
 <section id="try-it-build-the-2x2" class="slide level2">
@@ -6692,7 +6685,6 @@ Fred Ho
 <li class="fragment">Often stratified by the exposure or group of interest</li>
 <li class="fragment">Each row shows the appropriate summary for that variable’s type<span class="gap"></span></li>
 <li class="fragment">Mean/SD or median/IQR for continuous, count/percentage for categorical</li>
-<li class="fragment">The same choice from a few slides ago</li>
 </ul>
 </section>
 <section id="a-table-1" class="slide level2">
@@ -7297,7 +7289,7 @@ N = 3,460<span class="gt_footnote_marks" style="white-space:nowrap;font-style:it
 <section id="same-data-one-misleading-axis" class="slide level2">
 <h2>Same data, one misleading axis</h2>
 <ul>
-<li class="fragment"><code>year</code>: a count variable, evenly spaced</li>
+<li class="fragment"><code>year</code>: continuous, recorded in whole years</li>
 <li class="fragment">Prescriptions of NRT per 100,000 population: a continuous variable</li>
 <li class="fragment">A line chart suits both: an ordered numeric variable tracked over time</li>
 <li class="fragment">The right chart’s y-axis does not start at zero, so a modest rise looks dramatic</li>

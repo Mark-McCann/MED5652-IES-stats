@@ -148,13 +148,13 @@ Fred Ho
 <li class="fragment"><strong>Epi.</strong>
 <ul>
 <li class="fragment"><strong>Weeks 1 and 5.</strong> External validity and selection bias. This week adds another source of problem: sampling variation, precision instead of bias and validity</li>
-<li class="fragment"><strong>Week 2.</strong> Risk, odds, RR and OR calculated as point estimates. This week puts a confidence interval on a proportion and on a difference in proportions; Week 9 does the RR and OR</li>
-<li class="fragment"><strong>Week 3.</strong> Underpower was discussed. This week does the sample size arithmetic behind it, and Week 9 returns to define power itself</li>
+<li class="fragment"><strong>Week 2.</strong> Risk, odds, RR, and OR calculated as point estimates. This week puts a confidence interval on a proportion and on a difference in proportions; Week 9 does the RR and OR</li>
+<li class="fragment"><strong>Week 3.</strong> Underpowered studies were discussed. This week does the sample size arithmetic behind it, and Week 9 returns to define power itself</li>
 </ul></li>
 </ul>
 </section>
-<section id="by-the-end-of-this-session-you-will-be-able-to" class="slide level2 smaller">
-<h2>By the end of this session, you will be able to</h2>
+<section id="by-the-end-of-this-week-you-will-be-able-to" class="slide level2 smaller">
+<h2>By the end of this week, you will be able to</h2>
 <ol type="1">
 <li class="fragment">Understand the difference between population and sample, and why statistical inference focuses on the population</li>
 <li class="fragment">Explain why a sample estimate varies from sample to sample, and state the practical consequence of the central limit theorem for the shape of that variation</li>
@@ -202,9 +202,8 @@ Fred Ho
 </ul></li>
 <li class="fragment">The <strong>estimate</strong>: one particular result the estimator produced
 <ul>
-<li class="fragment">It is ‘realised’ (i.e., occurred), so it is fixed<span class="gap"></span></li>
+<li class="fragment">It is ‘realised’ (i.e., occurred), so it is fixed</li>
 </ul></li>
-<li class="fragment">Abstract, but it is the foundation for how we define precision</li>
 </ul>
 </div><div class="column" style="width:58%;">
 <div class="cell">
@@ -284,14 +283,13 @@ Fred Ho
 <li class="fragment">The results of these samples will have a distribution</li>
 <li class="fragment"><strong>Sampling distribution</strong>: each sample yields one estimate, a single fixed draw from it</li>
 </ul></li>
-<li class="fragment">Everything from here to the confidence interval rests on this distribution</li>
 </ul>
 </section>
 <section id="seeing-it-happen" class="slide level2 smaller">
 <h2>Seeing it happen</h2>
 <ul>
-<li class="fragment">Three coins, fair (p = 0.5), biased (p = 0.25) and very biased (p = 0.1), and five sample sizes: n = 1, 5, 10, 30, 100</li>
-<li class="fragment">Buttons repeat 1, 5, 20, 100 or 1000 samples, so the shape of the sample mean builds live</li>
+<li class="fragment">Three coins, fair (p = 0.5), biased (p = 0.25), and very biased (p = 0.1), and five sample sizes: n = 1, 5, 10, 30, 100</li>
+<li class="fragment">Buttons repeat 1, 5, 20, 100, or 1000 samples, so the shape of the sample mean builds live</li>
 <li class="fragment">Head = 1; tail = 0, so the mean of a sample is the proportion of heads</li>
 </ul>
 <div id="coin-widget" style="text-align:center;">
@@ -371,6 +369,17 @@ Reset
     return successes;
   }
 
+  function axisMax() {
+    var pmf = Math.pow(1 - p, n), top = pmf;
+    for (var k = 0; k < n; k++) {
+      pmf = pmf * (n - k) / (k + 1) * p / (1 - p);
+      if (pmf > top) top = pmf;
+    }
+    var raw = 100 * top * 1.2;
+    var nice = raw > 10 ? Math.ceil(raw / 5) * 5 : Math.ceil(raw);
+    return Math.min(nice, 100);
+  }
+
   function draw() {
     while (svg.firstChild) svg.removeChild(svg.firstChild);
     var w = 900, h = 190;
@@ -378,10 +387,10 @@ Reset
     var plotW = w - marginLeft - marginRight;
     var plotH = h - marginTop - marginBottom;
     var pct = counts.map(function(c) { return total > 0 ? (100 * c / total) : 0; });
-    var maxPct = Math.max.apply(null, pct.concat([1]));
+    var maxPct = axisMax();
     var barW = plotW / counts.length;
     pct.forEach(function(pv, k) {
-      var barH = (pv / maxPct) * plotH;
+      var barH = Math.min(pv / maxPct, 1) * plotH;
       var x = marginLeft + k * barW;
       var y = marginTop + (plotH - barH);
       var rect = document.createElementNS(ns, "rect");
@@ -1031,7 +1040,7 @@ Reset
 </ul></li>
 <li class="fragment">In its simplest form, a 95% CI is calculated as:
 <ul>
-<li class="fragment">estimate ± 1.96 * standard errors</li>
+<li class="fragment">estimate ± 1.96 × standard error</li>
 </ul></li>
 </ul>
 </section>
@@ -1042,7 +1051,7 @@ Reset
 <ul>
 <li class="fragment">CIs are mostly reported as ‘95% CI’
 <ul>
-<li class="fragment">A 95% confidence level, i.e., a 5% (1-0.95) significance level</li>
+<li class="fragment">A 95% confidence level: 5% of CIs built this way would miss the true value</li>
 <li class="fragment">Almost always fixed at this arbitrary level</li>
 <li class="fragment">1.96 comes from the normal distribution the CLT delivers</li>
 </ul></li>
@@ -2026,7 +2035,7 @@ Reset
 </div>
 </div>
 <ul>
-<li class="fragment">Given the mean, SD and n above, find the standard error, then the 95% CI</li>
+<li class="fragment">Given the mean, SD, and n above, find the standard error, then the 95% CI</li>
 <li class="fragment">Three lines, five minutes</li>
 </ul>
 </section>
@@ -3224,7 +3233,6 @@ New sample
 <ul>
 <li class="fragment">0.514 ± 1.96 × 0.0483</li>
 <li class="fragment">0.419 to 0.609</li>
-<li class="fragment">Everything above about compatibility and interpretation applies here too</li>
 </ul>
 </section>
 <section id="block-2-comparing-two-groups" class="slide level2 divider" data-background-image="assets/skyline.jpg" data-background-size="cover">
@@ -4774,7 +4782,7 @@ New sample
 <h2>Try it: how does n respond?</h2>
 <ul>
 <li class="fragment">A poll wants to estimate a proportion around p = 0.5, with a 95% CI</li>
-<li class="fragment">At a margin of error of 3 percentage points (m = 0.03), the formula above gives n ≈ 1,067</li>
+<li class="fragment">At a margin of error of 3 percentage points (m = 0.03), the formula above gives n ≈ 1,068</li>
 <li class="fragment">Tightening the margin to 1.5 percentage points (m = 0.015) multiplies n by about how much?
 <ul>
 <li class="fragment"><strong>A.</strong> 2x</li>
@@ -4788,7 +4796,7 @@ New sample
 <h2>Try it: the answer</h2>
 <ul>
 <li class="fragment"><strong>B.</strong> About 4x</li>
-<li class="fragment">Halving m halves the bottom of a squared term, so the whole fraction roughly quadruples: n ≈ 4,268</li>
+<li class="fragment">m is squared, so halving it divides the bottom of the fraction by four, and n quadruples: n ≈ 4,269</li>
 <li class="fragment">The same square-root relationship as the width curve, read the other way round</li>
 </ul>
 </section>
@@ -4833,7 +4841,7 @@ New sample
 </tbody>
 </table>
 <ul>
-<li class="fragment">A hazard ratio (Williamson) is a ratio measure like the RR and OR from Week 2, with a null value of 1. More details in Week 9.</li>
+<li class="fragment">A hazard ratio (Williamson) is a ratio measure like the RR and OR from Week 2, with a null value of 1. Hazard ratios belong to survival analysis, in Advanced Statistics.</li>
 </ul>
 </section>
 <section id="three-claims-judged-cao-et-al." class="slide level2 smaller">
@@ -4907,7 +4915,7 @@ New sample
 <ul>
 <li class="fragment">An estimate from a sample is not the population value. The CI says how far off it might be</li>
 <li class="fragment">The SD describes the data. The SE describes the estimator</li>
-<li class="fragment">A 95% CI is the range of values the data are compatible with, and it covers the population value 95% of the time in the long run: not the same as being 95% sure about this one</li>
+<li class="fragment">A 95% CI is the range of values the data are compatible with, and 95% of CIs built this way cover the population value: not the same as being 95% sure about this one</li>
 <li class="fragment">Precision is bought with n, but scaled slowly</li>
 <li class="fragment">The lab builds every one of these CIs in R, on <code>nhanes_mph</code> and <code>strep_tb</code>, and reconciles the hand calculations from today against the software’s answers</li>
 </ul>

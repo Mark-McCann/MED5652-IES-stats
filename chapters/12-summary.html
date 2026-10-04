@@ -231,7 +231,7 @@ ul.task-list li input[type="checkbox"] {
 <p>Below is a non-exhaustive list of statistical techniques that you may see in public health literature. Firstly, those that will be taught in Advanced Statistics:</p>
 <ul>
 <li><strong>Survival analysis.</strong> Signposted already: Chapter 7 threw away <code>fu_month</code> and excluded early-ending follow-up. That could be better modelled using Kaplan-Meier estimator and Cox regression.</li>
-<li><strong>Generalised linear models.</strong> The logistic regression Chapter 7 taught is basic. We haven’t covered model fit statistics, pseudo-R², diagnostics and prediction specific to logistic models. Logistic regression also belongs to a wider class of models called generalised linear models, hence the function name <code>glm()</code>. That family can accommodate other types of response too, for example a count variable. There are also more advanced topics like interaction and non-linear associations between an explanatory variable and the response in a GLM.</li>
+<li><strong>Generalised linear models.</strong> The logistic regression Chapter 7 taught is basic. We haven’t covered model fit statistics, pseudo-R², diagnostics, and prediction specific to logistic models. Logistic regression also belongs to a wider class of models called generalised linear models, hence the function name <code>glm()</code>. That family can accommodate other types of response too, for example a count variable. There are also more advanced topics like interaction and non-linear associations between an explanatory variable and the response in a GLM.</li>
 <li><strong>Multi-level modelling</strong>, another modelling class where observations could be correlated with each other.</li>
 <li><strong>Mediation analysis.</strong> Chapter 7 raised the confounder-versus-mediator ambiguity and stopped at reporting both models. Formally decomposing an effect into direct and indirect parts is a separate method.</li>
 <li><strong>Meta-analysis</strong>, combining estimates across studies instead of one from a single dataset.</li>
@@ -240,7 +240,7 @@ ul.task-list li input[type="checkbox"] {
 <ul>
 <li><strong>Prognostic modelling.</strong> A prognostic model aims to maximise prediction accuracy. It’s built, judged, and reported differently, and requires different techniques.</li>
 <li><strong>Missing data handling.</strong> Every regression model built across Chapters 6 and 7 is <em>complete-case</em>: anyone missing a value on any variable in the model was dropped. Chapter 7’s logistic model, for instance, ran on 10,696 of 41,765 participants. Complete-case analysis and reporting the exclusion is the minimum, but could be subject to biases if the missing data is not completely random. It requires a different class of methods.</li>
-<li><strong>Sample size calculation based on regression.</strong> Chapter 4 sized a two-group comparison; sizing a study around an adjusted coefficient is a different calculation.</li>
+<li><strong>Sample size calculation based on regression.</strong> Chapter 4 sized a study to a margin of error, and Chapter 5 sized a two-group comparison by power; sizing a study around an adjusted coefficient is a different calculation.</li>
 <li><strong>Time-varying confounding</strong>, where a confounder changes over follow-up and standard adjustment stops working.</li>
 <li><strong>Survey weighting</strong>, from Chapter 3: we’ve treated a complex survey as a simple cohort throughout, so nothing here is a population-representative estimate.</li>
 </ul>

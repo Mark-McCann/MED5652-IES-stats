@@ -263,7 +263,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td><code>dplyr</code></td>
-<td>Manipulating data: filtering rows, building new columns, grouping and summarising.</td>
+<td>Manipulating data: filtering rows, building new columns, and grouping and summarising.</td>
 <td>Chapter 1</td>
 </tr>
 <tr class="odd">
@@ -410,7 +410,7 @@ ul.task-list li input[type="checkbox"] {
 <tr class="odd">
 <td><code>nrow()</code></td>
 <td>Counts the rows in a data frame.</td>
-<td>Chapter 4</td>
+<td>Chapter 2</td>
 </tr>
 <tr class="even">
 <td><code>set.seed()</code></td>
@@ -419,7 +419,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="odd">
 <td><code>as.numeric()</code></td>
-<td>Converts a value to a continuous number.</td>
+<td>Converts a value to a number; an ordered factor becomes 1, 2, 3, … in level order.</td>
 <td>Chapter 6</td>
 </tr>
 </tbody>
@@ -1056,7 +1056,7 @@ ul.task-list li input[type="checkbox"] {
 <tbody>
 <tr class="odd">
 <td>Categorical variable</td>
-<td>A variable that puts each observation into one of a fixed set of groups. Nominal categories have no order (<code>gender</code>); ordinal categories do (<code>edu</code>); binary is a two-category special case (<code>blm.cvd</code>), even where R has stored it as the numbers 0 and 1.</td>
+<td>A variable that puts each observation into one of a fixed set of groups. Nominal categories have no order (<code>gender</code>); ordinal categories do (<code>phq.c</code>); binary is a two-category special case (<code>blm.cvd</code>), even where R has stored it as the numbers 0 and 1.</td>
 <td>Chapter 3</td>
 </tr>
 <tr class="even">
@@ -1081,7 +1081,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td>Standard deviation (SD)</td>
-<td>A measure of a distribution’s spread, usually paired with the mean. When used without context an SD can be assumed to describe the population.</td>
+<td>A measure of a distribution’s spread, usually paired with the mean.</td>
 <td>Chapter 3</td>
 </tr>
 <tr class="odd">
@@ -1095,11 +1095,6 @@ ul.task-list li input[type="checkbox"] {
 <td>Chapter 3</td>
 </tr>
 <tr class="odd">
-<td>Complete-case</td>
-<td>An analysis that keeps only the rows with no missing value on any variable it uses.</td>
-<td>Chapter 3</td>
-</tr>
-<tr class="even">
 <td>Table 1</td>
 <td>The semi-standard first table of a paper: participant characteristics, often stratified by group.</td>
 <td>Chapter 3</td>
@@ -1129,51 +1124,46 @@ ul.task-list li input[type="checkbox"] {
 <td>Chapter 4</td>
 </tr>
 <tr class="even">
-<td>Population distribution</td>
-<td>How a specific measurement or characteristic is spread out across the entire population.</td>
-<td>Chapter 4</td>
-</tr>
-<tr class="odd">
 <td>Sample</td>
 <td>A subset of individuals drawn from the population, which we observe and measure.</td>
 <td>Chapter 4</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Point estimate</td>
 <td>A single number calculated from a sample (e.g.&nbsp;a sample mean or proportion), used as our best guess for the unknown population value.</td>
 <td>Chapter 4</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Sampling distribution</td>
 <td>The theoretical distribution of point estimates we would get if we took infinite independent samples of the exact same size from the population.</td>
 <td>Chapter 4</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Standard error (SE)</td>
 <td>The standard deviation of the sampling distribution. It measures the precision of our point estimate, smaller SE means more precise, and does not describe the variability of individuals in the population, which is what the standard deviation is for.</td>
 <td>Chapter 4</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Variance</td>
 <td>The SD squared. ‘Equal variance’ between two groups means the same spread in each.</td>
 <td>Chapter 4</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Central limit theorem (CLT)</td>
 <td>The rule stating that if our sample size is large enough, the sampling distribution of the mean will be approximately normal, regardless of the underlying population’s shape.</td>
 <td>Chapter 4</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Confidence interval (CI)</td>
 <td>A range of values, built around a point estimate and based on the standard error, that quantifies our uncertainty about the true population parameter. Also known as an ‘interval estimate’.</td>
 <td>Chapter 4</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>95% CI</td>
 <td>If we repeated our sampling process indefinitely, 95% of the calculated CIs would contain the true population value. It is incorrect to say ‘there is a 95% chance our specific CI holds the true value’.</td>
 <td>Chapter 4</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Margin of error</td>
 <td>The ± part of a CI, half its width. Fixing the margin we want, and the expected SD or proportion, gives the sample size needed to reach it.</td>
 <td>Chapter 4</td>
@@ -1214,7 +1204,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td>Parametric, non-parametric</td>
-<td>Parametric tests assume the underlying population data follows a specific distribution (e.g.&nbsp;t-distribution, in t-tests). Non-parametric tests make no such assumptions and often rely on ranking the data (e.g.&nbsp;Wilcoxon tests).</td>
+<td>Parametric tests rely on an assumed distribution, e.g.&nbsp;a t-test relies on the sampling distribution of the mean being roughly normal (not the data themselves). Non-parametric tests make no such assumption and often work on ranks instead (e.g.&nbsp;Wilcoxon tests).</td>
 <td>Chapter 5</td>
 </tr>
 <tr class="odd">
@@ -1322,18 +1312,28 @@ ul.task-list li input[type="checkbox"] {
 <td>Chapter 6</td>
 </tr>
 <tr class="odd">
+<td>R² (multiple R-squared)</td>
+<td>The proportion of the response’s variation a model accounts for, from 0 to 1. With one explanatory variable it equals the square of Pearson’s r.</td>
+<td>Chapter 6</td>
+</tr>
+<tr class="even">
 <td>Residual standard error</td>
 <td>The typical size of a residual, in the response’s units: how far the points sit from the line, not how precise the line is.</td>
 <td>Chapter 6</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>F-statistic</td>
 <td>A test of a regression model as a whole. With one explanatory variable it answers the same question as the slope’s own test.</td>
 <td>Chapter 6</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Linearity, constant variance, normally distributed residuals</td>
 <td>The three assumptions a fitted line’s trustworthiness rests on, checked with diagnostic plots.</td>
+<td>Chapter 6</td>
+</tr>
+<tr class="odd">
+<td>Prediction interval</td>
+<td>The range for one individual’s predicted value, always wider than the CI for the predicted mean. A different quantity from a CI, not a shortened name for one.</td>
 <td>Chapter 6</td>
 </tr>
 <tr class="even">
@@ -1347,6 +1347,21 @@ ul.task-list li input[type="checkbox"] {
 <td>Summary</td>
 </tr>
 <tr class="even">
+<td>Complete-case</td>
+<td>An analysis that keeps only the rows with no missing value on any variable it uses.</td>
+<td>Chapter 7</td>
+</tr>
+<tr class="odd">
+<td>Logistic regression</td>
+<td>A regression model for a binary (0/1) response, fitted with <code>glm(family = binomial)</code>. It models the log odds of the response, so its exponentiated coefficients are odds ratios.</td>
+<td>Chapter 7</td>
+</tr>
+<tr class="even">
+<td>Log odds</td>
+<td>The natural logarithm of the odds. Unlike a probability it has no upper or lower limit, which is why logistic regression works on this scale.</td>
+<td>Chapter 7</td>
+</tr>
+<tr class="odd">
 <td>Crude, adjusted</td>
 <td>An association estimated on its own (crude), against one estimated alongside other variables that might confound it (adjusted).</td>
 <td>Chapter 7</td>
@@ -1393,7 +1408,7 @@ ul.task-list li input[type="checkbox"] {
 <tr class="odd">
 <td>Collider bias</td>
 <td>Distortion introduced by adjusting for a variable that’s a common <em>effect</em> of the exposure and the outcome, not a common cause.</td>
-<td>Chapter 7</td>
+<td>Summary</td>
 </tr>
 <tr class="even">
 <td>Table 2 fallacy</td>

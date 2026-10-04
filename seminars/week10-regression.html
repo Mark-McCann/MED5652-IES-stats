@@ -144,13 +144,13 @@ Fred Ho
 <section id="what-you-have-learnt-so-far" class="slide level2">
 <h2>What you have learnt so far</h2>
 <ul>
-<li class="fragment"><strong>Stats, Week 9.</strong> We learnt t-tests for comparing a continuous variable between groups, and the chi-squared test for two categorical variables. But what if we want to examine the association between two continuous variables, e.g.&nbsp;cholesterol and age?</li>
+<li class="fragment"><strong>Stats, Week 9.</strong> We learnt t-tests for comparing a continuous variable between groups, and the chi-squared test for two categorical variables. But what if we want to examine the association between two continuous variables, e.g., cholesterol and age?</li>
 <li class="fragment"><strong>Epi, Week 1.</strong> Exposure and outcome as hypothetical causes and the health state of interest. How can we model them statistically?</li>
 <li class="fragment"><strong>Epi, Week 4.</strong> Correlation is not causation was mentioned but what exactly is ‘correlation’?</li>
 </ul>
 </section>
-<section id="by-the-end-of-this-session-you-will-be-able-to" class="slide level2">
-<h2>By the end of this session, you will be able to</h2>
+<section id="by-the-end-of-this-week-you-will-be-able-to" class="slide level2">
+<h2>By the end of this week, you will be able to</h2>
 <ol type="1">
 <li class="fragment">Select an appropriate correlation measure and interpret the findings</li>
 <li class="fragment">Apply the simple linear regression model, and assess its assumptions using residual diagnostics</li>
@@ -166,7 +166,7 @@ Fred Ho
 <ul>
 <li class="fragment">We can compare two groups. Last week’s exposure was gender, a two-category label</li>
 <li class="fragment">This week’s exposures are age and sedentary time, both are continuous<span class="gap"></span></li>
-<li class="fragment">We can’t apply t-test with these as exposure</li>
+<li class="fragment">We can’t apply a t-test with these as exposure</li>
 <li class="fragment">But the question is still the same one we’ve been asking all term: does the outcome differ, and by how much, as the exposure changes</li>
 </ul>
 </section>
@@ -177,8 +177,7 @@ Fred Ho
 <ul>
 <li class="fragment">Boxplot and histogram to examine distribution of a continuous variable by groups</li>
 <li class="fragment">Scatterplot is for two continuous variables</li>
-<li class="fragment">One point per participant, one variable on each axis</li>
-<li class="fragment">The first plot of two continuous variables together<span class="gap"></span></li>
+<li class="fragment">One point per participant, one variable on each axis<span class="gap"></span></li>
 <li class="fragment">The cloud slopes gently upward and is wide</li>
 </ul>
 </div><div class="column" style="width:62%;">
@@ -211,23 +210,23 @@ Fred Ho
 <h2>Age and cholesterol: what is r?</h2>
 <div class="cell">
 <div class="cell-output-display">
-<div id="sbeyzmwgwr" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#sbeyzmwgwr table {
+<div id="verdvaggct" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#verdvaggct table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#sbeyzmwgwr thead, #sbeyzmwgwr tbody, #sbeyzmwgwr tfoot, #sbeyzmwgwr tr, #sbeyzmwgwr td, #sbeyzmwgwr th {
+#verdvaggct thead, #verdvaggct tbody, #verdvaggct tfoot, #verdvaggct tr, #verdvaggct td, #verdvaggct th {
   border-style: none;
 }
 
-#sbeyzmwgwr p {
+#verdvaggct p {
   margin: 0;
   padding: 0;
 }
 
-#sbeyzmwgwr .gt_table {
+#verdvaggct .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -253,12 +252,12 @@ Fred Ho
   border-left-color: #D3D3D3;
 }
 
-#sbeyzmwgwr .gt_caption {
+#verdvaggct .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#sbeyzmwgwr .gt_title {
+#verdvaggct .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -270,7 +269,7 @@ Fred Ho
   border-bottom-width: 0;
 }
 
-#sbeyzmwgwr .gt_subtitle {
+#verdvaggct .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -282,7 +281,7 @@ Fred Ho
   border-top-width: 0;
 }
 
-#sbeyzmwgwr .gt_heading {
+#verdvaggct .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -294,13 +293,13 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#sbeyzmwgwr .gt_bottom_border {
+#verdvaggct .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#sbeyzmwgwr .gt_col_headings {
+#verdvaggct .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -315,7 +314,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#sbeyzmwgwr .gt_col_heading {
+#verdvaggct .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -335,7 +334,7 @@ Fred Ho
   overflow-x: hidden;
 }
 
-#sbeyzmwgwr .gt_column_spanner_outer {
+#verdvaggct .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -347,15 +346,15 @@ Fred Ho
   padding-right: 4px;
 }
 
-#sbeyzmwgwr .gt_column_spanner_outer:first-child {
+#verdvaggct .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#sbeyzmwgwr .gt_column_spanner_outer:last-child {
+#verdvaggct .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#sbeyzmwgwr .gt_column_spanner {
+#verdvaggct .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -367,11 +366,11 @@ Fred Ho
   width: 100%;
 }
 
-#sbeyzmwgwr .gt_spanner_row {
+#verdvaggct .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#sbeyzmwgwr .gt_group_heading {
+#verdvaggct .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -397,7 +396,7 @@ Fred Ho
   text-align: left;
 }
 
-#sbeyzmwgwr .gt_empty_group_heading {
+#verdvaggct .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -412,15 +411,15 @@ Fred Ho
   vertical-align: middle;
 }
 
-#sbeyzmwgwr .gt_from_md > :first-child {
+#verdvaggct .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#sbeyzmwgwr .gt_from_md > :last-child {
+#verdvaggct .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#sbeyzmwgwr .gt_row {
+#verdvaggct .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -439,7 +438,7 @@ Fred Ho
   overflow-x: hidden;
 }
 
-#sbeyzmwgwr .gt_stub {
+#verdvaggct .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -452,7 +451,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#sbeyzmwgwr .gt_stub_row_group {
+#verdvaggct .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -466,15 +465,15 @@ Fred Ho
   vertical-align: top;
 }
 
-#sbeyzmwgwr .gt_row_group_first td {
+#verdvaggct .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#sbeyzmwgwr .gt_row_group_first th {
+#verdvaggct .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#sbeyzmwgwr .gt_summary_row {
+#verdvaggct .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -484,16 +483,16 @@ Fred Ho
   padding-right: 5px;
 }
 
-#sbeyzmwgwr .gt_first_summary_row {
+#verdvaggct .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#sbeyzmwgwr .gt_first_summary_row.thick {
+#verdvaggct .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#sbeyzmwgwr .gt_last_summary_row {
+#verdvaggct .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -503,7 +502,7 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#sbeyzmwgwr .gt_grand_summary_row {
+#verdvaggct .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -513,7 +512,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#sbeyzmwgwr .gt_first_grand_summary_row {
+#verdvaggct .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -523,7 +522,7 @@ Fred Ho
   border-top-color: #D3D3D3;
 }
 
-#sbeyzmwgwr .gt_last_grand_summary_row_top {
+#verdvaggct .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -533,11 +532,11 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#sbeyzmwgwr .gt_striped {
+#verdvaggct .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#sbeyzmwgwr .gt_table_body {
+#verdvaggct .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -546,7 +545,7 @@ Fred Ho
   border-bottom-color: #D3D3D3;
 }
 
-#sbeyzmwgwr .gt_footnotes {
+#verdvaggct .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -560,7 +559,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#sbeyzmwgwr .gt_footnote {
+#verdvaggct .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -569,7 +568,7 @@ Fred Ho
   padding-right: 5px;
 }
 
-#sbeyzmwgwr .gt_sourcenotes {
+#verdvaggct .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -583,7 +582,7 @@ Fred Ho
   border-right-color: #D3D3D3;
 }
 
-#sbeyzmwgwr .gt_sourcenote {
+#verdvaggct .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -591,72 +590,72 @@ Fred Ho
   padding-right: 5px;
 }
 
-#sbeyzmwgwr .gt_left {
+#verdvaggct .gt_left {
   text-align: left;
 }
 
-#sbeyzmwgwr .gt_center {
+#verdvaggct .gt_center {
   text-align: center;
 }
 
-#sbeyzmwgwr .gt_right {
+#verdvaggct .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#sbeyzmwgwr .gt_font_normal {
+#verdvaggct .gt_font_normal {
   font-weight: normal;
 }
 
-#sbeyzmwgwr .gt_font_bold {
+#verdvaggct .gt_font_bold {
   font-weight: bold;
 }
 
-#sbeyzmwgwr .gt_font_italic {
+#verdvaggct .gt_font_italic {
   font-style: italic;
 }
 
-#sbeyzmwgwr .gt_super {
+#verdvaggct .gt_super {
   font-size: 65%;
 }
 
-#sbeyzmwgwr .gt_footnote_marks {
+#verdvaggct .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#sbeyzmwgwr .gt_asterisk {
+#verdvaggct .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#sbeyzmwgwr .gt_indent_1 {
+#verdvaggct .gt_indent_1 {
   text-indent: 5px;
 }
 
-#sbeyzmwgwr .gt_indent_2 {
+#verdvaggct .gt_indent_2 {
   text-indent: 10px;
 }
 
-#sbeyzmwgwr .gt_indent_3 {
+#verdvaggct .gt_indent_3 {
   text-indent: 15px;
 }
 
-#sbeyzmwgwr .gt_indent_4 {
+#verdvaggct .gt_indent_4 {
   text-indent: 20px;
 }
 
-#sbeyzmwgwr .gt_indent_5 {
+#verdvaggct .gt_indent_5 {
   text-indent: 25px;
 }
 
-#sbeyzmwgwr .katex-display {
+#verdvaggct .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#sbeyzmwgwr div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#verdvaggct div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1448,7 +1447,8 @@ Fred Ho
 <ul>
 <li class="fragment">The response is the variable the question wants explained<span class="gap"></span></li>
 <li class="fragment">The explanatory variable is the one that could plausibly have come first</li>
-<li class="fragment">Study 4’s complication is why it’s included: age can’t be explained by cholesterol, so the direction is obvious there. Nothing in the arithmetic would have objected to fitting it the other way round</li>
+<li class="fragment">Study 4: age cannot depend on cholesterol, so age has to be the explanatory variable</li>
+<li class="fragment">The software would fit it either way round: the direction comes from the question, not the arithmetic</li>
 </ul>
 </section>
 <section id="a-regression-model-to-answer-these-questions" class="slide level2 smaller">
@@ -1465,7 +1465,6 @@ Fred Ho
 </ul></li>
 <li class="fragment">X and Y are observed (the data)</li>
 <li class="fragment">α and β are model <strong>coefficients</strong> to be estimated</li>
-<li class="fragment">The assumptions ε carries come later</li>
 </ul>
 </section>
 <section id="fitting-the-line-least-squares" class="slide level2 smaller">
@@ -3169,7 +3168,6 @@ F-statistic: 349.1 on 1 and 39174 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li class="fragment">R squared is 0.0088: age accounts for under 1% of the variation in cholesterol between participants<span class="gap"></span></li>
 <li class="fragment">Set that against the slope’s p-value, well below 0.001, on the same model</li>
 <li class="fragment">An association can be real, precisely estimated, and still leave almost all of the response unexplained</li>
-<li class="fragment">A low R squared doesn’t mean there’s no association, only that age alone explains little of the variation</li>
 </ul>
 </section>
 <section id="can-we-trust-the-regression-line" class="slide level2">
@@ -3227,8 +3225,7 @@ F-statistic: 349.1 on 1 and 39174 DF,  p-value: &lt; 2.2e-16</code></pre>
 <h2>The QQ plot</h2>
 <ul>
 <li class="fragment">The standardised residuals, plotted against what a normal distribution would have produced, with a reference line</li>
-<li class="fragment">Points on the line are consistent with normally distributed residuals<span class="gap"></span></li>
-<li class="fragment">A systematic departure from it is not</li>
+<li class="fragment">Points on the line are consistent with normally distributed residuals</li>
 </ul>
 </section>
 <section id="cholesterol-and-age-the-qq-plot" class="slide level2 smaller">
@@ -3777,10 +3774,10 @@ F-statistic: 349.1 on 1 and 39174 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li class="fragment">The first ‘active category’ gets a 0/1 indicator (also known as <em>dummy variable</em>)</li>
 <li class="fragment">Each further ‘active category’ gets its own 0/1 indicator</li>
 </ul></li>
-<li class="fragment">All comparisons were made against the reference<span class="gap"></span></li>
+<li class="fragment">All comparisons are made against the reference<span class="gap"></span></li>
 </ul>
 </section>
-<section id="does-cholesterol-differ-by-education" class="slide level2">
+<section id="does-cholesterol-differ-by-education" class="slide level2 smaller">
 <h2>Does cholesterol differ by education?</h2>
 <div class="cell">
 <div class="cell-output-display">
@@ -4271,14 +4268,16 @@ F-statistic: 349.1 on 1 and 39174 DF,  p-value: &lt; 2.2e-16</code></pre>
 <ul>
 <li class="fragment">H0: a non-reference category’s mean cholesterol equals the reference category’s</li>
 <li class="fragment">H1: it differs<span class="gap"></span></li>
-<li class="fragment">Neither contrast is anywhere near significant. On this evidence, education isn’t associated with cholesterol in this sample</li>
+<li class="fragment">‘High school graduate’ against ‘less than high school’: a difference in mean cholesterol of -0.016 mmol/L (95% CI -0.047 to 0.016 mmol/L, p = 0.330)</li>
+<li class="fragment">‘Above high school’ against ‘less than high school’: -0.012 mmol/L (95% CI -0.039 to 0.014 mmol/L, p = 0.363)<span class="gap"></span></li>
+<li class="fragment">Both 95% CIs include zero: these data show no clear association between education and cholesterol</li>
 </ul>
 </section>
 <section id="changing-the-reference" class="slide level2">
 <h2>Changing the reference</h2>
 <ul>
 <li class="fragment">A reference category is arbitrary and decided based on the research question and framing</li>
-<li class="fragment">It changes the numbers because the comparison changes, but the fit stays the same. Changing the reference doesn’t provide more information</li>
+<li class="fragment">It changes the numbers because the comparison changes, but the fit stays the same</li>
 <li class="fragment">R squared (2.99e-05, both parameterisations) and the residual standard error don’t move at all<span class="gap"></span></li>
 </ul>
 </section>
@@ -5277,11 +5276,11 @@ F-statistic: 349.1 on 1 and 39174 DF,  p-value: &lt; 2.2e-16</code></pre>
 <section id="using-the-model-to-predict" class="slide level2 smaller">
 <h2>Using the model to predict</h2>
 <ul>
-<li class="fragment">‘Predict’ is used loosely here. We are not really predicting what would happen in the future</li>
+<li class="fragment">‘Predict’ is used loosely here. We are not predicting what would happen in the future</li>
 <li class="fragment">Instead, we are <em>interpolating</em> or <em>extrapolating</em></li>
 <li class="fragment">Consider a toy example with 3 data points: cholesterol readings from people aged 30, 50, and 70
 <ul>
-<li class="fragment">Interpolation is to use the regression model to estimate the average cholesterol for 31, 40 and 60 year olds even if our data don’t include these exact ages</li>
+<li class="fragment">Interpolation is to use the regression model to estimate the average cholesterol for 31, 40, and 60 year olds even if our data don’t include these exact ages</li>
 <li class="fragment">Extrapolation is to use the regression model to estimate the average cholesterol for 29 and 75 year olds</li>
 </ul></li>
 </ul>
@@ -5833,6 +5832,7 @@ F-statistic: 349.1 on 1 and 39174 DF,  p-value: &lt; 2.2e-16</code></pre>
 <ul>
 <li class="fragment">Gentamicin is an antibiotic given for serious infections in newborns, and the kidneys clear it, so the safe dose depends on the baby’s clearance<span class="gap"></span></li>
 <li class="fragment">Gentamicin clearance (l/h) regressed on weight (kg), 31 babies. R squared 0.926<span class="gap"></span></li>
+<li class="fragment">Clearance was on average 0.074 l/h higher per additional kg of weight (95% CI 0.066 to 0.082 l/h, p &lt; 0.001)<span class="gap"></span></li>
 <li class="fragment">For a 3 kg baby, the predicted clearance is 0.195 l/h, and the dose follows from it</li>
 </ul>
 </section>
@@ -5842,11 +5842,11 @@ F-statistic: 349.1 on 1 and 39174 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li class="fragment">What about a very preterm baby born at 25 weeks, weighing only 300 g?</li>
 <li class="fragment">The same formula for a 300 g baby returns a clearance of -0.005 l/h</li>
 <li class="fragment">A negative clearance is physically impossible<span class="gap"></span></li>
-<li class="fragment">This relates to the linear regression model assuming the response variable to change <em>linearly</em> with the explanatory variable</li>
-<li class="fragment">Likely this is also an extrapolation</li>
+<li class="fragment">The linear regression model assumes the response changes <em>linearly</em> with the explanatory variable</li>
+<li class="fragment">300 g is also far below the lightest baby in the data, about 0.9 kg: an extrapolation</li>
 </ul>
 </section>
-<section id="is-sedentary-time-associated-with-cholesterol" class="slide level2">
+<section id="is-sedentary-time-associated-with-cholesterol" class="slide level2 smaller">
 <h2>Is sedentary time associated with cholesterol?</h2>
 <div class="cell">
 <div class="cell-output-display">
@@ -6323,6 +6323,7 @@ F-statistic: 349.1 on 1 and 39174 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 <ul>
+<li class="fragment">Each additional hour/day of sedentary time was associated with a difference in cholesterol of -0.001 mmol/L (95% CI -0.0021 to 10^{-4} mmol/L, p = 0.073)</li>
 <li class="fragment">The slope is close to zero, and small next to its own 95% CI<span class="gap"></span></li>
 <li class="fragment">The CI includes zero, so these data are consistent with no association. R squared is essentially zero</li>
 <li class="fragment">Cholesterol varies with age, and sedentary time might too</li>
@@ -6330,8 +6331,8 @@ F-statistic: 349.1 on 1 and 39174 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li class="fragment">Next week answers that question</li>
 </ul>
 </section>
-<section id="application-write-the-sentence" class="slide level2 divider" data-background-image="assets/skyline.jpg" data-background-size="cover">
-<h2>Application: write the sentence</h2>
+<section id="application" class="slide level2 divider" data-background-image="assets/skyline.jpg" data-background-size="cover">
+<h2>Application</h2>
 </section>
 <section id="two-numbers-no-interpretation" class="slide level2 smaller">
 <h2>Two numbers, no interpretation</h2>
@@ -6360,7 +6361,7 @@ F-statistic: 349.1 on 1 and 39174 DF,  p-value: &lt; 2.2e-16</code></pre>
 </tbody>
 </table>
 <ul>
-<li class="fragment">Potter, Cade and Hardie (2017), <em>PLOS ONE</em>: <a href="https://doi.org/10.1371/journal.pone.0182195">sleep duration and BMI in 1,615 UK adults</a>, adjusted for age, ethnicity, sex, smoking, and socioeconomic status<span class="gap"></span></li>
+<li class="fragment">Potter, Cade, and Hardie (2017), <em>PLOS ONE</em>: <a href="https://doi.org/10.1371/journal.pone.0182195">sleep duration and BMI in 1,615 UK adults</a>, adjusted for age, ethnicity, sex, smoking, and socioeconomic status<span class="gap"></span></li>
 <li class="fragment">In pairs: write one sentence interpreting this coefficient in context and in its units, and one sentence stating what the model assumes</li>
 <li class="fragment">Five minutes</li>
 </ul>
@@ -6368,7 +6369,7 @@ F-statistic: 349.1 on 1 and 39174 DF,  p-value: &lt; 2.2e-16</code></pre>
 <section id="the-sentences-and-what-the-authors-wrote" class="slide level2">
 <h2>The sentences, and what the authors wrote</h2>
 <ul>
-<li class="fragment">BMI was on average 0.46 kg/m² lower for each additional hour/day of sleep (95% CI 0.69 to 0.24 kg/m² lower, p &lt; 0.001), after adjustment for age, ethnicity, sex, smoking, and socioeconomic status<span class="gap"></span></li>
+<li class="fragment">BMI was on average 0.46 kg/m² lower for each additional hour/day of sleep (95% CI 0.24 to 0.69 kg/m² lower, p &lt; 0.001), after adjustment for age, ethnicity, sex, smoking, and socioeconomic status<span class="gap"></span></li>
 <li class="fragment">The model assumes linearity, constant variance, normally distributed residuals, and independence between participants</li>
 <li class="fragment">The authors’ own sentence: ‘participants had 0.46 kg/m2 lower BMI values (95% CI -0.69 to -0.24 kg/m2, p &lt; 0.001) per additional hour of sleep’</li>
 <li class="fragment">Also an accurate description</li>
