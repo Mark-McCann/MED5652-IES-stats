@@ -222,7 +222,7 @@ Installing is typically a one-off, run in the console and not saved in a script:
 library(dplyr)
 ```
 
-Loading a package sometimes prints a short message, often about functions it's replacing from another package. It's suppressed here since it doesn't matter yet. Later in the course it will, for a specific reason.
+Loading a package sometimes prints a short message, often about functions it's replacing from another package. That doesn't matter yet, but in chapter X we will look at this more closely.
 
 That message points at a real ambiguity: once two loaded packages both define a function with the same name, R has to pick one, and it's not always the one we meant. `package::function()` sidesteps the whole problem. Writing `dplyr::select()` instead of just `select()` calls `select()` from `dplyr` directly, by name, whichever packages happen to be loaded, and without needing `library()` to have loaded that package first at all. We'll use this notation in prose from here on whenever it helps to be explicit about which package a function comes from.
 

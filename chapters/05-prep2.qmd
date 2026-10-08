@@ -61,7 +61,9 @@ We just saved a clean CSV in the exercise above. Before we can read it, or anyth
 
 **Backslashes versus forward slashes.** A path copied this way on Windows uses backslashes, `\`, for example `C:\Users\yourname\Documents\ies_mph\data\file.csv`. R uses forward slashes, `/`, instead, and treats a lone backslash as the start of a special character, not a folder separator. So a pasted Windows path usually needs every `\` replaced with `/` before R will accept it.
 
-**What a CSV is.** Open a `.csv` file in a plain text editor, Notepad on Windows or TextEdit on a Mac, not in spreadsheet software, and you'll see plain text: one line per row, values separated by commas. There's no hidden formatting behind it, which is why it's such a safe format to hand between different pieces of software, R included.
+!! Would be good to include a screenshot of the find & replace windows in RStudio for changing backslashes.
+
+**CSV, the comma separated values file.** Open a `.csv` file in a plain text editor, Notepad on Windows or TextEdit on a Mac, not in spreadsheet software, and you'll see plain text: one line per row, values separated by commas. This is why it's called a comma separated values file. This format of file can be read by eye, and can be read by all computers without requiring any additional formatting or interpretation. This makes it a safe format to hand between different pieces of software, R included, and this means its a preferred format for data storage and sharing.
 
 ## Getting data in
 
