@@ -46,9 +46,9 @@ Off to the side, in a cell with no column of its own, sits a note about one spec
 
 Go through the sheet and list every feature above that you can find in it. There is also one problem in this sheet that wasn't mentioned above. Try to build a clean version based on the principles above. Save your clean version as a `.csv` file. The Solutions section describes the fixes.
 
-## Finding a file, and telling R where it is
+## Path skills: Finding a file, and telling R where it is
 
-We just saved a clean CSV in the exercise above. Before we can read it, or anything else, into R, we need to know where the file we want lives.
+We just saved a clean CSV in the exercise above. Before we can read it, or anything else, into R, we need to know exactly where the file we want is located. The location of a file is referred to at the file path, or just path. This section covers the path finding skills you'll use for the rest of the course. Just like other R skills, we're using a reproducible, text based method instead of pointing and clicking on folders.
 
 **Where downloads go.** When you download a file from a browser, most browsers save it into a folder called `Downloads` by default, without asking. On Windows that's usually `C:\Users\yourname\Downloads`; on a Mac it's usually `/Users/yourname/Downloads`. If you can't find a file you just downloaded, that folder is the first place to check. Confirm where your own browser is set to save to, since some let you change it.
 
